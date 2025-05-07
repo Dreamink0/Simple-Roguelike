@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -17,7 +16,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Player.PlayerController;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class MovementTest extends ApplicationAdapter {
+public class Main extends ApplicationAdapter {
     private static final float WORLD_WIDTH = 20f;
     private static final float WORLD_HEIGHT = 15f;
     private static final float PIXELS_PER_METER = 32f;
@@ -30,7 +29,6 @@ public class MovementTest extends ApplicationAdapter {
     private Body playerBody;
     private PlayerController playerController;
     private SpriteBatch batch;
-    private ShapeRenderer shapeRenderer;
     private Texture playerTexture;
     private OrthographicCamera camera;
     private float accumulator = 0f;
@@ -45,12 +43,11 @@ public class MovementTest extends ApplicationAdapter {
         camera.position.set(WORLD_WIDTH/2, WORLD_HEIGHT/2, 0);
         camera.update();
 
-        shapeRenderer = new ShapeRenderer();
-
         assetManager = new AssetManager();
-        assetManager.load("knight_f_idle_anim_f0.png", Texture.class);
+        assetManager.load("Sprites/knight_f_idle_anim_f0.png", Texture.class);
         assetManager.finishLoading();
-        playerTexture = assetManager.get("knight_f_idle_anim_f0.png", Texture.class);
+        playerTexture = assetManager.get("Sprites/knight_f_idle_anim_f0.png", Texture.class);
+
         batch = new SpriteBatch();
 
         createPlayer();
@@ -107,7 +104,6 @@ public class MovementTest extends ApplicationAdapter {
     public void dispose() {
         world.dispose();
         batch.dispose();
-        shapeRenderer.dispose();
         assetManager.dispose();
     }
 }
