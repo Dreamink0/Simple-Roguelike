@@ -7,6 +7,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -32,12 +36,14 @@ public class Main extends ApplicationAdapter {
     private Texture playerTexture;
     private OrthographicCamera camera;
     private float accumulator = 0f;
-
+    
+    private OrthogonalTiledMapRenderer mapRenderer;
+    private TiledMap tiledMap;
     @Override
     public void create() {
         Box2D.init();
         world = new World(new Vector2(0, 0), true);
-
+        tiledMap = new TmxMapLoader().load("Maps/TestMap.tmx");
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.set(WORLD_WIDTH/2, WORLD_HEIGHT/2, 0);
@@ -49,7 +55,7 @@ public class Main extends ApplicationAdapter {
         playerTexture = assetManager.get("Sprites/knight_f_idle_anim_f0.png", Texture.class);
 
         batch = new SpriteBatch();
-
+        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         createPlayer();
     }
 
@@ -77,6 +83,7 @@ public class Main extends ApplicationAdapter {
         playerController.update();
 
         batch.setProjectionMatrix(camera.combined);
+        mapRenderer.render();
         batch.begin();
 
         float textureWidth = (playerTexture.getWidth() / PIXELS_PER_METER) * PLAYER_SCALE;
