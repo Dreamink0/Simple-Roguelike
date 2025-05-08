@@ -25,7 +25,7 @@ import io.github.SimpleGame.Player.PlayerController;
 public class Main extends ApplicationAdapter {
     private static final float WORLD_WIDTH = 20f;
     private static final float WORLD_HEIGHT = 15f;
-    private static final float PIXELS_PER_METER = 32f;
+    private static final float PIXELS_PER_METER = 64f;
     private static final float TIME_STEP = 1/60f;
     private static final float GRID_SIZE = 1f;
     private static final float PLAYER_SCALE = 8f;
@@ -82,7 +82,7 @@ public class Main extends ApplicationAdapter {
         Fire_Animation.setPlayMode(Animation.PlayMode.LOOP);
         batch = new SpriteBatch();
         stateTime = 0f;
-        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap,1/PIXELS_PER_METER);
+        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap,PIXELS_PER_METER/512);
         createPlayer();
     }
 
