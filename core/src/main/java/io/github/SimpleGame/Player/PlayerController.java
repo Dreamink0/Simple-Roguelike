@@ -77,13 +77,11 @@ public class PlayerController {
     }
 
     public boolean isFlipped() {
-        boolean leftPressed = Gdx.input.isKeyPressed(Input.Keys.A);
-        boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.D);
-        if (leftPressed) {
-            isFlipped=false;
-        }
-        if (rightPressed) {
-            isFlipped=true;
+        Vector2 velocity = body.getLinearVelocity();
+        if (velocity.x > 0) {
+            isFlipped = true;
+        } else if (velocity.x < 0) {
+            isFlipped = false;
         }
         return isFlipped;
     }

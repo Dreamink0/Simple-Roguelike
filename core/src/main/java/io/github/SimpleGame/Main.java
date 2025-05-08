@@ -18,10 +18,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
-import io.github.SimpleGame.Magic.Fire;
-import io.github.SimpleGame.Player.PlayerController;
 
-import java.util.Random;
+import io.github.SimpleGame.Player.PlayerController;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
@@ -47,6 +45,8 @@ public class Main extends ApplicationAdapter {
     private Texture Fire_texture;
     float stateTime;
 
+    private Sprite playerSprite;
+
     @Override
     public void create() {
         Box2D.init();
@@ -62,6 +62,11 @@ public class Main extends ApplicationAdapter {
         tiledMap = new TmxMapLoader().load("Maps/TestMap.tmx");
         assetManager.finishLoading();
         playerTexture = assetManager.get("Sprites/NAILONG.png", Texture.class);
+        playerSprite = new Sprite(playerTexture);
+        playerSprite.setSize(
+            (playerTexture.getWidth() / PIXELS_PER_METER) * PLAYER_SCALE,
+            (playerTexture.getHeight() / PIXELS_PER_METER) * PLAYER_SCALE
+        );
         Fire_texture = assetManager.get("Magic/FR.png", Texture.class);
         int frameWidth = (int) (Fire_texture.getWidth() / 4);
         int frameHeight = (int) (Fire_texture.getHeight() / 5);
@@ -111,39 +116,25 @@ public class Main extends ApplicationAdapter {
 
         batch.begin();
 
-        float textureWidth = (playerTexture.getWidth() / PIXELS_PER_METER) * PLAYER_SCALE;
-        float textureHeight = (playerTexture.getHeight() / PIXELS_PER_METER) * PLAYER_SCALE;
-
         Vector2 playerPos = playerController.getPosition();
         boolean isFlipped = playerController.isFlipped();
 
-        // 绘制玩家图片（根据翻转状态调整）
-        if (isFlipped) {
-            batch.draw(playerTexture,
-                playerPos.x - textureWidth / 2,
-                playerPos.y - textureHeight / 2,
-                textureWidth,
-                textureHeight,
-                0,
-                0,
-                playerTexture.getWidth(),
-                playerTexture.getHeight(),
-                true,
-                false
-            );
-        }else{
-            batch.draw(playerTexture,
-                playerPos.x - textureWidth/2,
-                playerPos.y - textureHeight/2,
-                textureWidth,
-                textureHeight);
-        }
-        if (frame != null) { // 防止 NullPointerException
+        // 更新精灵位置和翻转状态
+        playerSprite.setPosition(
+            playerPos.x - playerSprite.getWidth() / 2,
+            playerPos.y - playerSprite.getHeight() / 2
+        );
+        playerSprite.setFlip(isFlipped, false);
+        
+        // 绘制玩家精灵
+        playerSprite.draw(batch);
+
+        if (frame != null) {
             batch.draw(frame,
-                playerPos.x - textureWidth-3,
-                playerPos.y - textureWidth/2,
-                textureWidth+20,
-                textureHeight+20);
+                playerPos.x - playerSprite.getWidth() - 3,
+                playerPos.y - playerSprite.getWidth() / 2,
+                playerSprite.getWidth() + 20,
+                playerSprite.getHeight() + 20);
         }
         batch.end();
     }
