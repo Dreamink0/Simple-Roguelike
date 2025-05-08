@@ -1,4 +1,4 @@
-package io.github.SimpleGame.Player;
+package io.github.SimpleGame.Character.Player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

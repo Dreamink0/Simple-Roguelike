@@ -19,7 +19,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
 
-import io.github.SimpleGame.Player.PlayerController;
+import io.github.SimpleGame.Character.Player.PlayerController;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
@@ -125,7 +125,7 @@ public class Main extends ApplicationAdapter {
             playerPos.y - playerSprite.getHeight() / 2
         );
         playerSprite.setFlip(isFlipped, false);
-        
+
         // 绘制玩家精灵
         playerSprite.draw(batch);
 
