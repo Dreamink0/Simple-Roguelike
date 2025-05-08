@@ -20,6 +20,8 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Character.Player.PlayerController;
+import io.github.SimpleGame.TextureTool.Animation_Tool;
+import io.github.SimpleGame.TextureTool.Texture_Sheet_Tool;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
@@ -37,7 +39,7 @@ public class Main extends ApplicationAdapter {
     private Texture playerTexture;
     private OrthographicCamera camera;
     private float accumulator = 0f;
-
+    private Animation<TextureRegion> playerAnimation;
     private OrthogonalTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
     private Animation<TextureRegion> Fire_Animation;
@@ -61,25 +63,18 @@ public class Main extends ApplicationAdapter {
         assetManager.load("Magic/FR.png", Texture.class);
         tiledMap = new TmxMapLoader().load("Maps/TestMap.tmx");
         assetManager.finishLoading();
+
         playerTexture = assetManager.get("Sprites/NAILONG.png", Texture.class);
+        Fire_texture = assetManager.get("Magic/FR.png", Texture.class);
         playerSprite = new Sprite(playerTexture);
+
         playerSprite.setSize(
             (playerTexture.getWidth() / PIXELS_PER_METER) * PLAYER_SCALE,
             (playerTexture.getHeight() / PIXELS_PER_METER) * PLAYER_SCALE
         );
-        Fire_texture = assetManager.get("Magic/FR.png", Texture.class);
-        int frameWidth = (int) (Fire_texture.getWidth() / 4);
-        int frameHeight = (int) (Fire_texture.getHeight() / 5);
-        TextureRegion[][] tmp = TextureRegion.split(Fire_texture,frameWidth,frameHeight);
-        TextureRegion[] walkFrames = new TextureRegion[tmp.length * tmp[0].length];
-        int index = 0;
-        for (TextureRegion[] row : tmp) {
-            for (TextureRegion region : row) {
-                walkFrames[index++] = region;
-            }
-        }
-        Fire_Animation = new Animation<>(0.1f, walkFrames);
-        Fire_Animation.setPlayMode(Animation.PlayMode.LOOP);
+
+        Fire_Animation = Texture_Sheet_Tool.cutting(Fire_texture,5,4);
+        playerAnimation = Texture_Sheet_Tool.cutting(playerTexture,1,7);
         batch = new SpriteBatch();
         stateTime = 0f;
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap,PIXELS_PER_METER/512);
@@ -95,7 +90,10 @@ public class Main extends ApplicationAdapter {
 
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
         stateTime += Gdx.graphics.getDeltaTime();
-        TextureRegion frame = Fire_Animation.getKeyFrame(stateTime);
+        Animation_Tool Fire = new Animation_Tool(Fire_texture,4,5,0f);
+        Fire.update(deltaTime);
+        TextureRegion frame=Fire.Current_Frame();
+        TextureRegion Player_frame=playerAnimation.getKeyFrame(stateTime,true);
         accumulator += deltaTime;
         while (accumulator >= TIME_STEP) {
             world.step(TIME_STEP, 6, 2);
@@ -127,7 +125,7 @@ public class Main extends ApplicationAdapter {
         // 绘制玩家精灵
         playerSprite.draw(batch);
 
-        if (frame == null) {
+        if (frame != null) {
             batch.draw(frame,
                 playerPos.x - playerSprite.getWidth() - 3,
                 playerPos.y - playerSprite.getWidth() / 2,

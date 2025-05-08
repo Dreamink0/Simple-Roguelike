@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class Fire {
+    //后面等着重构了
     private TextureAtlas particleAtlas;
     private ParticleEffect effect;
 
