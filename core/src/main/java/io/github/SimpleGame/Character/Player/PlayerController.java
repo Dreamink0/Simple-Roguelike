@@ -14,7 +14,7 @@ public class PlayerController {
 
     private static final float MOVE_FORCE = 20f;
     private static final float MAX_SPEED = 8f;
-    private static final float DAMPING = 0.3f; // 阻尼
+    private static final float DAMPING = 0.08f; // 阻尼
     private static final float BOX_SIZE = 0.5f; // 碰撞大小
 
     public PlayerController(Body body) {

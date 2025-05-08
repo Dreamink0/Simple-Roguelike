@@ -15,10 +15,10 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
 
+import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Character.Player.PlayerController;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -27,7 +27,6 @@ public class Main extends ApplicationAdapter {
     private static final float WORLD_HEIGHT = 15f;
     private static final float PIXELS_PER_METER = 64f;
     private static final float TIME_STEP = 1/60f;
-    private static final float GRID_SIZE = 1f;
     private static final float PLAYER_SCALE = 8f;
 
     private AssetManager assetManager;
@@ -46,6 +45,7 @@ public class Main extends ApplicationAdapter {
     float stateTime;
 
     private Sprite playerSprite;
+    private Player player;
 
     @Override
     public void create() {
@@ -83,18 +83,11 @@ public class Main extends ApplicationAdapter {
         batch = new SpriteBatch();
         stateTime = 0f;
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap,PIXELS_PER_METER/512);
-        createPlayer();
+        player = new Player(world, WORLD_WIDTH, WORLD_HEIGHT);
+        playerController = player.getPlayerController();
+        playerBody = player.getBody();
     }
 
-    private void createPlayer() {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(WORLD_WIDTH/2, WORLD_HEIGHT/2);
-        bodyDef.fixedRotation = true;
-        playerBody = world.createBody(bodyDef);
-
-        playerController = new PlayerController(playerBody);
-    }
 
     @Override
     public void render() {
@@ -111,15 +104,17 @@ public class Main extends ApplicationAdapter {
 
         playerController.update();
 
+        // 更新相机位置
+        Vector2 playerPos = playerController.getPosition();
+        camera.position.set(playerPos.x, playerPos.y, 0);
+        camera.update();
+        mapRenderer.setView(camera);
+
         batch.setProjectionMatrix(camera.combined);
         mapRenderer.render();
 
         batch.begin();
 
-        Vector2 playerPos = playerController.getPosition();
-        camera.position.set(playerPos.x, playerPos.y, 0);
-        mapRenderer.setView(camera);
-        camera.update();
         boolean isFlipped = playerController.isFlipped();
 
         // 更新精灵位置和翻转状态
