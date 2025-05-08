@@ -25,7 +25,7 @@ import io.github.SimpleGame.Character.Player.PlayerController;
 public class Main extends ApplicationAdapter {
     private static final float WORLD_WIDTH = 20f;
     private static final float WORLD_HEIGHT = 15f;
-    private static final float PIXELS_PER_METER = 32f;
+    private static final float PIXELS_PER_METER = 64f;
     private static final float TIME_STEP = 1/60f;
     private static final float GRID_SIZE = 1f;
     private static final float PLAYER_SCALE = 8f;
@@ -82,7 +82,7 @@ public class Main extends ApplicationAdapter {
         Fire_Animation.setPlayMode(Animation.PlayMode.LOOP);
         batch = new SpriteBatch();
         stateTime = 0f;
-        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap,PIXELS_PER_METER/512);
         createPlayer();
     }
 
@@ -117,6 +117,9 @@ public class Main extends ApplicationAdapter {
         batch.begin();
 
         Vector2 playerPos = playerController.getPosition();
+        camera.position.set(playerPos.x, playerPos.y, 0);
+        mapRenderer.setView(camera);
+        camera.update();
         boolean isFlipped = playerController.isFlipped();
 
         // 更新精灵位置和翻转状态
@@ -129,7 +132,7 @@ public class Main extends ApplicationAdapter {
         // 绘制玩家精灵
         playerSprite.draw(batch);
 
-        if (frame != null) {
+        if (frame == null) {
             batch.draw(frame,
                 playerPos.x - playerSprite.getWidth() - 3,
                 playerPos.y - playerSprite.getWidth() / 2,
@@ -142,8 +145,8 @@ public class Main extends ApplicationAdapter {
     @Override
     public void resize(int width, int height) {
         float aspectRatio = (float) width / height;
-        camera.viewportWidth = WORLD_WIDTH;
-        camera.viewportHeight = WORLD_WIDTH / aspectRatio;
+        camera.viewportWidth = 2*WORLD_WIDTH;
+        camera.viewportHeight = 2*WORLD_WIDTH / aspectRatio;
         camera.update();
     }
 
