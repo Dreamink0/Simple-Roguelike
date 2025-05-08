@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 public class PlayerController {
     private final Body body;
+    public boolean isFlipped = false;//ly我加的
 
     private static final float MOVE_FORCE = 20f;
     private static final float MAX_SPEED = 8f;
@@ -73,5 +74,17 @@ public class PlayerController {
 
     public Vector2 getPosition() {
         return body.getPosition();
+    }
+
+    public boolean isFlipped() {
+        boolean leftPressed = Gdx.input.isKeyPressed(Input.Keys.A);
+        boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.D);
+        if (leftPressed) {
+            isFlipped=false;
+        }
+        if (rightPressed) {
+            isFlipped=true;
+        }
+        return isFlipped;
     }
 }

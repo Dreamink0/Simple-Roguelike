@@ -21,6 +21,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Magic.Fire;
 import io.github.SimpleGame.Player.PlayerController;
 
+import java.util.Random;
+
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
     private static final float WORLD_WIDTH = 20f;
@@ -55,14 +57,14 @@ public class Main extends ApplicationAdapter {
         camera.update();
 
         assetManager = new AssetManager();
-        assetManager.load("Sprites/knight_f_idle_anim_f0.png", Texture.class);
+        assetManager.load("Sprites/NAILONG.png", Texture.class);
         assetManager.load("Magic/FR.png", Texture.class);
         tiledMap = new TmxMapLoader().load("Maps/TestMap.tmx");
         assetManager.finishLoading();
-        playerTexture = assetManager.get("Sprites/knight_f_idle_anim_f0.png", Texture.class);
+        playerTexture = assetManager.get("Sprites/NAILONG.png", Texture.class);
         Fire_texture = assetManager.get("Magic/FR.png", Texture.class);
         int frameWidth = (int) (Fire_texture.getWidth() / 4);
-        int frameHeight = (int) (Fire_texture.getHeight() / 4);
+        int frameHeight = (int) (Fire_texture.getHeight() / 5);
         TextureRegion[][] tmp = TextureRegion.split(Fire_texture,frameWidth,frameHeight);
         TextureRegion[] walkFrames = new TextureRegion[tmp.length * tmp[0].length];
         int index = 0;
@@ -72,7 +74,7 @@ public class Main extends ApplicationAdapter {
             }
         }
         Fire_Animation = new Animation<>(0.1f, walkFrames);
-        Fire_Animation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        Fire_Animation.setPlayMode(Animation.PlayMode.LOOP);
         batch = new SpriteBatch();
         stateTime = 0f;
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
@@ -113,17 +115,35 @@ public class Main extends ApplicationAdapter {
         float textureHeight = (playerTexture.getHeight() / PIXELS_PER_METER) * PLAYER_SCALE;
 
         Vector2 playerPos = playerController.getPosition();
-        batch.draw(playerTexture,
-            playerPos.x - textureWidth/2,
-            playerPos.y - textureHeight/2,
-            textureWidth,
-            textureHeight);
-        if (frame != null) { // 防止 NullPointerException
-            batch.draw(frame,
+        boolean isFlipped = playerController.isFlipped();
+
+        // 绘制玩家图片（根据翻转状态调整）
+        if (isFlipped) {
+            batch.draw(playerTexture,
+                playerPos.x - textureWidth / 2,
+                playerPos.y - textureHeight / 2,
+                textureWidth,
+                textureHeight,
+                0,
+                0,
+                playerTexture.getWidth(),
+                playerTexture.getHeight(),
+                true,
+                false
+            );
+        }else{
+            batch.draw(playerTexture,
                 playerPos.x - textureWidth/2,
                 playerPos.y - textureHeight/2,
                 textureWidth,
                 textureHeight);
+        }
+        if (frame != null) { // 防止 NullPointerException
+            batch.draw(frame,
+                playerPos.x - textureWidth-3,
+                playerPos.y - textureWidth/2,
+                textureWidth+20,
+                textureHeight+20);
         }
         batch.end();
     }
