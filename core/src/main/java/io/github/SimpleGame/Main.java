@@ -77,7 +77,7 @@ public class Main extends ApplicationAdapter {
         currentAnimation = playerIdleAnimation;
 
         playerSprite = new Sprite(playerTextureAtlas.findRegion("idle"));
-
+        
         playerSprite.setSize(
             (playerSprite.getWidth() / PIXELS_PER_METER) * PLAYER_SCALE,
             (playerSprite.getHeight() / PIXELS_PER_METER) * PLAYER_SCALE
