@@ -39,9 +39,11 @@ public class Main extends ApplicationAdapter {
     private OrthographicCamera camera;
     private float accumulator = 0f;
     private Animation<TextureRegion> playerIdleAnimation;
+    private Animation<TextureRegion> playerRunAnimation;
     private OrthogonalTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
     float stateTime;
+    private Animation<TextureRegion> currentAnimation;
 
     private Sprite playerSprite;
     private Player player;
@@ -70,7 +72,10 @@ public class Main extends ApplicationAdapter {
         }
 
         // 创建idle动画
-        playerIdleAnimation = new Animation<>(0.1f, playerTextureAtlas.findRegions("idle"), Animation.PlayMode.LOOP);
+        playerIdleAnimation = new Animation<>(0.15f, playerTextureAtlas.findRegions("idle"), Animation.PlayMode.LOOP);
+        playerRunAnimation = new Animation<>(0.08f, playerTextureAtlas.findRegions("run"), Animation.PlayMode.LOOP);
+        currentAnimation = playerIdleAnimation;
+
         playerSprite = new Sprite(playerTextureAtlas.findRegion("idle"));
 
         playerSprite.setSize(
@@ -91,12 +96,19 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
-        stateTime += Gdx.graphics.getDeltaTime();
+        stateTime += deltaTime;
 
-        if (playerIdleAnimation != null) {
-            TextureRegion currentFrame = playerIdleAnimation.getKeyFrame(stateTime, true);
-            playerSprite.setRegion(currentFrame);
+        // 根据玩家移动状态选择动画
+        boolean isMoving = playerController.isMoving();
+        Animation<TextureRegion> newAnimation = isMoving ? playerRunAnimation : playerIdleAnimation;
+
+        if (newAnimation != currentAnimation) {
+            stateTime = 0;
+            currentAnimation = newAnimation;
         }
+
+        TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
+        playerSprite.setRegion(currentFrame);
 
         accumulator += deltaTime;
         while (accumulator >= TIME_STEP) {
@@ -125,7 +137,6 @@ public class Main extends ApplicationAdapter {
         );
         playerSprite.setFlip(isFlipped, false);
 
-        // 绘制玩家精灵
         playerSprite.draw(batch);
         batch.end();
     }
