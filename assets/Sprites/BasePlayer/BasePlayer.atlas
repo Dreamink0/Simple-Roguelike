@@ -1,7 +1,7 @@
 BasePlayer.png
 size: 159, 32
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest,Nearest
 repeat: none
 death
   rotate: true
