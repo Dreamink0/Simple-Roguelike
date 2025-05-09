@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -17,11 +18,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Character.Player.PlayerController;
-import io.github.SimpleGame.TextureTool.Animation_Tool;
-import io.github.SimpleGame.TextureTool.Texture_Sheet_Tool;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
@@ -36,14 +36,12 @@ public class Main extends ApplicationAdapter {
     private Body playerBody;
     private PlayerController playerController;
     private SpriteBatch batch;
-    private Texture playerTexture;
+    private TextureAtlas playerTextureAtlas;
     private OrthographicCamera camera;
     private float accumulator = 0f;
-    private Animation<TextureRegion> playerAnimation;
+    private Animation<TextureRegion> playerIdleAnimation;
     private OrthogonalTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
-    private Animation<TextureRegion> Fire_Animation;
-    private Texture Fire_texture;
     float stateTime;
 
     private Sprite playerSprite;
@@ -51,6 +49,8 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
+        Gdx.app.debug("SimpleGame", "DebugMesssage");
+        Gdx.app.error("SimpleGame", "errorMesssage");
         Box2D.init();
         world = new World(new Vector2(0, 0), true);
         camera = new OrthographicCamera();
@@ -59,22 +59,44 @@ public class Main extends ApplicationAdapter {
         camera.update();
 
         assetManager = new AssetManager();
-        assetManager.load("Sprites/NAILONG.png", Texture.class);
-        assetManager.load("Magic/FR.png", Texture.class);
+        assetManager.load("Sprites/BasePlayer/BasePlayer.atlas", TextureAtlas.class);
         tiledMap = new TmxMapLoader().load("Maps/TestMap.tmx");
         assetManager.finishLoading();
 
-        playerTexture = assetManager.get("Sprites/NAILONG.png", Texture.class);
-        Fire_texture = assetManager.get("Magic/FR.png", Texture.class);
-        playerSprite = new Sprite(playerTexture);
+        playerTextureAtlas = assetManager.get("Sprites/BasePlayer/BasePlayer.atlas", TextureAtlas.class);
+
+        // 设置所有纹理过滤模式为Nearest
+        for (Texture texture : playerTextureAtlas.getTextures()) {
+            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        }
+
+        // 创建idle动画
+        Array<TextureRegion> idleFrames = new Array<>();
+        for (int i = 0; i < 4; i++) {
+            TextureRegion frame = playerTextureAtlas.findRegion("idle-" + i);
+            if (frame != null) {
+                idleFrames.add(frame);
+            }
+        }
+
+        if (idleFrames.size > 0) {
+            playerIdleAnimation = new Animation<>(0.1f, idleFrames, Animation.PlayMode.LOOP);
+            playerSprite = new Sprite(idleFrames.first());
+        } else {
+            // 默认帧为idle第一帧
+            TextureRegion defaultFrame = playerTextureAtlas.findRegion("idle-0");
+            if (defaultFrame != null) {
+                playerSprite = new Sprite(defaultFrame);
+            } else {
+                throw new RuntimeException("Failed to load any player texture");
+            }
+        }
 
         playerSprite.setSize(
-            (playerTexture.getWidth() / PIXELS_PER_METER) * PLAYER_SCALE,
-            (playerTexture.getHeight() / PIXELS_PER_METER) * PLAYER_SCALE
+            (playerSprite.getWidth() / PIXELS_PER_METER) * PLAYER_SCALE,
+            (playerSprite.getHeight() / PIXELS_PER_METER) * PLAYER_SCALE
         );
 
-        Fire_Animation = Texture_Sheet_Tool.cutting(Fire_texture,5,4);
-        playerAnimation = Texture_Sheet_Tool.cutting(playerTexture,1,7);
         batch = new SpriteBatch();
         stateTime = 0f;
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap,PIXELS_PER_METER/512);
@@ -83,17 +105,18 @@ public class Main extends ApplicationAdapter {
         playerBody = player.getBody();
     }
 
-
     @Override
     public void render() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
         stateTime += Gdx.graphics.getDeltaTime();
-        Animation_Tool Fire = new Animation_Tool(Fire_texture,4,5,0f);
-        Fire.update(deltaTime);
-        TextureRegion frame=Fire.Current_Frame();
-        TextureRegion Player_frame=playerAnimation.getKeyFrame(stateTime,true);
+
+        if (playerIdleAnimation != null) {
+            TextureRegion currentFrame = playerIdleAnimation.getKeyFrame(stateTime, true);
+            playerSprite.setRegion(currentFrame);
+        }
+
         accumulator += deltaTime;
         while (accumulator >= TIME_STEP) {
             world.step(TIME_STEP, 6, 2);
@@ -115,7 +138,6 @@ public class Main extends ApplicationAdapter {
 
         boolean isFlipped = playerController.isFlipped();
 
-        // 更新精灵位置和翻转状态
         playerSprite.setPosition(
             playerPos.x - playerSprite.getWidth() / 2,
             playerPos.y - playerSprite.getHeight() / 2
@@ -124,14 +146,6 @@ public class Main extends ApplicationAdapter {
 
         // 绘制玩家精灵
         playerSprite.draw(batch);
-
-        if (frame != null) {
-            batch.draw(frame,
-                playerPos.x - playerSprite.getWidth() - 3,
-                playerPos.y - playerSprite.getWidth() / 2,
-                playerSprite.getWidth() + 20,
-                playerSprite.getHeight() + 20);
-        }
         batch.end();
     }
 
@@ -147,7 +161,6 @@ public class Main extends ApplicationAdapter {
     public void dispose() {
         world.dispose();
         batch.dispose();
-        Fire_texture.dispose();
         assetManager.dispose();
     }
 }
