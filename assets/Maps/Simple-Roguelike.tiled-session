@@ -1,0 +1,49 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "TestMap.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "Base.tsx": {
+            "scaleInDock": 2,
+            "scaleInEditor": 4
+        },
+        "Decor.tsx": {
+            "scaleInDock": 4,
+            "scaleInEditor": 5.5
+        },
+        "TestMap.tmx": {
+            "scale": 4,
+            "selectedLayer": -1,
+            "viewCenter": {
+                "x": 414.25,
+                "y": 427.875
+            }
+        }
+    },
+    "last.imagePath": "F:/Projects/Java/SimpleGame/assets/Maps",
+    "map.height": 30,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 24,
+    "map.tileWidth": 24,
+    "openFiles": [
+        "Base.tsx",
+        "TestMap.tmx",
+        "Decor.tsx"
+    ],
+    "project": "Simple-Roguelike.tiled-project",
+    "recentFiles": [
+        "Base.tsx",
+        "Decor.tsx",
+        "TestMap.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 24,
+        "width": 24
+    }
+}
