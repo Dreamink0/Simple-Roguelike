@@ -58,9 +58,9 @@
             <key>filtering</key>
             <struct type="LibGDXFiltering">
                 <key>x</key>
-                <enum type="LibGDXFiltering::Filtering">Linear</enum>
+                <enum type="LibGDXFiltering::Filtering">Nearest</enum>
                 <key>y</key>
-                <enum type="LibGDXFiltering::Filtering">Linear</enum>
+                <enum type="LibGDXFiltering::Filtering">Nearest</enum>
             </struct>
         </struct>
         <key>shapePadding</key>
@@ -94,7 +94,7 @@
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
-            <enum type="AlgorithmSettings::AlgorithmId">MaxRects</enum>
+            <enum type="AlgorithmSettings::AlgorithmId">Basic</enum>
             <key>freeSizeMode</key>
             <enum type="AlgorithmSettings::AlgorithmFreeSizeMode">Best</enum>
             <key>sizeConstraints</key>
@@ -124,7 +124,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../BasePlayer.txt</filename>
+                <filename>../BasePlayer.atlas</filename>
             </struct>
         </map>
         <key>multiPackMode</key>
@@ -155,13 +155,13 @@
             <key>scaleMode</key>
             <enum type="ScaleMode">Smooth</enum>
             <key>extrude</key>
-            <uint>1</uint>
+            <uint>0</uint>
             <key>trimThreshold</key>
             <uint>1</uint>
             <key>trimMargin</key>
             <uint>1</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">Trim</enum>
+            <enum type="SpriteSettings::TrimMode">None</enum>
             <key>tracerTolerance</key>
             <int>200</int>
             <key>heuristicMask</key>
@@ -173,7 +173,7 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">death/death-0.png</key>
+            <key type="filename">death/death_0.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -188,22 +188,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">death/death-1.png</key>
-            <struct type="IndividualSpriteSettings">
-                <key>pivotPoint</key>
-                <point_f>0.5,0.5</point_f>
-                <key>spriteScale</key>
-                <double>1</double>
-                <key>scale9Enabled</key>
-                <false/>
-                <key>scale9Borders</key>
-                <rect>3,4,6,7</rect>
-                <key>scale9Paddings</key>
-                <rect>3,4,6,7</rect>
-                <key>scale9FromFile</key>
-                <false/>
-            </struct>
-            <key type="filename">death/death-2.png</key>
+            <key type="filename">death/death_1.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -218,8 +203,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">death/death-3.png</key>
-            <key type="filename">death/death-5.png</key>
+            <key type="filename">death/death_2.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -228,13 +212,28 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>5,2,9,5</rect>
+                <rect>4,3,7,6</rect>
                 <key>scale9Paddings</key>
-                <rect>5,2,9,5</rect>
+                <rect>4,3,7,6</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">death/death-4.png</key>
+            <key type="filename">death/death_3.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>4,2,9,5</rect>
+                <key>scale9Paddings</key>
+                <rect>4,2,9,5</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">death/death_4.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -249,22 +248,37 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">hurt/hurt-0.png</key>
-            <key type="filename">hurt/hurt-1.png</key>
-            <key type="filename">hurt/hurt-2.png</key>
-            <key type="filename">hurt/hurt-3.png</key>
-            <key type="filename">idle/idle-0.png</key>
-            <key type="filename">idle/idle-1.png</key>
-            <key type="filename">idle/idle-2.png</key>
-            <key type="filename">idle/idle-3.png</key>
-            <key type="filename">run/run-0.png</key>
-            <key type="filename">run/run-1.png</key>
-            <key type="filename">run/run-2.png</key>
-            <key type="filename">run/run-3.png</key>
-            <key type="filename">run/run-4.png</key>
-            <key type="filename">run/run-5.png</key>
-            <key type="filename">run/run-6.png</key>
-            <key type="filename">run/run-7.png</key>
+            <key type="filename">death/death_5.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>5,2,9,5</rect>
+                <key>scale9Paddings</key>
+                <rect>5,2,9,5</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">hurt/hurt_0.png</key>
+            <key type="filename">hurt/hurt_1.png</key>
+            <key type="filename">hurt/hurt_2.png</key>
+            <key type="filename">hurt/hurt_3.png</key>
+            <key type="filename">idle/idle_0.png</key>
+            <key type="filename">idle/idle_1.png</key>
+            <key type="filename">idle/idle_2.png</key>
+            <key type="filename">idle/idle_3.png</key>
+            <key type="filename">run/run_0.png</key>
+            <key type="filename">run/run_1.png</key>
+            <key type="filename">run/run_2.png</key>
+            <key type="filename">run/run_3.png</key>
+            <key type="filename">run/run_4.png</key>
+            <key type="filename">run/run_5.png</key>
+            <key type="filename">run/run_6.png</key>
+            <key type="filename">run/run_7.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

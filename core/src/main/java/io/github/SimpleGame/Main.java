@@ -18,7 +18,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Character.Player.PlayerController;
@@ -40,9 +39,11 @@ public class Main extends ApplicationAdapter {
     private OrthographicCamera camera;
     private float accumulator = 0f;
     private Animation<TextureRegion> playerIdleAnimation;
+    private Animation<TextureRegion> playerRunAnimation;
     private OrthogonalTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
     float stateTime;
+    private Animation<TextureRegion> currentAnimation;
 
     private Sprite playerSprite;
     private Player player;
@@ -71,27 +72,12 @@ public class Main extends ApplicationAdapter {
         }
 
         // 创建idle动画
-        Array<TextureRegion> idleFrames = new Array<>();
-        for (int i = 0; i < 4; i++) {
-            TextureRegion frame = playerTextureAtlas.findRegion("idle-" + i);
-            if (frame != null) {
-                idleFrames.add(frame);
-            }
-        }
+        playerIdleAnimation = new Animation<>(0.15f, playerTextureAtlas.findRegions("idle"), Animation.PlayMode.LOOP);
+        playerRunAnimation = new Animation<>(0.08f, playerTextureAtlas.findRegions("run"), Animation.PlayMode.LOOP);
+        currentAnimation = playerIdleAnimation;
 
-        if (idleFrames.size > 0) {
-            playerIdleAnimation = new Animation<>(0.1f, idleFrames, Animation.PlayMode.LOOP);
-            playerSprite = new Sprite(idleFrames.first());
-        } else {
-            // 默认帧为idle第一帧
-            TextureRegion defaultFrame = playerTextureAtlas.findRegion("idle-0");
-            if (defaultFrame != null) {
-                playerSprite = new Sprite(defaultFrame);
-            } else {
-                throw new RuntimeException("Failed to load any player texture");
-            }
-        }
-
+        playerSprite = new Sprite(playerTextureAtlas.findRegion("idle"));
+        
         playerSprite.setSize(
             (playerSprite.getWidth() / PIXELS_PER_METER) * PLAYER_SCALE,
             (playerSprite.getHeight() / PIXELS_PER_METER) * PLAYER_SCALE
@@ -110,12 +96,19 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
-        stateTime += Gdx.graphics.getDeltaTime();
+        stateTime += deltaTime;
 
-        if (playerIdleAnimation != null) {
-            TextureRegion currentFrame = playerIdleAnimation.getKeyFrame(stateTime, true);
-            playerSprite.setRegion(currentFrame);
+        // 根据玩家移动状态选择动画
+        boolean isMoving = playerController.isMoving();
+        Animation<TextureRegion> newAnimation = isMoving ? playerRunAnimation : playerIdleAnimation;
+
+        if (newAnimation != currentAnimation) {
+            stateTime = 0;
+            currentAnimation = newAnimation;
         }
+
+        TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
+        playerSprite.setRegion(currentFrame);
 
         accumulator += deltaTime;
         while (accumulator >= TIME_STEP) {
@@ -144,7 +137,6 @@ public class Main extends ApplicationAdapter {
         );
         playerSprite.setFlip(isFlipped, false);
 
-        // 绘制玩家精灵
         playerSprite.draw(batch);
         batch.end();
     }

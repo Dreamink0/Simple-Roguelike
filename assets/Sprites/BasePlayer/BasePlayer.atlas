@@ -1,159 +1,159 @@
 BasePlayer.png
-size: 171, 32
+size: 64, 74
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest,Nearest
 repeat: none
-death-0
+death
   rotate: false
-  xy: 105, 16
+  xy: 0, 0
   size: 13, 15
   orig: 13, 15
   offset: 0, 0
-  index: -1
-death-1
-  rotate: true
-  xy: 43, 19
-  size: 12, 14
-  orig: 12, 14
-  offset: 0, 0
-  index: -1
-death-2
+  index: 0
+death
   rotate: false
-  xy: 156, 1
-  size: 14, 13
-  orig: 14, 13
+  xy: 13, 0
+  size: 15, 13
+  orig: 15, 13
   offset: 0, 0
-  index: -1
-death-3
+  index: 1
+death
   rotate: false
-  xy: 22, 19
-  size: 19, 9
-  orig: 19, 9
+  xy: 28, 0
+  size: 15, 12
+  orig: 15, 12
   offset: 0, 0
-  index: -1
-death-4
+  index: 2
+death
   rotate: false
-  xy: 1, 19
+  xy: 0, 64
+  size: 17, 9
+  orig: 17, 9
+  offset: 0, 0
+  index: 3
+death
+  rotate: false
+  xy: 17, 64
   size: 19, 10
   orig: 19, 10
   offset: 0, 0
-  index: -1
-death-5
+  index: 4
+death
   rotate: false
-  xy: 22, 19
+  xy: 36, 64
   size: 19, 9
   orig: 19, 9
   offset: 0, 0
-  index: -1
-hurt-0
-  rotate: true
-  xy: 86, 1
-  size: 14, 16
+  index: 5
+hurt
+  rotate: false
+  xy: 43, 0
+  size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: -1
-hurt-1
-  rotate: true
-  xy: 69, 18
-  size: 13, 16
-  orig: 16, 16
-  offset: 1, 0
-  index: -1
-hurt-2
+  index: 0
+hurt
   rotate: false
-  xy: 120, 16
-  size: 13, 15
-  orig: 16, 16
-  offset: 1, 0
-  index: -1
-hurt-3
-  rotate: true
-  xy: 122, 1
-  size: 13, 15
-  orig: 16, 16
-  offset: 1, 0
-  index: -1
-idle-0
-  rotate: false
-  xy: 1, 1
-  size: 15, 16
+  xy: 0, 16
+  size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: -1
-idle-1
+  index: 1
+hurt
   rotate: false
-  xy: 1, 1
-  size: 15, 16
+  xy: 16, 16
+  size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: -1
-idle-2
+  index: 2
+hurt
   rotate: false
-  xy: 69, 1
-  size: 15, 15
+  xy: 32, 16
+  size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: -1
-idle-3
+  index: 3
+idle
   rotate: false
-  xy: 69, 1
-  size: 15, 15
+  xy: 48, 16
+  size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: -1
-run-0
+  index: 0
+idle
   rotate: false
-  xy: 18, 1
-  size: 15, 16
+  xy: 48, 16
+  size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: -1
-run-1
-  rotate: true
-  xy: 52, 1
-  size: 16, 15
-  orig: 16, 16
-  offset: 0, 1
-  index: -1
-run-2
+  index: 1
+idle
   rotate: false
-  xy: 35, 1
-  size: 15, 16
+  xy: 32, 16
+  size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: -1
-run-3
+  index: 2
+idle
   rotate: false
-  xy: 135, 16
-  size: 13, 15
+  xy: 32, 16
+  size: 16, 16
   orig: 16, 16
-  offset: 1, 0
-  index: -1
-run-4
-  rotate: true
-  xy: 87, 17
-  size: 13, 16
-  orig: 16, 16
-  offset: 1, 0
-  index: -1
-run-5
-  rotate: true
-  xy: 139, 1
-  size: 13, 15
-  orig: 16, 16
-  offset: 1, 1
-  index: -1
-run-6
-  rotate: true
-  xy: 104, 1
-  size: 13, 16
-  orig: 16, 16
-  offset: 1, 0
-  index: -1
-run-7
+  offset: 0, 0
+  index: 3
+run
   rotate: false
-  xy: 150, 16
-  size: 13, 15
+  xy: 0, 32
+  size: 16, 16
   orig: 16, 16
-  offset: 1, 0
-  index: -1
+  offset: 0, 0
+  index: 0
+run
+  rotate: false
+  xy: 16, 32
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+run
+  rotate: false
+  xy: 32, 32
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+run
+  rotate: false
+  xy: 48, 32
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+run
+  rotate: false
+  xy: 0, 48
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 4
+run
+  rotate: false
+  xy: 16, 48
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 5
+run
+  rotate: false
+  xy: 32, 48
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 6
+run
+  rotate: false
+  xy: 48, 48
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 7
