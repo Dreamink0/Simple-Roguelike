@@ -24,8 +24,8 @@
             "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 293.33333333333326,
-                "y": 633.6666666666666
+                "x": 310.6666666666667,
+                "y": 529
             }
         }
     },
@@ -37,15 +37,16 @@
     "openFiles": [
         "Base.tsx",
         "TestMap.tmx",
-        "Decor.tsx"
+        "Decor.tsx",
+        "Air.tsx"
     ],
     "project": "Simple-Roguelike.tiled-project",
     "property.type": "bool",
     "recentFiles": [
         "Base.tsx",
+        "Air.tsx",
         "Decor.tsx",
-        "TestMap.tmx",
-        "Air.tsx"
+        "TestMap.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
