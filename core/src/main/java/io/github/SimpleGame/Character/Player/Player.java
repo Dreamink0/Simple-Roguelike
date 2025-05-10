@@ -27,7 +27,7 @@ public class Player {
         fixtureDef.density = 1.0f;//密度
         fixtureDef.friction = 0.5f;//摩擦力
         fixtureDef.restitution = 0.5f;//弹性
-        
+
         playerBody.createFixture(fixtureDef);
         BoundingBox.dispose();
     }

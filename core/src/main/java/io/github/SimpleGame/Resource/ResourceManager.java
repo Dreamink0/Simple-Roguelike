@@ -63,8 +63,8 @@ public class ResourceManager {
 
             playerSprite = new Sprite(playerTextureAtlas.findRegion("idle"));
             playerSprite.setSize(
-                (playerSprite.getWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
-                (playerSprite.getHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE
+                (2*playerSprite.getWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
+                (2*playerSprite.getHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE
             );
         } catch (Exception e) {
             Gdx.app.error("ResourceManager", "Error loading resources: " + e.getMessage());

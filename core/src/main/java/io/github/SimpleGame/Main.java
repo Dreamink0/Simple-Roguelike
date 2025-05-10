@@ -38,7 +38,7 @@ public class Main extends ApplicationAdapter {
         try {
             Gdx.app.debug("SimpleGame", "DebugMessage");
             Gdx.app.error("SimpleGame", "errorMessage");
-            Box2D.init();
+            //Box2D.init();
             world = new World(new Vector2(0, 0), true);
             camera = new OrthographicCamera();
             camera.setToOrtho(false, Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
@@ -67,6 +67,7 @@ public class Main extends ApplicationAdapter {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
             throw new RuntimeException("Failed to initialize game", e);
         }
+        //Listener.Bound(world);
     }
 
     @Override
@@ -114,9 +115,11 @@ public class Main extends ApplicationAdapter {
             playerPos.y - playerSprite.getHeight() / 2
         );
         playerSprite.setFlip(isFlipped, false);
-
         playerSprite.draw(batch);
+
         batch.end();
+        /*Box2DDebugRenderer box2DDebugRenderer = new Box2DDebugRenderer();
+        box2DDebugRenderer.render(world,camera.combined.scl(1f/Config.PIXELS_PER_METER));*/
     }
 
     @Override
@@ -129,8 +132,10 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-        world.dispose();
-        batch.dispose();
-        resourceManager.dispose();
+        if (world != null) world.dispose();
+        if (batch != null) batch.dispose();
+        if (playerSprite != null) playerSprite.getTexture().dispose();
+        if (mapManager != null) mapManager.dispose();
+        if (resourceManager != null) resourceManager.dispose();
     }
 }

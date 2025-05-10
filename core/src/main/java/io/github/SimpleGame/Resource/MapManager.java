@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -28,45 +29,54 @@ public class MapManager {
         this.world = world;
         this.mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, scale);
         this.wallBodies = new Array<>();
-
         createWalls();
     }
 
     private void createWalls() {
         MapLayer wallsLayer = tiledMap.getLayers().get("Wall");
         if (wallsLayer != null) {
-            for (MapObject object : wallsLayer.getObjects()) {
-                if (object instanceof RectangleMapObject) {
-                    RectangleMapObject rectangleObject = (RectangleMapObject) object;
-                    Boolean isWall = rectangleObject.getProperties().get("Wall", Boolean.class);
-                    if (isWall != null && isWall) {
-                        createWallBody(rectangleObject.getRectangle());
+            // AI说要如果wallsLayer 是 Tile Layer
+            // createWalls()方法就不会处理它，因为getObjects()只返回对象层的对象。
+            if (wallsLayer instanceof TiledMapTileLayer) {
+                TiledMapTileLayer tileLayer = (TiledMapTileLayer) wallsLayer;
+                //加入边界检测,先获得地图尺寸多少像素
+                int TileWidth = tiledMap.getProperties().get("tilewidth", Integer.class);
+                int TileHeight = tiledMap.getProperties().get("tileheight", Integer.class);
+                for (int x = 0; x < tileLayer.getWidth(); x++) {
+                    for (int y = 0; y < tileLayer.getHeight(); y++) {
+                        TiledMapTileLayer.Cell cell = tileLayer.getCell(x, y);
+                        if (cell != null && cell.getTile() != null) {
+                            //计算Tile的在世界的坐标
+                            float worldX = x * TileWidth * scale;
+                            float worldY = y * TileHeight * scale;
+                            //创建碰撞体
+                            createWallBody(
+                                worldX + (TileWidth * scale) / 2f,
+                                worldY + (TileHeight * scale) / 2f,
+                                1.75f*TileWidth * scale,
+                                1.75f*TileHeight * scale
+                            );
+                        }
                     }
                 }
             }
         }
     }
 
-    private void createWallBody(Rectangle rectangle) {
+    private void createWallBody(float x, float y, float width, float height) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(
-                (rectangle.x + rectangle.width / 2) * scale,
-                (rectangle.y + rectangle.height / 2) * scale
-        );
+        bodyDef.position.set(x, y);
 
         Body body = world.createBody(bodyDef);
         body.setUserData("wall");
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(
-                (rectangle.width / 2) * scale,
-                (rectangle.height / 2) * scale
-        );
+        shape.setAsBox(width / 2, height / 2);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.0f;
+        fixtureDef.density = 0f; // 静态刚体密度应为 0
         fixtureDef.friction = 0.4f;
         fixtureDef.restitution = 0.0f;
 
@@ -74,7 +84,6 @@ public class MapManager {
         wallBodies.add(body);
         shape.dispose();
     }
-
     public void setView(OrthographicCamera camera) {
         mapRenderer.setView(camera);
     }
