@@ -50,8 +50,8 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
-        Gdx.app.debug("SimpleGame", "DebugMesssage");
-        Gdx.app.error("SimpleGame", "errorMesssage");
+        Gdx.app.debug("SimpleGame", "DebugMessage");
+        Gdx.app.error("SimpleGame", "errorMessage");
         Box2D.init();
         world = new World(new Vector2(0, 0), true);
         camera = new OrthographicCamera();
@@ -77,7 +77,7 @@ public class Main extends ApplicationAdapter {
         currentAnimation = playerIdleAnimation;
 
         playerSprite = new Sprite(playerTextureAtlas.findRegion("idle"));
-        
+
         playerSprite.setSize(
             (playerSprite.getWidth() / PIXELS_PER_METER) * PLAYER_SCALE,
             (playerSprite.getHeight() / PIXELS_PER_METER) * PLAYER_SCALE
