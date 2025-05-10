@@ -17,11 +17,11 @@
             "scaleInEditor": 5.5
         },
         "TestMap.tmx": {
-            "scale": 4,
-            "selectedLayer": -1,
+            "scale": 1.5,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 414.25,
-                "y": 427.875
+                "x": 343.99999999999994,
+                "y": 402.99999999999994
             }
         }
     },
@@ -36,6 +36,7 @@
         "Decor.tsx"
     ],
     "project": "Simple-Roguelike.tiled-project",
+    "property.type": "bool",
     "recentFiles": [
         "Base.tsx",
         "Decor.tsx",

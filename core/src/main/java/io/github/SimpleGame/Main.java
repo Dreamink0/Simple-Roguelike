@@ -15,12 +15,12 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Box2D;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Character.Player.PlayerController;
+import io.github.SimpleGame.Item.Weapon;
+import io.github.SimpleGame.Tool.Listen;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
@@ -48,12 +48,17 @@ public class Main extends ApplicationAdapter {
     private Sprite playerSprite;
     private Player player;
 
+    private Weapon weapon;
+    private TextureAtlas weaponsAtlas;
     @Override
     public void create() {
         Gdx.app.debug("SimpleGame", "DebugMesssage");
         Gdx.app.error("SimpleGame", "errorMesssage");
         Box2D.init();
         world = new World(new Vector2(0, 0), true);
+
+
+        System.out.println("Main2!");//调试
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.set(WORLD_WIDTH/2, WORLD_HEIGHT/2, 0);
@@ -61,13 +66,19 @@ public class Main extends ApplicationAdapter {
 
         assetManager = new AssetManager();
         assetManager.load("Sprites/BasePlayer/BasePlayer.atlas", TextureAtlas.class);
+        assetManager.load("Weapons/Item_ID-115.atlas", TextureAtlas.class);
         tiledMap = new TmxMapLoader().load("Maps/TestMap.tmx");
         assetManager.finishLoading();
 
         playerTextureAtlas = assetManager.get("Sprites/BasePlayer/BasePlayer.atlas", TextureAtlas.class);
+        weaponsAtlas = assetManager.get("Weapons/Item_ID-115.atlas", TextureAtlas.class);
 
         // 设置所有纹理过滤模式为Nearest
         for (Texture texture : playerTextureAtlas.getTextures()) {
+            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        }
+
+        for (Texture texture : weaponsAtlas.getTextures()) {
             texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         }
 
@@ -77,7 +88,7 @@ public class Main extends ApplicationAdapter {
         currentAnimation = playerIdleAnimation;
 
         playerSprite = new Sprite(playerTextureAtlas.findRegion("idle"));
-        
+
         playerSprite.setSize(
             (playerSprite.getWidth() / PIXELS_PER_METER) * PLAYER_SCALE,
             (playerSprite.getHeight() / PIXELS_PER_METER) * PLAYER_SCALE
@@ -87,8 +98,10 @@ public class Main extends ApplicationAdapter {
         stateTime = 0f;
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap,PIXELS_PER_METER/512);
         player = new Player(world, WORLD_WIDTH, WORLD_HEIGHT);
+        weapon = new Weapon(world,weaponsAtlas,"Item_ID-115",WORLD_WIDTH/2,WORLD_HEIGHT/2,0.05f);
         playerController = player.getPlayerController();
         playerBody = player.getBody();
+        Listen.Bound(world);
     }
 
     @Override
@@ -136,8 +149,11 @@ public class Main extends ApplicationAdapter {
             playerPos.y - playerSprite.getHeight() / 2
         );
         playerSprite.setFlip(isFlipped, false);
-
         playerSprite.draw(batch);
+        weapon.render(batch);
+
+        //Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
+        //debugRenderer.render(world, camera.combined.scl(1f / PIXELS_PER_METER));
         batch.end();
     }
 
