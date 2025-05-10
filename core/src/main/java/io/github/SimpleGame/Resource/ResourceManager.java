@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.SimpleGame.Config;
 
@@ -17,6 +18,7 @@ public class ResourceManager {
     private AssetManager assetManager;
     private TextureAtlas playerTextureAtlas;
     private TiledMap tiledMap;
+    private MapManager mapManager;
     private Animation<TextureRegion> playerIdleAnimation;
     private Animation<TextureRegion> playerRunAnimation;
     private Sprite playerSprite;
@@ -39,14 +41,14 @@ public class ResourceManager {
             // 使用 AssetManager 加载所有资源
             assetManager.load(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
             assetManager.load(Config.MAP_PATH, TiledMap.class);
-            
+
             // 等待所有资源加载完成
             assetManager.finishLoading();
-            
+
             // 获取加载的资源
             playerTextureAtlas = assetManager.get(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
             tiledMap = assetManager.get(Config.MAP_PATH, TiledMap.class);
-            
+
             if (playerTextureAtlas == null || tiledMap == null) {
                 throw new RuntimeException("Failed to load required resources");
             }
@@ -90,6 +92,13 @@ public class ResourceManager {
         return playerSprite;
     }
 
+    public MapManager getMapManager(World world) {
+        if (mapManager == null) {
+            mapManager = new MapManager(tiledMap, Config.PIXELS_PER_METER/512, world);
+        }
+        return mapManager;
+    }
+
     public void dispose() {
         if (assetManager != null) {
             assetManager.dispose();
@@ -99,6 +108,9 @@ public class ResourceManager {
         }
         if (playerTextureAtlas != null) {
             playerTextureAtlas.dispose();
+        }
+        if (mapManager != null) {
+            mapManager.dispose();
         }
     }
 }

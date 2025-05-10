@@ -8,27 +8,25 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Character.Player.PlayerController;
+import io.github.SimpleGame.Resource.MapManager;
 import io.github.SimpleGame.Resource.ResourceManager;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
     private World world;
-    private Body playerBody;
     private PlayerController playerController;
     private SpriteBatch batch;
     private OrthographicCamera camera;
     private float accumulator = 0f;
     private Animation<TextureRegion> playerIdleAnimation;
     private Animation<TextureRegion> playerRunAnimation;
-    private OrthogonalTiledMapRenderer mapRenderer;
+    private MapManager mapManager;
     float stateTime;
     private Animation<TextureRegion> currentAnimation;
     private Sprite playerSprite;
@@ -53,19 +51,18 @@ public class Main extends ApplicationAdapter {
             playerIdleAnimation = resourceManager.getPlayerIdleAnimation();
             playerRunAnimation = resourceManager.getPlayerRunAnimation();
             playerSprite = resourceManager.getPlayerSprite();
-            
+
             if (playerIdleAnimation == null || playerRunAnimation == null || playerSprite == null) {
                 throw new RuntimeException("Failed to initialize player resources");
             }
-            
+
             currentAnimation = playerIdleAnimation;
 
             batch = new SpriteBatch();
             stateTime = 0f;
-            mapRenderer = new OrthogonalTiledMapRenderer(resourceManager.getTiledMap(), Config.PIXELS_PER_METER/512);
+            mapManager = resourceManager.getMapManager(world);
             player = new Player(world, Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
             playerController = player.getPlayerController();
-            playerBody = player.getBody();
         } catch (Exception e) {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
             throw new RuntimeException("Failed to initialize game", e);
@@ -103,10 +100,10 @@ public class Main extends ApplicationAdapter {
         Vector2 playerPos = playerController.getPosition();
         camera.position.set(playerPos.x, playerPos.y, 0);
         camera.update();
-        mapRenderer.setView(camera);
+        mapManager.setView(camera);
 
         batch.setProjectionMatrix(camera.combined);
-        mapRenderer.render();
+        mapManager.render(batch);
 
         batch.begin();
 

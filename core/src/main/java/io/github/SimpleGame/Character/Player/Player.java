@@ -1,7 +1,10 @@
 package io.github.SimpleGame.Character.Player;
 
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 
 public class Player {
 
@@ -17,7 +20,6 @@ public class Player {
         this.playerBody.setUserData("player");//用于碰撞检测
         playerController = new PlayerController(this.playerBody);
 
-        /*新加代码*/
         PolygonShape BoundingBox = new PolygonShape();
         BoundingBox.setAsBox(0.375f, 0.375f);
         FixtureDef fixtureDef = new FixtureDef();//定义碰撞属性
@@ -25,7 +27,13 @@ public class Player {
         fixtureDef.density = 1.0f;//密度
         fixtureDef.friction = 0.5f;//摩擦力
         fixtureDef.restitution = 0.5f;//弹性
+        
+        // 设置碰撞类别
+        fixtureDef.filter.categoryBits = 0x0001;  // 玩家类别
+        fixtureDef.filter.maskBits = 0x0002;      // 只与墙体碰撞
+        
         playerBody.createFixture(fixtureDef);
+        BoundingBox.dispose();
     }
 
     public PlayerController getPlayerController() {
