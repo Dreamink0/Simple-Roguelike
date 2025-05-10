@@ -4,7 +4,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Item.Weapon;
 
-public class Listen {
+public class Listener {
     public static void Bound(World world){
         world.setContactListener(new ContactListener() {
             @Override
@@ -27,6 +27,14 @@ public class Listen {
                         bodyB.getUserData() != null && bodyB.getUserData().equals("player"))) {
 
                     System.out.println("The player collided with the weapon!"); // 调试信息
+                }
+
+                if ((bodyA.getUserData() != null && bodyA.getUserData().equals("player") &&
+                        bodyB.getUserData() != null && bodyB.getUserData().equals("wall")) ||
+                        (bodyA.getUserData() != null && bodyA.getUserData().equals("wall") &&
+                                bodyB.getUserData() != null && bodyB.getUserData().equals("player"))) {
+
+                    System.out.println("The player collided with the wall!"); // 调试信息
                 }
             }
             @Override

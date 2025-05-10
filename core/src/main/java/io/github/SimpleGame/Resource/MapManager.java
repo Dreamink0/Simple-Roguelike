@@ -33,13 +33,11 @@ public class MapManager {
     }
 
     private void createWalls() {
-        // 获取所有图层
-        for (MapLayer layer : tiledMap.getLayers()) {
-            // 遍历图层中的所有对象
-            for (MapObject object : layer.getObjects()) {
+        MapLayer wallsLayer = tiledMap.getLayers().get("Wall");
+        if (wallsLayer != null) {
+            for (MapObject object : wallsLayer.getObjects()) {
                 if (object instanceof RectangleMapObject) {
                     RectangleMapObject rectangleObject = (RectangleMapObject) object;
-                    // 检查是否为墙体
                     Boolean isWall = rectangleObject.getProperties().get("Wall", Boolean.class);
                     if (isWall != null && isWall) {
                         createWallBody(rectangleObject.getRectangle());
@@ -53,8 +51,8 @@ public class MapManager {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.set(
-            (rectangle.x + rectangle.width/2) * scale,
-            (rectangle.y + rectangle.height/2) * scale
+                (rectangle.x + rectangle.width / 2) * scale,
+                (rectangle.y + rectangle.height / 2) * scale
         );
 
         Body body = world.createBody(bodyDef);
@@ -62,17 +60,15 @@ public class MapManager {
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(
-            (rectangle.width/2) * scale,
-            (rectangle.height/2) * scale
+                (rectangle.width / 2) * scale,
+                (rectangle.height / 2) * scale
         );
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.0f;  // 静态物体密度设为0
+        fixtureDef.density = 0.0f;
         fixtureDef.friction = 0.4f;
         fixtureDef.restitution = 0.0f;
-        fixtureDef.filter.categoryBits = 0x0002;  // 墙体类别
-        fixtureDef.filter.maskBits = 0x0001;      // 只与玩家碰撞
 
         body.createFixture(fixtureDef);
         wallBodies.add(body);
@@ -91,10 +87,9 @@ public class MapManager {
         if (mapRenderer != null) {
             mapRenderer.dispose();
         }
-        // 清理墙体物理体
         for (Body body : wallBodies) {
             world.destroyBody(body);
         }
         wallBodies.clear();
     }
-} 
+}

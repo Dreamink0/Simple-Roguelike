@@ -28,10 +28,6 @@ public class Player {
         fixtureDef.friction = 0.5f;//摩擦力
         fixtureDef.restitution = 0.5f;//弹性
         
-        // 设置碰撞类别
-        fixtureDef.filter.categoryBits = 0x0001;  // 玩家类别
-        fixtureDef.filter.maskBits = 0x0002;      // 只与墙体碰撞
-        
         playerBody.createFixture(fixtureDef);
         BoundingBox.dispose();
     }

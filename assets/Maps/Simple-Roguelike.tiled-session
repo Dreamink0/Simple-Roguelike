@@ -22,7 +22,7 @@
         },
         "TestMap.tmx": {
             "scale": 1.5,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
                 "x": 293.33333333333326,
                 "y": 633.6666666666666
