@@ -36,9 +36,8 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         try {
-            Gdx.app.debug("SimpleGame", "DebugMessage");
-            Gdx.app.error("SimpleGame", "errorMessage");
-            //Box2D.init();
+            Gdx.app.error("SimpleGame", "create error");
+            Box2D.init();
             world = new World(new Vector2(0, 0), true);
             camera = new OrthographicCamera();
             camera.setToOrtho(false, Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
@@ -118,8 +117,8 @@ public class Main extends ApplicationAdapter {
         playerSprite.draw(batch);
 
         batch.end();
-        /*Box2DDebugRenderer box2DDebugRenderer = new Box2DDebugRenderer();
-        box2DDebugRenderer.render(world,camera.combined.scl(1f/Config.PIXELS_PER_METER));*/
+//        Box2DDebugRenderer box2DDebugRenderer = new Box2DDebugRenderer();
+//        box2DDebugRenderer.render(world,camera.combined.scl(1f/Config.PIXELS_PER_METER));
     }
 
     @Override
