@@ -38,7 +38,7 @@
  </layer>
  <layer id="5" name="Wall" width="30" height="30">
   <properties>
-   <property name="Wall" type="bool" value="true"/>
+   <property name="Wall" value=""/>
   </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
