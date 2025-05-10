@@ -14,7 +14,8 @@ public class Config {
     public static final String MAP_PATH = "Maps/TestMap.tmx";
     public static final String PLAYER_ATLAS_PATH = "Sprites/BasePlayer/BasePlayer.atlas";
 
+
     // 动画配置
     public static final float IDLE_ANIMATION_FRAME_DURATION = 0.1f;
     public static final float FIRE_ANIMATION_FRAME_DURATION = 0.033f;
-} 
+}
