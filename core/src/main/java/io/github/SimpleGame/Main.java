@@ -2,17 +2,12 @@ package io.github.SimpleGame;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -21,74 +16,60 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Character.Player.PlayerController;
+import io.github.SimpleGame.Resource.ResourceManager;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
-    private static final float WORLD_WIDTH = 20f;
-    private static final float WORLD_HEIGHT = 15f;
-    private static final float PIXELS_PER_METER = 64f;
-    private static final float TIME_STEP = 1/60f;
-    private static final float PLAYER_SCALE = 8f;
-
-    private AssetManager assetManager;
     private World world;
     private Body playerBody;
     private PlayerController playerController;
     private SpriteBatch batch;
-    private TextureAtlas playerTextureAtlas;
     private OrthographicCamera camera;
     private float accumulator = 0f;
     private Animation<TextureRegion> playerIdleAnimation;
     private Animation<TextureRegion> playerRunAnimation;
     private OrthogonalTiledMapRenderer mapRenderer;
-    private TiledMap tiledMap;
     float stateTime;
     private Animation<TextureRegion> currentAnimation;
-
     private Sprite playerSprite;
     private Player player;
+    private ResourceManager resourceManager;
 
     @Override
     public void create() {
-        Gdx.app.debug("SimpleGame", "DebugMessage");
-        Gdx.app.error("SimpleGame", "errorMessage");
-        Box2D.init();
-        world = new World(new Vector2(0, 0), true);
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
-        camera.position.set(WORLD_WIDTH/2, WORLD_HEIGHT/2, 0);
-        camera.update();
+        try {
+            Gdx.app.debug("SimpleGame", "DebugMessage");
+            Gdx.app.error("SimpleGame", "errorMessage");
+            Box2D.init();
+            world = new World(new Vector2(0, 0), true);
+            camera = new OrthographicCamera();
+            camera.setToOrtho(false, Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
+            camera.position.set(Config.WORLD_WIDTH/2, Config.WORLD_HEIGHT/2, 0);
+            camera.update();
 
-        assetManager = new AssetManager();
-        assetManager.load("Sprites/BasePlayer/BasePlayer.atlas", TextureAtlas.class);
-        tiledMap = new TmxMapLoader().load("Maps/TestMap.tmx");
-        assetManager.finishLoading();
+            resourceManager = ResourceManager.getInstance();
+            resourceManager.loadResources();
 
-        playerTextureAtlas = assetManager.get("Sprites/BasePlayer/BasePlayer.atlas", TextureAtlas.class);
+            playerIdleAnimation = resourceManager.getPlayerIdleAnimation();
+            playerRunAnimation = resourceManager.getPlayerRunAnimation();
+            playerSprite = resourceManager.getPlayerSprite();
+            
+            if (playerIdleAnimation == null || playerRunAnimation == null || playerSprite == null) {
+                throw new RuntimeException("Failed to initialize player resources");
+            }
+            
+            currentAnimation = playerIdleAnimation;
 
-        // 设置所有纹理过滤模式为Nearest
-        for (Texture texture : playerTextureAtlas.getTextures()) {
-            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+            batch = new SpriteBatch();
+            stateTime = 0f;
+            mapRenderer = new OrthogonalTiledMapRenderer(resourceManager.getTiledMap(), Config.PIXELS_PER_METER/512);
+            player = new Player(world, Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
+            playerController = player.getPlayerController();
+            playerBody = player.getBody();
+        } catch (Exception e) {
+            Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
+            throw new RuntimeException("Failed to initialize game", e);
         }
-
-        // 创建idle动画
-        playerIdleAnimation = new Animation<>(0.15f, playerTextureAtlas.findRegions("idle"), Animation.PlayMode.LOOP);
-        playerRunAnimation = new Animation<>(0.08f, playerTextureAtlas.findRegions("run"), Animation.PlayMode.LOOP);
-        currentAnimation = playerIdleAnimation;
-
-        playerSprite = new Sprite(playerTextureAtlas.findRegion("idle"));
-
-        playerSprite.setSize(
-            (playerSprite.getWidth() / PIXELS_PER_METER) * PLAYER_SCALE,
-            (playerSprite.getHeight() / PIXELS_PER_METER) * PLAYER_SCALE
-        );
-
-        batch = new SpriteBatch();
-        stateTime = 0f;
-        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap,PIXELS_PER_METER/512);
-        player = new Player(world, WORLD_WIDTH, WORLD_HEIGHT);
-        playerController = player.getPlayerController();
-        playerBody = player.getBody();
     }
 
     @Override
@@ -111,9 +92,9 @@ public class Main extends ApplicationAdapter {
         playerSprite.setRegion(currentFrame);
 
         accumulator += deltaTime;
-        while (accumulator >= TIME_STEP) {
-            world.step(TIME_STEP, 6, 2);
-            accumulator -= TIME_STEP;
+        while (accumulator >= Config.TIME_STEP) {
+            world.step(Config.TIME_STEP, 6, 2);
+            accumulator -= Config.TIME_STEP;
         }
 
         playerController.update();
@@ -144,8 +125,8 @@ public class Main extends ApplicationAdapter {
     @Override
     public void resize(int width, int height) {
         float aspectRatio = (float) width / height;
-        camera.viewportWidth = 2*WORLD_WIDTH;
-        camera.viewportHeight = 2*WORLD_WIDTH / aspectRatio;
+        camera.viewportWidth = 2*Config.WORLD_WIDTH;
+        camera.viewportHeight = 2*Config.WORLD_WIDTH / aspectRatio;
         camera.update();
     }
 
@@ -153,6 +134,6 @@ public class Main extends ApplicationAdapter {
     public void dispose() {
         world.dispose();
         batch.dispose();
-        assetManager.dispose();
+        resourceManager.dispose();
     }
 }
