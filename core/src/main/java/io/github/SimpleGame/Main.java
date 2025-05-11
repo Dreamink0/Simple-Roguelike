@@ -150,7 +150,7 @@ public class Main extends ApplicationAdapter {
         playerSprite.draw(batch);
         batch.end();
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
-            debugRenderer.render(world, camera.combined.scl(10f/Config.PIXELS_PER_METER));
+            debugRenderer.render(world, camera.combined.scl(25f/Config.PIXELS_PER_METER));
         }
     }
 
