@@ -16,6 +16,9 @@ public class PlayerController {
     private static final float MAX_SPEED = 18f;
     private static final float DAMPING = 0.08f; // 阻尼
     private static final float BOX_SIZE = 0.5f; // 碰撞大小
+    private static final float ATTACK_DURATION = 0.3f; // 攻击动画持续时间
+    private float attackTimer = 0f;
+    private boolean isAttacking = false;
     public PlayerController(Body body) {
         this.body = body;
         setupBody();
@@ -88,6 +91,25 @@ public class PlayerController {
 
     public boolean isMoving() {
         Vector2 velocity = body.getLinearVelocity();
+        if(Gdx.input.isKeyPressed(Input.Keys.J)){
+            return true;
+        }
         return velocity.len2() > 0.5f;
+    }
+
+    public boolean isAttacking() {
+        if (isAttacking) {
+            attackTimer -= Gdx.graphics.getDeltaTime();
+            if (attackTimer <= 0) {
+                isAttacking = false;
+            }
+        }
+        return isAttacking;
+    }
+    public void startAttack() {
+        if (!isAttacking) {
+            isAttacking = true;
+            attackTimer = ATTACK_DURATION;
+        }
     }
 }

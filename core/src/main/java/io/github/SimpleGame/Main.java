@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -33,6 +35,8 @@ public class Main extends ApplicationAdapter {
     private float accumulator = 0f;
     private Animation<TextureRegion> playerIdleAnimation;
     private Animation<TextureRegion> playerRunAnimation;
+    private Animation<TextureRegion> playerAttackAnimation;
+
     private MapManager mapManager;
     float stateTime;
     private Animation<TextureRegion> currentAnimation;
@@ -40,7 +44,7 @@ public class Main extends ApplicationAdapter {
     private Player player;
     private ResourceManager resourceManager;
     private Box2DDebugRenderer debugRenderer;
-    private Animation_Tool animation_tool=new Animation_Tool();
+    private final Animation_Tool animation_tool=new Animation_Tool();
     @Override
     public void create() {
         try {
@@ -60,6 +64,7 @@ public class Main extends ApplicationAdapter {
             playerIdleAnimation = resourceManager.getPlayerIdleAnimation();
             playerRunAnimation = resourceManager.getPlayerRunAnimation();
             playerSprite = resourceManager.getPlayerSprite();
+            playerAttackAnimation = resourceManager.getPlayerAttackAnimation();
 
             if (playerIdleAnimation == null || playerRunAnimation == null || playerSprite == null) {
                 throw new RuntimeException("Failed to initialize player resources");
@@ -72,6 +77,7 @@ public class Main extends ApplicationAdapter {
             mapManager = resourceManager.getMapManager(world);
             player = new Player(world, Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
             playerController = player.getPlayerController();
+
             animation_tool.Create("TEST",resourceManager.Test_,5,4);
         } catch (Exception e) {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
@@ -90,8 +96,18 @@ public class Main extends ApplicationAdapter {
         animation_tool.update("TEST",deltaTime);
         TextureRegion frame = animation_tool.getKeyFrame("TEST",true);
         // 根据玩家移动状态选择动画
+        boolean isAttacking = playerController.isAttacking();
         boolean isMoving = playerController.isMoving();
-        Animation<TextureRegion> newAnimation = isMoving ? playerRunAnimation : playerIdleAnimation;
+        Animation<TextureRegion> newAnimation;
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.J)) {
+            playerController.startAttack();
+        }
+        if (isAttacking) {
+            newAnimation = playerAttackAnimation;
+        }else{
+            newAnimation = isMoving ? playerRunAnimation : playerIdleAnimation;
+        }
 
         if (newAnimation != currentAnimation) {
             stateTime = 0;
@@ -100,7 +116,12 @@ public class Main extends ApplicationAdapter {
 
         TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
         playerSprite.setRegion(currentFrame);
-
+        if (isAttacking) {
+            TextureRegion attackFrame = playerAttackAnimation.getKeyFrame(stateTime, true);
+            if (attackFrame != null) {
+                playerSprite.setRegion(attackFrame); // 使用攻击动画帧
+            }
+        }
         accumulator += deltaTime;
         while (accumulator >= Config.TIME_STEP) {
             world.step(Config.TIME_STEP, 6, 2);
@@ -127,7 +148,7 @@ public class Main extends ApplicationAdapter {
         );
         playerSprite.setFlip(isFlipped, false);
         if (frame != null) {
-            if(Gdx.input.isKeyPressed(Input.Keys.F)) {
+            if(Gdx.input.isKeyPressed(Input.Keys.F)){
                 batch.draw(frame,
                     playerPos.x - playerSprite.getWidth()+3,
                     playerPos.y - playerSprite.getWidth()/2,

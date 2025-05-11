@@ -17,54 +17,33 @@ public class ResourceManager {
     private static ResourceManager instance;
     private AssetManager assetManager;
     private TextureAtlas playerTextureAtlas;
+    private TextureAtlas playerAttackTextureAtlas;
     private TiledMap tiledMap;
     private MapManager mapManager;
     private Animation<TextureRegion> playerIdleAnimation;
     private Animation<TextureRegion> playerRunAnimation;
+    private Animation<TextureRegion> playerAttackAnimation;
+
     private Sprite playerSprite;
+    public Texture Test_;
+    public Animation<TextureRegion> getPlayerAttackAnimation() {return playerAttackAnimation;
+    }
     private ResourceManager() {
         assetManager = new AssetManager();
         // 注册TiledMap加载器
         assetManager.setLoader(TiledMap.class, new TmxMapLoader());
     }
-    private Animation<TextureRegion> TEST3;
     public static ResourceManager getInstance() {
         if (instance == null) {
             instance = new ResourceManager();
         }
         return instance;
     }
-    public Texture Test_;
     public void loadResources() {
         try {
-            // 使用 AssetManager 加载所有资源
-            assetManager.load(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
-            assetManager.load(Config.MAP_PATH, TiledMap.class);
-            assetManager.load("Magic/Gravity-Sheet.png",Texture.class);
-            // 等待所有资源加载完成
-            assetManager.finishLoading();
-
-            // 获取加载的资源
-            playerTextureAtlas = assetManager.get(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
-            tiledMap = assetManager.get(Config.MAP_PATH, TiledMap.class);
-            Test_ = assetManager.get("Magic/Gravity-Sheet.png", Texture.class);
-            if (playerTextureAtlas == null || tiledMap == null) {
-                throw new RuntimeException("Failed to load required resources");
-            }
-
-            // 设置所有纹理过滤模式为Nearest
-            for (Texture texture : playerTextureAtlas.getTextures()) {
-                texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-            }
-
-            playerIdleAnimation = new Animation<>(0.15f, playerTextureAtlas.findRegions("idle"), Animation.PlayMode.LOOP);
-            playerRunAnimation = new Animation<>(0.08f, playerTextureAtlas.findRegions("run"), Animation.PlayMode.LOOP);
-
-            playerSprite = new Sprite(playerTextureAtlas.findRegion("idle"));
-            playerSprite.setSize(
-                (2*playerSprite.getWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
-                (2*playerSprite.getHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE
-            );
+            Load();
+            Get();
+            Set();
         } catch (Exception e) {
             Gdx.app.error("ResourceManager", "Error loading resources: " + e.getMessage());
             throw new RuntimeException("Failed to load game resources", e);
@@ -116,5 +95,42 @@ public class ResourceManager {
         if (mapManager != null) {
             mapManager.dispose();
         }
+    }
+
+
+    public void Load(){
+        //使用 AssetManager 加载所有资源
+        assetManager.load(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
+        assetManager.load(Config.MAP_PATH, TiledMap.class);
+        assetManager.load("Magic/Gravity-Sheet.png",Texture.class);
+        assetManager.load("Sprites/BasePlayer/raw/attack/Attack.atlas",TextureAtlas.class);
+        assetManager.finishLoading();
+    }
+    public void Get(){
+        //获取加载的资源
+        playerTextureAtlas = assetManager.get(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
+        tiledMap = assetManager.get(Config.MAP_PATH, TiledMap.class);
+        Test_ = assetManager.get("Magic/Gravity-Sheet.png", Texture.class);
+        playerAttackTextureAtlas = assetManager.get("Sprites/BasePlayer/raw/attack/Attack.atlas", TextureAtlas.class);
+        if (playerTextureAtlas == null || tiledMap == null) {
+            throw new RuntimeException("Failed to load required resources");
+        }
+    }
+    public void Set(){
+        //设置所有纹理过滤模式为Nearest
+        for (Texture texture : playerTextureAtlas.getTextures()) {
+            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        }
+        for(Texture texture : playerAttackTextureAtlas.getTextures()) {
+            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        }
+        playerIdleAnimation = new Animation<>(0.15f, playerTextureAtlas.findRegions("idle"), Animation.PlayMode.LOOP);
+        playerRunAnimation = new Animation<>(0.08f, playerTextureAtlas.findRegions("run"), Animation.PlayMode.LOOP);
+        playerSprite = new Sprite(playerTextureAtlas.findRegion("idle"));
+        playerAttackAnimation = new Animation<>(0.03f,playerAttackTextureAtlas.findRegions("Attack"));
+        playerSprite.setSize(
+                (2*playerSprite.getWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
+                (2*playerSprite.getHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE
+        );
     }
 }
