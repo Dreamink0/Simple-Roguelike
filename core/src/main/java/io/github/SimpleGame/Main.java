@@ -38,7 +38,7 @@ public class Main extends ApplicationAdapter {
         try {
             Gdx.app.debug("SimpleGame", "DebugMessage");
             Gdx.app.error("SimpleGame", "errorMessage");
-            //Box2D.init();
+            Box2D.init();
             world = new World(new Vector2(0, 0), true);
             camera = new OrthographicCamera();
             camera.setToOrtho(false, Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
@@ -132,10 +132,10 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-        if (world != null) world.dispose();
-        if (batch != null) batch.dispose();
-        if (playerSprite != null) playerSprite.getTexture().dispose();
         if (mapManager != null) mapManager.dispose();
+        if(player!=null) player.dispose();
+        if (batch != null) batch.dispose();
+        if (world != null) world.dispose();
         if (resourceManager != null) resourceManager.dispose();
     }
 }
