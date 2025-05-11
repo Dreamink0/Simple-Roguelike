@@ -13,7 +13,7 @@ public class Config {
     public static final String FIRE_TEXTURE_PATH = "Magic/FR.png";
     public static final String MAP_PATH = "Maps/TestMap.tmx";
     public static final String PLAYER_ATLAS_PATH = "Sprites/BasePlayer/BasePlayer.atlas";
-
+    public static final String POWER_ATLAS_PATH = "Magic/ElectricA.atlas";
 
     // 动画配置
     public static final float IDLE_ANIMATION_FRAME_DURATION = 0.1f;

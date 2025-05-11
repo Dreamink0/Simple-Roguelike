@@ -16,7 +16,6 @@ public class PlayerController {
     private static final float MAX_SPEED = 18f;
     private static final float DAMPING = 0.08f; // 阻尼
     private static final float BOX_SIZE = 0.5f; // 碰撞大小
-
     public PlayerController(Body body) {
         this.body = body;
         setupBody();
@@ -46,7 +45,6 @@ public class PlayerController {
         boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.D);
         boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.W);
         boolean downPressed = Gdx.input.isKeyPressed(Input.Keys.S);
-
         Vector2 moveDirection = new Vector2(0, 0);
 
         if (leftPressed) moveDirection.x = -1;

@@ -21,7 +21,7 @@ public class Animation_Tool {
                 frames[index++] = region;
             }
         }
-        Animation<TextureRegion> animation= new Animation<>(0.1f, frames);
+        Animation<TextureRegion> animation= new Animation<>(0.02f, frames);
         animation.setPlayMode(Animation.PlayMode.LOOP);
         animations.put(name,animation);
         stateTimes.put(name,0f);

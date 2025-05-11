@@ -1,0 +1,75 @@
+ElectricA.png
+size: 60, 255
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ElectricA
+  rotate: false
+  xy: 6, 1
+  size: 47, 82
+  orig: 96, 96
+  offset: 32, 10
+  index: -1
+ElectricA
+  rotate: false
+  xy: 1, 1
+  size: 3, 3
+  orig: 96, 96
+  offset: 0, 93
+  index: -1
+ElectricA
+  rotate: false
+  xy: 26, 170
+  size: 33, 84
+  orig: 96, 96
+  offset: 24, 5
+  index: -1
+ElectricA
+  rotate: false
+  xy: 1, 1
+  size: 3, 3
+  orig: 96, 96
+  offset: 0, 93
+  index: -1
+ElectricA
+  rotate: false
+  xy: 1, 85
+  size: 30, 82
+  orig: 96, 96
+  offset: 37, 4
+  index: -1
+ElectricA
+  rotate: false
+  xy: 1, 1
+  size: 3, 3
+  orig: 96, 96
+  offset: 0, 93
+  index: -1
+ElectricA
+  rotate: false
+  xy: 33, 85
+  size: 23, 83
+  orig: 96, 96
+  offset: 38, 4
+  index: -1
+ElectricA
+  rotate: false
+  xy: 1, 1
+  size: 3, 3
+  orig: 96, 96
+  offset: 0, 93
+  index: -1
+ElectricA
+  rotate: false
+  xy: 1, 169
+  size: 23, 84
+  orig: 96, 96
+  offset: 39, 6
+  index: -1
+ElectricA
+  rotate: false
+  xy: 1, 1
+  size: 3, 3
+  orig: 96, 96
+  offset: 0, 93
+  index: -1

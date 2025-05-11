@@ -22,33 +22,32 @@ public class ResourceManager {
     private Animation<TextureRegion> playerIdleAnimation;
     private Animation<TextureRegion> playerRunAnimation;
     private Sprite playerSprite;
-
     private ResourceManager() {
         assetManager = new AssetManager();
         // 注册TiledMap加载器
         assetManager.setLoader(TiledMap.class, new TmxMapLoader());
     }
-
+    private Animation<TextureRegion> TEST3;
     public static ResourceManager getInstance() {
         if (instance == null) {
             instance = new ResourceManager();
         }
         return instance;
     }
-
+    public Texture Test_;
     public void loadResources() {
         try {
             // 使用 AssetManager 加载所有资源
             assetManager.load(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
             assetManager.load(Config.MAP_PATH, TiledMap.class);
-
+            assetManager.load("Magic/Gravity-Sheet.png",Texture.class);
             // 等待所有资源加载完成
             assetManager.finishLoading();
 
             // 获取加载的资源
             playerTextureAtlas = assetManager.get(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
             tiledMap = assetManager.get(Config.MAP_PATH, TiledMap.class);
-
+            Test_ = assetManager.get("Magic/Gravity-Sheet.png", Texture.class);
             if (playerTextureAtlas == null || tiledMap == null) {
                 throw new RuntimeException("Failed to load required resources");
             }
