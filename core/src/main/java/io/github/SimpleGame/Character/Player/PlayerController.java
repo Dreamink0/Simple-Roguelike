@@ -12,8 +12,8 @@ public class PlayerController {
     private final Body body;
     public boolean isFlipped = false;//ly我加的
 
-    private static final float MOVE_FORCE = 20f;
-    private static final float MAX_SPEED = 12f;
+    private static final float MOVE_FORCE = 100f;
+    private static final float MAX_SPEED = 18f;
     private static final float DAMPING = 0.08f; // 阻尼
     private static final float BOX_SIZE = 0.5f; // 碰撞大小
 

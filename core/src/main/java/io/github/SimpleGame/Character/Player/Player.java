@@ -21,7 +21,7 @@ public class Player {
         playerController = new PlayerController(this.playerBody);
 
         PolygonShape BoundingBox = new PolygonShape();
-        BoundingBox.setAsBox(0.375f, 0.375f);
+        BoundingBox.setAsBox(0.8f, 1.8f);
         FixtureDef fixtureDef = new FixtureDef();//定义碰撞属性
         fixtureDef.shape = BoundingBox;
         fixtureDef.density = 1.0f;//密度

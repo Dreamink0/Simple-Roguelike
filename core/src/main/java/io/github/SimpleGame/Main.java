@@ -2,6 +2,7 @@ package io.github.SimpleGame;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.SimpleGame.Character.Player.Player;
@@ -32,6 +34,7 @@ public class Main extends ApplicationAdapter {
     private Sprite playerSprite;
     private Player player;
     private ResourceManager resourceManager;
+    private Box2DDebugRenderer debugRenderer;
 
     @Override
     public void create() {
@@ -40,6 +43,7 @@ public class Main extends ApplicationAdapter {
             Gdx.app.error("SimpleGame", "errorMessage");
             Box2D.init();
             world = new World(new Vector2(0, 0), true);
+            debugRenderer = new Box2DDebugRenderer();
             camera = new OrthographicCamera();
             camera.setToOrtho(false, Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
             camera.position.set(Config.WORLD_WIDTH/2, Config.WORLD_HEIGHT/2, 0);
@@ -118,8 +122,9 @@ public class Main extends ApplicationAdapter {
         playerSprite.draw(batch);
 
         batch.end();
-        /*Box2DDebugRenderer box2DDebugRenderer = new Box2DDebugRenderer();
-        box2DDebugRenderer.render(world,camera.combined.scl(1f/Config.PIXELS_PER_METER));*/
+        if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
+            debugRenderer.render(world, camera.combined.scl(10f/Config.PIXELS_PER_METER));
+        }
     }
 
     @Override
@@ -137,5 +142,6 @@ public class Main extends ApplicationAdapter {
         if (batch != null) batch.dispose();
         if (world != null) world.dispose();
         if (resourceManager != null) resourceManager.dispose();
+        if (debugRenderer != null) debugRenderer.dispose();
     }
 }
