@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class MapManager {
     private final TiledMap tiledMap;
-    private final OrthogonalTiledMapRenderer mapRenderer;
+    private OrthogonalTiledMapRenderer mapRenderer;
     private final World world;
     private final float scale;
     private final Array<Body> wallBodies;
@@ -37,8 +37,7 @@ public class MapManager {
         if (wallsLayer != null) {
             // AI说要如果wallsLayer 是 Tile Layer
             // createWalls()方法就不会处理它，因为getObjects()只返回对象层的对象。
-            if (wallsLayer instanceof TiledMapTileLayer) {
-                TiledMapTileLayer tileLayer = (TiledMapTileLayer) wallsLayer;
+            if (wallsLayer instanceof TiledMapTileLayer tileLayer) {
                 //加入边界检测,先获得地图尺寸多少像素
                 int TileWidth = tiledMap.getProperties().get("tilewidth", Integer.class);
                 int TileHeight = tiledMap.getProperties().get("tileheight", Integer.class);
@@ -53,8 +52,8 @@ public class MapManager {
                             createWallBody(
                                 worldX + (TileWidth * scale) / 2f,
                                 worldY + (TileHeight * scale) / 2f,
-                                1.75f*TileWidth * scale,
-                                1.75f*TileHeight * scale
+                                TileWidth * scale,
+                                TileHeight * scale
                             );
                         }
                     }
@@ -94,8 +93,9 @@ public class MapManager {
 
     public void dispose() {
         if (mapRenderer != null) {
-            mapRenderer.dispose();
+           mapRenderer = null;
         }
+
         for (Body body : wallBodies) {
             world.destroyBody(body);
         }

@@ -39,4 +39,10 @@ public class Player {
     public Body getBody() {
         return playerBody;
     }
+    public void dispose() {
+        if (playerBody != null) {
+            playerBody.getWorld().destroyBody(playerBody);
+            playerBody = null;
+        }
+    }
 }

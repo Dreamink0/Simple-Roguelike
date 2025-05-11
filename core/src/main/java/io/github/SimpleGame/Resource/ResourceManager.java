@@ -100,6 +100,11 @@ public class ResourceManager {
     }
 
     public void dispose() {
+
+        if (mapManager != null) {
+            mapManager.dispose();
+            mapManager = null;
+        }
         if (assetManager != null) {
             assetManager.dispose();
         }
