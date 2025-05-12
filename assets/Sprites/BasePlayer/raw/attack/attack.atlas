@@ -1,54 +1,26 @@
 Attack.png
-size: 96, 18
+size: 64, 74
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest,Nearest
 repeat: none
 Attack
   rotate: false
-  xy: 20, 1
-  size: 15, 16
-  orig: 17, 18
-  offset: 1, 1
-  index: -1
-Attack
-  rotate: false
   xy: 1, 1
-  size: 17, 16
-  orig: 19, 18
-  offset: 1, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
   index: -1
 Attack
   rotate: false
-  xy: 20, 1
-  size: 15, 16
-  orig: 17, 18
-  offset: 1, 1
+  xy: 19, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 1, 0
   index: -1
 Attack
   rotate: false
-  xy: 37, 1
-  size: 13, 16
-  orig: 15, 18
-  offset: 1, 1
-  index: -1
-Attack
-  rotate: false
-  xy: 52, 1
-  size: 13, 16
-  orig: 15, 18
-  offset: 1, 1
-  index: -1
-Attack
-  rotate: false
-  xy: 67, 1
-  size: 13, 16
-  orig: 15, 18
-  offset: 1, 1
-  index: -1
-Attack
-  rotate: false
-  xy: 82, 1
-  size: 13, 16
-  orig: 15, 18
-  offset: 1, 1
+  xy: 35, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 1, 0
   index: -1

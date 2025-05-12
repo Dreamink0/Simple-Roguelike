@@ -100,7 +100,7 @@ public class Main extends ApplicationAdapter {
         boolean isMoving = playerController.isMoving();
         Animation<TextureRegion> newAnimation;
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.J)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.J)) {
             playerController.startAttack();
         }
         if (isAttacking) {

@@ -16,7 +16,7 @@ public class PlayerController {
     private static final float MAX_SPEED = 18f;
     private static final float DAMPING = 0.08f; // 阻尼
     private static final float BOX_SIZE = 0.5f; // 碰撞大小
-    private static final float ATTACK_DURATION = 0.3f; // 攻击动画持续时间
+    private static final float ATTACK_DURATION = 0.4f; // 攻击动画持续时间
     private float attackTimer = 0f;
     private boolean isAttacking = false;
     public PlayerController(Body body) {
