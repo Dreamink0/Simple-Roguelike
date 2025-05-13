@@ -6,13 +6,13 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import io.github.SimpleGame.Attribute.CharacterAttributes;
 import io.github.SimpleGame.Config;
+import io.github.SimpleGame.Item.Weapon;
 import io.github.SimpleGame.Resource.ResourceManager;
 import io.github.SimpleGame.Resource.WorldManager;
 
@@ -27,7 +27,8 @@ public class Player {
     float stateTime=0f;
     private float accumulator = 0f;
     private Animation<TextureRegion> currentAnimation;
-
+    private RevoluteJoint weaponJoint;
+    private Weapon equippedWeapon;
     public Player(World world, float WORLD_WIDTH, float WORLD_HEIGHT) {
         this.characterAttributes=new CharacterAttributes(20,50,10);
         BodyDef bodyDef = new BodyDef();
@@ -60,6 +61,9 @@ public class Player {
             playerBody.getWorld().destroyBody(playerBody);
             playerBody = null;
         }
+        if (weaponJoint != null) {
+            weaponJoint.getBodyA().getWorld().destroyJoint(weaponJoint);
+        }
     }
     public CharacterAttributes getCharacterAttributes() {
         return characterAttributes;
@@ -86,36 +90,33 @@ public class Player {
     public PlayerController ActionCheck(PlayerController playerController, Player player, World world) {
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
         stateTime += deltaTime;
-        // 根据玩家移动状态选择动画
-        //ActionCheek(playerController,play)
         boolean isAttacking = playerController.isAttacking();
         boolean isMoving = playerController.isMoving();
         Animation<TextureRegion> newAnimation;
-        if (Gdx.input.isKeyPressed(Input.Keys.J)) {
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.J)) {
             playerController.startAttack();
+            isAttacking = true;
         }
         if (isAttacking) {
             newAnimation = playerAttackAnimation;
-        }else{
+        } else {
             newAnimation = isMoving ? playerRunAnimation : playerIdleAnimation;
         }
+
         if (newAnimation != currentAnimation) {
             stateTime = 0;
             currentAnimation = newAnimation;
         }
+
         TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
         playerSprite.setRegion(currentFrame);
-        if (isAttacking) {
-            TextureRegion attackFrame = player.getPlayerAttackAnimation().getKeyFrame(stateTime, true);
-            if (attackFrame != null) {
-                playerSprite.setRegion(attackFrame); // 使用攻击动画帧
-            }
-        }
         accumulator += deltaTime;
         while (accumulator >= Config.TIME_STEP) {
             world.step(Config.TIME_STEP, 6, 2);
             accumulator -= Config.TIME_STEP;
         }
+        updateWeaponPosition();
         return playerController;
     }
 
@@ -127,5 +128,54 @@ public class Player {
         );
         playerSprite.setFlip(isFlipped, false);
         return playerSprite;
+    }
+    public void equipWeapon(Weapon weapon, World world) {
+        if (this.equippedWeapon != null) {
+            unequipWeapon(world);
+        }
+        this.equippedWeapon = weapon;
+        // 将武器从KinematicBody改为DynamicBody
+        weapon.getBody().setType(BodyDef.BodyType.DynamicBody);
+        // 创建旋转关节
+        RevoluteJointDef jointDef = new RevoluteJointDef();
+        jointDef.bodyA = this.playerBody;
+        jointDef.bodyB = weapon.getBody();
+        jointDef.collideConnected = false;
+        jointDef.localAnchorA.set(playerController.isFlipped() ? -0.8f : 0.8f, 0);
+        jointDef.localAnchorB.set(0, 0);
+        this.weaponJoint = (RevoluteJoint) world.createJoint(jointDef);
+        // 设置武器质量
+        MassData massData = new MassData();
+        massData.mass = 0.1f;
+        weapon.getBody().setMassData(massData);
+        // 强制重置动画为idle状态（避免攻击动画残留）
+        stateTime = 0; // 重置动画计时器
+        currentAnimation = playerIdleAnimation; // 直接设置为空闲动画
+        TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
+        playerSprite.setRegion(currentFrame);
+    }
+    public void unequipWeapon(World world) {
+        if (this.equippedWeapon != null) {
+            if (this.weaponJoint != null) {
+                world.destroyJoint(this.weaponJoint);
+                this.weaponJoint = null;
+            }
+            this.equippedWeapon.getBody().setType(BodyDef.BodyType.KinematicBody);
+            this.equippedWeapon.getBody().setActive(true);
+            this.equippedWeapon = null;
+        }
+    }
+    public Weapon getEquippedWeapon() {return equippedWeapon;}
+    private void updateWeaponPosition() {
+        if (equippedWeapon != null && weaponJoint != null) {
+            boolean shouldBeLeftHand = playerController.isFlipped();
+            boolean isCurrentlyLeftHand = weaponJoint.getLocalAnchorA().x < 0;
+            // 如果朝向改变，需要重新创建关节
+            if (shouldBeLeftHand != isCurrentlyLeftHand) {
+                World world = weaponJoint.getBodyA().getWorld();
+                unequipWeapon(world);
+                equipWeapon(equippedWeapon, world);
+            }
+        }
     }
 }

@@ -12,6 +12,9 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.SimpleGame.Config;
+import io.github.SimpleGame.Item.Weapon;
+
+import java.util.Random;
 
 public class ResourceManager {
     private static ResourceManager instance;
@@ -28,6 +31,9 @@ public class ResourceManager {
     private Animation<TextureRegion> playerIdleAnimation;
     private Animation<TextureRegion> playerRunAnimation;
     private Animation<TextureRegion> playerAttackAnimation;
+    //Weapon
+    private Texture WeaponTexture;
+    private Weapon weapon;
     public Animation<TextureRegion> getPlayerAttackAnimation() {return playerAttackAnimation;
     }
     private ResourceManager() {
@@ -102,14 +108,14 @@ public class ResourceManager {
         assetManager.load(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
         assetManager.load(Config.MAP_PATH, TiledMap.class);
         assetManager.load("Magic/Gravity-Sheet.png",Texture.class);
-        assetManager.load("Sprites/BasePlayer/raw/attack/Attack.atlas",TextureAtlas.class);
+        assetManager.load(Config.PLAYERATTACK_ATLAS_PATH,TextureAtlas.class);
         assetManager.finishLoading();
     }
     public void Get(){
         //获取加载的资源
         playerTextureAtlas = assetManager.get(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
         tiledMap = assetManager.get(Config.MAP_PATH, TiledMap.class);
-        playerAttackTextureAtlas = assetManager.get("Sprites/BasePlayer/raw/attack/Attack.atlas", TextureAtlas.class);
+        playerAttackTextureAtlas = assetManager.get(Config.PLAYERATTACK_ATLAS_PATH, TextureAtlas.class);
         if (playerTextureAtlas == null || tiledMap == null) {
             throw new RuntimeException("Failed to load required resources");
         }

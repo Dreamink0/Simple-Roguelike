@@ -62,7 +62,6 @@ public class PlayerController {
 
         if (moveDirection.len2() > 0) {
             moveDirection.nor(); // 归一化
-
             Vector2 force = moveDirection.scl(MOVE_FORCE);
             body.applyForceToCenter(force, true);
 
