@@ -8,7 +8,9 @@ import io.github.SimpleGame.Item.Weapon;
 import io.github.SimpleGame.Resource.WorldManager;
 
 public class Listener{
-    public static void Bound(World world,Player player){
+    public static boolean equip;
+
+    public static void Bound(World world, Player player){
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
@@ -28,8 +30,8 @@ public class Listener{
                     bodyB.getUserData() != null && bodyB.getUserData().equals("weapon")) ||
                     (bodyA.getUserData() != null && bodyA.getUserData().equals("weapon") &&
                         bodyB.getUserData() != null && bodyB.getUserData().equals("player"))) {
-
                     System.out.println("The player collided with the weapon!"); // 调试信息
+                    Flag_equip();
                 }
 
                 if ((bodyA.getUserData() != null && bodyA.getUserData().equals("player") &&
@@ -48,5 +50,8 @@ public class Listener{
             @Override
             public void postSolve(Contact contact, ContactImpulse impulse) {}
         });
+    }
+    private static void Flag_equip() {
+        equip=true;
     }
 }

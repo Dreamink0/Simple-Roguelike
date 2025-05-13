@@ -52,7 +52,6 @@ public class MainTest extends ApplicationAdapter {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
             throw new RuntimeException("Failed to initialize game", e);
         }
-        Listener.Bound(worldManager.getWorld(),player);
     }
     @Override
     public void render() {
@@ -71,7 +70,7 @@ public class MainTest extends ApplicationAdapter {
         //其他
         batch.begin();
         player.FilpCheck(player.getPlayerSprite(),player.getPlayerController(),batch).draw(batch);
-        item.render(batch);
+        item.render(batch,player);
         batch.end();
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
             worldManager.getDebugRenderer().render(worldManager.getWorld(), cameraManager.getCamera().combined);

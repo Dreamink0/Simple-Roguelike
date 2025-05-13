@@ -17,18 +17,20 @@ import io.github.SimpleGame.Resource.ResourceManager;
 import io.github.SimpleGame.Resource.WorldManager;
 
 public class Player {
+    //身体
     private PlayerController playerController;
     private Body playerBody;
+    private Sprite playerSprite;
+    //动画
     private CharacterAttributes characterAttributes;
     private Animation<TextureRegion> playerIdleAnimation;
     private Animation<TextureRegion> playerRunAnimation;
     private Animation<TextureRegion> playerAttackAnimation;
-    private Sprite playerSprite;
+    private Animation<TextureRegion> currentAnimation;
     float stateTime=0f;
     private float accumulator = 0f;
-    private Animation<TextureRegion> currentAnimation;
-    private RevoluteJoint weaponJoint;
-    private Weapon equippedWeapon;
+    //状态界定
+    private boolean isequipped = false;
     public Player(World world, float WORLD_WIDTH, float WORLD_HEIGHT) {
         this.characterAttributes=new CharacterAttributes(20,50,10);
         BodyDef bodyDef = new BodyDef();
@@ -50,42 +52,6 @@ public class Player {
         playerBody.createFixture(fixtureDef);
         BoundingBox.dispose();
     }
-    public PlayerController getPlayerController() {
-        return playerController;
-    }
-    public Body getBody() {
-        return playerBody;
-    }
-    public void dispose() {
-        if (playerBody != null) {
-            playerBody.getWorld().destroyBody(playerBody);
-            playerBody = null;
-        }
-        if (weaponJoint != null) {
-            weaponJoint.getBodyA().getWorld().destroyJoint(weaponJoint);
-        }
-    }
-    public CharacterAttributes getCharacterAttributes() {
-        return characterAttributes;
-    }
-    public void getAnimation(ResourceManager resourceManager) {
-        this.playerIdleAnimation = resourceManager.getPlayerIdleAnimation();
-        this.playerRunAnimation = resourceManager.getPlayerRunAnimation();
-        this.playerAttackAnimation = resourceManager.getPlayerAttackAnimation();
-    }
-    public void getSprite(ResourceManager resourceManager) {
-        this.playerSprite = resourceManager.getPlayerSprite();
-    }
-
-    public Sprite getPlayerSprite() {
-        return playerSprite;
-    }
-
-    public Animation<TextureRegion> getPlayerIdleAnimation() {return playerIdleAnimation;}
-
-    public Animation<TextureRegion> getPlayerRunAnimation() {return playerRunAnimation;}
-
-    public Animation<TextureRegion> getPlayerAttackAnimation() {return playerAttackAnimation;}
 
     public PlayerController ActionCheck(PlayerController playerController, Player player, World world) {
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
@@ -127,5 +93,48 @@ public class Player {
         );
         playerSprite.setFlip(isFlipped, false);
         return playerSprite;
+    }
+
+    public PlayerController getPlayerController() {
+        return playerController;
+    }
+
+    public Body getBody() {
+        return playerBody;
+    }
+
+    public CharacterAttributes getCharacterAttributes() {return characterAttributes;}
+
+    public void getAnimation(ResourceManager resourceManager) {
+        this.playerIdleAnimation = resourceManager.getPlayerIdleAnimation();
+        this.playerRunAnimation = resourceManager.getPlayerRunAnimation();
+        this.playerAttackAnimation = resourceManager.getPlayerAttackAnimation();
+    }
+
+    public void getSprite(ResourceManager resourceManager) {
+        this.playerSprite = resourceManager.getPlayerSprite();
+    }
+
+    public Sprite getPlayerSprite() {return playerSprite;}
+
+    public Animation<TextureRegion> getPlayerIdleAnimation() {return playerIdleAnimation;}
+
+    public Animation<TextureRegion> getPlayerRunAnimation() {return playerRunAnimation;}
+
+    public Animation<TextureRegion> getPlayerAttackAnimation() {return playerAttackAnimation;}
+
+    public float getX() {return playerBody.getPosition().x;}
+
+    public float getY() {return playerBody.getPosition().y;}
+
+    public boolean isIsequipped() {return isequipped;}
+
+    public void setIsequipped(boolean isequipped) {this.isequipped = isequipped;}
+
+    public void dispose() {
+        if (playerBody != null) {
+            playerBody.getWorld().destroyBody(playerBody);
+            playerBody = null;
+        }
     }
 }
