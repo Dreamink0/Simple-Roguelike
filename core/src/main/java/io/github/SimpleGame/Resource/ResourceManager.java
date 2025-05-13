@@ -16,16 +16,18 @@ import io.github.SimpleGame.Config;
 public class ResourceManager {
     private static ResourceManager instance;
     private AssetManager assetManager;
+    //Atlas
     private TextureAtlas playerTextureAtlas;
     private TextureAtlas playerAttackTextureAtlas;
+    //Map
     private TiledMap tiledMap;
     private MapManager mapManager;
+    //Player
+    private Sprite playerSprite;
+    //Animation
     private Animation<TextureRegion> playerIdleAnimation;
     private Animation<TextureRegion> playerRunAnimation;
     private Animation<TextureRegion> playerAttackAnimation;
-
-    private Sprite playerSprite;
-    public Texture Test_;
     public Animation<TextureRegion> getPlayerAttackAnimation() {return playerAttackAnimation;
     }
     private ResourceManager() {
@@ -92,9 +94,6 @@ public class ResourceManager {
         if (playerTextureAtlas != null) {
             playerTextureAtlas.dispose();
         }
-        if (mapManager != null) {
-            mapManager.dispose();
-        }
     }
 
 
@@ -110,7 +109,6 @@ public class ResourceManager {
         //获取加载的资源
         playerTextureAtlas = assetManager.get(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
         tiledMap = assetManager.get(Config.MAP_PATH, TiledMap.class);
-        Test_ = assetManager.get("Magic/Gravity-Sheet.png", Texture.class);
         playerAttackTextureAtlas = assetManager.get("Sprites/BasePlayer/raw/attack/Attack.atlas", TextureAtlas.class);
         if (playerTextureAtlas == null || tiledMap == null) {
             throw new RuntimeException("Failed to load required resources");

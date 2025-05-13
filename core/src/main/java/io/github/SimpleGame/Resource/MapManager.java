@@ -13,7 +13,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
-public class MapManager {
+public class MapManager{
     private final TiledMap tiledMap;
     private OrthogonalTiledMapRenderer mapRenderer;
     private final World world;

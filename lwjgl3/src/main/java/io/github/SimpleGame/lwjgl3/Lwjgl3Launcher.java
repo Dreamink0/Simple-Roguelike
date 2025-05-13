@@ -3,6 +3,7 @@ package io.github.SimpleGame.lwjgl3;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import io.github.SimpleGame.Main;
+import io.github.SimpleGame.MainTest;
 import io.github.SimpleGame.lwjgl3.StartupHelper;
 
 /** Launches the desktop (LWJGL3) application. */
@@ -13,7 +14,7 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3Application createApplication() {
-        return new Lwjgl3Application(new Main(), getDefaultConfiguration());
+        return new Lwjgl3Application(new MainTest(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {

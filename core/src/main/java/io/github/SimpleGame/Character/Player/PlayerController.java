@@ -2,23 +2,28 @@ package io.github.SimpleGame.Character.Player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.*;
+import io.github.SimpleGame.Config;
 
 public class PlayerController {
     private final Body body;
-    public boolean isFlipped = false;//ly我加的
+    public boolean isFlipped = false;
 
     private static final float MOVE_FORCE = 100f;
-    private static final float MAX_SPEED = 18f;
+    private static float MAX_SPEED = 10f;
     private static final float DAMPING = 0.08f; // 阻尼
     private static final float BOX_SIZE = 0.5f; // 碰撞大小
     private static final float ATTACK_DURATION = 0.4f; // 攻击动画持续时间
     private float attackTimer = 0f;
     private boolean isAttacking = false;
+    private boolean isMoving = false;
+
+
     public PlayerController(Body body) {
         this.body = body;
         setupBody();
@@ -91,18 +96,15 @@ public class PlayerController {
 
     public boolean isMoving() {
         Vector2 velocity = body.getLinearVelocity();
-        if(Gdx.input.isKeyPressed(Input.Keys.J)){
-            return true;
-        }
         return velocity.len2() > 0.5f;
     }
-
     public boolean isAttacking() {
         if (isAttacking) {
             attackTimer -= Gdx.graphics.getDeltaTime();
             if (attackTimer <= 0) {
                 isAttacking = false;
             }
+            MAX_SPEED=10;
         }
         return isAttacking;
     }
@@ -110,6 +112,7 @@ public class PlayerController {
         if (!isAttacking) {
             isAttacking = true;
             attackTimer = ATTACK_DURATION;
+            MAX_SPEED=0;
         }
     }
 }

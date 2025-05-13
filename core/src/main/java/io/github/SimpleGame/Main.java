@@ -3,16 +3,12 @@ package io.github.SimpleGame;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -23,8 +19,6 @@ import io.github.SimpleGame.Character.Player.PlayerController;
 import io.github.SimpleGame.Resource.MapManager;
 import io.github.SimpleGame.Resource.ResourceManager;
 import io.github.SimpleGame.Tool.Animation_Tool;
-
-import java.util.Random;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
@@ -78,7 +72,7 @@ public class Main extends ApplicationAdapter {
             player = new Player(world, Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
             playerController = player.getPlayerController();
 
-            animation_tool.Create("TEST",resourceManager.Test_,5,4);
+           //animation_tool.Create("TEST",resourceManager.Test_,5,4);
         } catch (Exception e) {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
             throw new RuntimeException("Failed to initialize game", e);
@@ -93,13 +87,12 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
         stateTime += deltaTime;
-        animation_tool.update("TEST",deltaTime);
-        TextureRegion frame = animation_tool.getKeyFrame("TEST",true);
+        //animation_tool.update("TEST",deltaTime);
+        //TextureRegion frame = animation_tool.getKeyFrame("TEST",true);
         // 根据玩家移动状态选择动画
         boolean isAttacking = playerController.isAttacking();
         boolean isMoving = playerController.isMoving();
         Animation<TextureRegion> newAnimation;
-
         if (Gdx.input.isKeyPressed(Input.Keys.J)) {
             playerController.startAttack();
         }
@@ -108,12 +101,10 @@ public class Main extends ApplicationAdapter {
         }else{
             newAnimation = isMoving ? playerRunAnimation : playerIdleAnimation;
         }
-
         if (newAnimation != currentAnimation) {
             stateTime = 0;
             currentAnimation = newAnimation;
         }
-
         TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
         playerSprite.setRegion(currentFrame);
         if (isAttacking) {
@@ -141,13 +132,12 @@ public class Main extends ApplicationAdapter {
         batch.begin();
 
         boolean isFlipped = playerController.isFlipped();
-
         playerSprite.setPosition(
             playerPos.x - playerSprite.getWidth() / 2,
             playerPos.y - playerSprite.getHeight() / 2
         );
         playerSprite.setFlip(isFlipped, false);
-        if (frame != null) {
+        /*if (frame != null) {
             if(Gdx.input.isKeyPressed(Input.Keys.F)){
                 batch.draw(frame,
                     playerPos.x - playerSprite.getWidth()+3,
@@ -167,7 +157,7 @@ public class Main extends ApplicationAdapter {
                     90
                 );
             }
-        }
+        }*/
         playerSprite.draw(batch);
         batch.end();
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
