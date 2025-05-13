@@ -99,18 +99,6 @@ public class Weapon {
             0.1f, 0.1f, 0
         );
     }
-
-    public boolean canBePickedUp(Player player) {
-        if (player.getEquippedWeapon() != null) {
-            return false; // 玩家已经持有武器
-        }
-        Vector2 playerPos = player.getBody().getPosition();
-        Vector2 weaponPos = this.body.getPosition();
-        float distance = playerPos.dst(weaponPos);
-
-        return distance < 2.0f; // 可拾取距离阈值
-    }
-
     public TextureRegion getTextureRegion() {
         return  textureRegion;
     }

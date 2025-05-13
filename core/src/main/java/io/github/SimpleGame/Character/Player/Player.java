@@ -116,7 +116,6 @@ public class Player {
             world.step(Config.TIME_STEP, 6, 2);
             accumulator -= Config.TIME_STEP;
         }
-        updateWeaponPosition();
         return playerController;
     }
 
@@ -128,54 +127,5 @@ public class Player {
         );
         playerSprite.setFlip(isFlipped, false);
         return playerSprite;
-    }
-    public void equipWeapon(Weapon weapon, World world) {
-        if (this.equippedWeapon != null) {
-            unequipWeapon(world);
-        }
-        this.equippedWeapon = weapon;
-        // 将武器从KinematicBody改为DynamicBody
-        weapon.getBody().setType(BodyDef.BodyType.DynamicBody);
-        // 创建旋转关节
-        RevoluteJointDef jointDef = new RevoluteJointDef();
-        jointDef.bodyA = this.playerBody;
-        jointDef.bodyB = weapon.getBody();
-        jointDef.collideConnected = false;
-        jointDef.localAnchorA.set(playerController.isFlipped() ? -0.8f : 0.8f, 0);
-        jointDef.localAnchorB.set(0, 0);
-        this.weaponJoint = (RevoluteJoint) world.createJoint(jointDef);
-        // 设置武器质量
-        MassData massData = new MassData();
-        massData.mass = 0.1f;
-        weapon.getBody().setMassData(massData);
-        // 强制重置动画为idle状态（避免攻击动画残留）
-        stateTime = 0; // 重置动画计时器
-        currentAnimation = playerIdleAnimation; // 直接设置为空闲动画
-        TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
-        playerSprite.setRegion(currentFrame);
-    }
-    public void unequipWeapon(World world) {
-        if (this.equippedWeapon != null) {
-            if (this.weaponJoint != null) {
-                world.destroyJoint(this.weaponJoint);
-                this.weaponJoint = null;
-            }
-            this.equippedWeapon.getBody().setType(BodyDef.BodyType.KinematicBody);
-            this.equippedWeapon.getBody().setActive(true);
-            this.equippedWeapon = null;
-        }
-    }
-    public Weapon getEquippedWeapon() {return equippedWeapon;}
-    private void updateWeaponPosition() {
-        if (equippedWeapon != null && weaponJoint != null) {
-            boolean shouldBeLeftHand = playerController.isFlipped();
-            boolean isCurrentlyLeftHand = weaponJoint.getLocalAnchorA().x < 0;
-            // 如果朝向改变，需要重新创建关节
-            if (shouldBeLeftHand != isCurrentlyLeftHand) {
-                World world = weaponJoint.getBodyA().getWorld();
-                unequipWeapon(world);
-                equipWeapon(equippedWeapon, world);
-            }
-        }
     }
 }

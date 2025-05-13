@@ -62,24 +62,6 @@ public class MainTest extends ApplicationAdapter {
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
         stateTime += deltaTime;
         // 根据玩家移动状态选择动画
-        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            if (player.getEquippedWeapon() == null) {
-                // 检查是否在可拾取范围内
-                if (item.canBePickedUp(player)) {
-                    player.equipWeapon(item, worldManager.getWorld());
-                }
-            } else {
-                // 放下武器
-                player.unequipWeapon(worldManager.getWorld());
-                // 设置武器掉落位置
-                Vector2 dropPosition = player.getBody().getPosition();
-                item.getBody().setTransform(
-                    dropPosition.x + (player.getPlayerController().isFlipped() ? -1.5f : 1.5f),
-                    dropPosition.y,
-                    0
-                );
-            }
-        }
         player.ActionCheck(player.getPlayerController(),player,worldManager.getWorld()).update();
         // 更新相机位置
         cameraManager.getCamera(player.getPlayerController());
