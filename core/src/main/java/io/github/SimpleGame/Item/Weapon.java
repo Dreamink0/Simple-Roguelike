@@ -1,100 +1,206 @@
 package io.github.SimpleGame.Item;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.box2d.*;
+import io.github.SimpleGame.Character.Player.Player;
+import io.github.SimpleGame.Character.Player.PlayerController;
+import io.github.SimpleGame.Resource.ResourceManager;
+import io.github.SimpleGame.Tool.Listener;
+
+import java.util.Random;
 
 import static io.github.SimpleGame.Config.PIXELS_PER_METER;
 
 public class Weapon {
     private TextureRegion textureRegion;
+    private Texture texture;
     private Rectangle BoundingBox;
     private Body body;
     private float scale;
-    public Weapon(World world, TextureAtlas atlas,String PATH,float x, float y,float scale) {
-        this.textureRegion = atlas.findRegion(PATH);
+    private AssetManager assetManager;
+    private  float offsetX;
+    private  float offsetY;
+    private  World world;
+    private Body attachedBody;
+    private boolean isAttached = false;
+    private float targetAngle = 0;  // 目标角度
+    private float currentAngle = 0; // 当前角度
+    private float rotationSpeed = 5f; // 旋转速度（度/秒）
+    private Vector2 aimDirection = new Vector2(); // 瞄准方向
+    public Weapon(World world, float x, float y, float scale) {
+        this.world = world;
+        assetManager = new AssetManager();
+        Random random = new Random();
+        int temp = random.nextInt(76);
+        assetManager.load("Items/Equipments/raw/Equipment_" + temp + ".png", Texture.class);
+        assetManager.finishLoading();
+        this.texture = assetManager.get("Items/Equipments/raw/Equipment_" + temp + ".png", Texture.class);
+        this.textureRegion = new TextureRegion(texture);
         this.scale = scale;
 
-        float scaledWidth = textureRegion.getRegionWidth() * scale;
-        float scaledHeight = textureRegion.getRegionHeight() * scale;
+        float scaledWidth = textureRegion.getRegionWidth()/PIXELS_PER_METER;
+        float scaledHeight = textureRegion.getRegionHeight()/PIXELS_PER_METER;
 
-        this.BoundingBox = new Rectangle(x, y, scaledWidth, scaledHeight);
+        this.BoundingBox = new Rectangle(x-scaledWidth, y-scaledHeight, scaledWidth, scaledHeight);
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
         bodyDef.position.set(
-            (x + scaledWidth/2),
-            (y + scaledHeight/2)
+            (x + 2*scaledWidth),
+            (y + 2*scaledHeight)
         );
-        body = world.createBody(bodyDef);
-        body.setUserData("weapon");
+        this.body = world.createBody(bodyDef);
+        this.body.setUserData("weapon");
         PolygonShape shape = new PolygonShape();
-        float Width = scaledWidth/2;
-        float Height = scaledHeight/2;
-        shape.setAsBox(Width, Height);
 
+        shape.setAsBox(2*scaledWidth, 2*scaledHeight);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.isSensor = true;
-        body.createFixture(fixtureDef).setUserData("weapon");
-        System.out.println("Weapon Fixture created: " + fixtureDef);
+        this.body.createFixture(fixtureDef).setUserData("weapon");
         shape.dispose();
     }
-    //武器更换
-    public void setWeapon(World world, TextureAtlas atlas, String path,float scale) {
-        for (Fixture fixture : body.getFixtureList()) {
-            body.destroyFixture(fixture);
-        }
 
-        TextureRegion newTextureRegion = atlas.findRegion(path);
-        if (newTextureRegion == null) {
-            throw new IllegalArgumentException("Texture region not found: " + path);
-        }
-
-        this.textureRegion = newTextureRegion;
+    public Weapon(World world, TextureRegion textureRegion, float x, float y, float scale) {
+        this.world = world;
+        this.textureRegion = textureRegion;
         this.scale = scale;
 
-        float scaledWidth = textureRegion.getRegionWidth() * scale;
-        float scaledHeight = textureRegion.getRegionHeight() * scale;
+        float scaledWidth = textureRegion.getRegionWidth()/PIXELS_PER_METER;
+        float scaledHeight = textureRegion.getRegionHeight()/PIXELS_PER_METER;
 
-        this.BoundingBox.setSize(scaledWidth, scaledHeight);
-        this.BoundingBox.setPosition(
-            body.getPosition().x * PIXELS_PER_METER - scaledWidth / 2f,
-            body.getPosition().y * PIXELS_PER_METER - scaledHeight / 2f
+        this.BoundingBox = new Rectangle(x-scaledWidth, y-scaledHeight, scaledWidth, scaledHeight);
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.position.set(
+            (x + 2*scaledWidth),
+            (y + 2*scaledHeight)
         );
-        //碰撞
+        this.body = world.createBody(bodyDef);
+        this.body.setUserData("weapon");
         PolygonShape shape = new PolygonShape();
-        float halfWidth = scaledWidth / 2f / PIXELS_PER_METER;
-        float halfHeight = scaledHeight / 2f / PIXELS_PER_METER;
-        shape.setAsBox(halfWidth, halfHeight);
 
+        shape.setAsBox(2*scaledWidth, 2*scaledHeight);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.isSensor = true;
-        body.createFixture(fixtureDef).setUserData("weapon");
+        this.body.createFixture(fixtureDef).setUserData("weapon");
         shape.dispose();
     }
-    public Body getBody() {
-        return body;
+    public Body getBody() {return body;}
+    public Rectangle getBoundingBox() {return BoundingBox;}
+    public void render(SpriteBatch batch,Player player) {
+        Listener.Bound(world,player);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E)&&Listener.equip){
+            player.setIsequipped(true);
+        }
+        if (player.isIsequipped()) {
+            attachToPlayer(player,player.getX(),player.getY());
+            updatePosition(player,player.getX(), player.getY(), offsetX, offsetY);
+            int flag=0;
+            if(player.getPlayerController().isFlipped){
+                flag=-1;
+                batch.draw(
+                    textureRegion.getTexture(),
+                    (float) (player.getX() - (float) textureRegion.getRegionWidth() /2 * scale+0.5f+Math.cos(player.getX())),
+                    (float) (player.getY() - (float) textureRegion.getRegionHeight() /2 * scale-0.75f-Math.sin(player.getY())),
+                    (float) textureRegion.getRegionWidth() /2 * scale,
+                    (float) textureRegion.getRegionHeight() /2 * scale,
+                    textureRegion.getRegionWidth() * scale,
+                    textureRegion.getRegionHeight() * scale,
+                    0.1f, 0.1f,
+                    180+(player.getY()+player.getX())%5,  // 旋转角度
+                    0, 0,  // 纹理坐标
+                    textureRegion.getRegionWidth(),
+                    textureRegion.getRegionHeight(),
+                    player.getPlayerController().isFlipped,
+                    true
+                );
+            }else{
+                flag=1;
+                batch.draw(
+                    textureRegion.getTexture(),
+                    (float) (player.getX() - (float) textureRegion.getRegionWidth() /2 * scale+0.5f+Math.cos(player.getX())),
+                    (float) (player.getY() - (float) textureRegion.getRegionHeight() /2 * scale-0.75f-Math.sin(player.getY())),
+                    (float) textureRegion.getRegionWidth() /2 * scale,
+                    (float) textureRegion.getRegionHeight() /2 * scale,
+                    textureRegion.getRegionWidth() * scale,
+                    textureRegion.getRegionHeight() * scale,
+                    0.1f, 0.1f,
+                    180+(player.getY()+player.getX())%5,  // 旋转角度
+                    0, 0,  // 纹理坐标
+                    textureRegion.getRegionWidth(),
+                    textureRegion.getRegionHeight(),
+                    player.getPlayerController().isFlipped,
+                    true
+                );
+            }
+        }else{
+                updatePosition(player,player.getX(), player.getY(), offsetX, offsetY);
+                Vector2 pos = body.getPosition();
+                batch.draw(
+                    textureRegion,
+                    BoundingBox.x, BoundingBox.y,
+                    0, 0,
+                    textureRegion.getRegionWidth() * scale,
+                    textureRegion.getRegionHeight() * scale,
+                    0.1f, 0.1f, 0
+                );
+        }
     }
+    public float getX() {return body.getPosition().x;}
+    public float getY() {return body.getPosition().y;}
+    public void attachToPlayer(Player player, float offsetX, float offsetY) {
+        if (!isAttached) {
+            if (body != null) {
+                world.destroyBody(body);
+                body = null;
+            }
+            BodyDef bodyDef = new BodyDef();
+            bodyDef.type = BodyDef.BodyType.KinematicBody;
+            bodyDef.position.set(player.getBody().getPosition().x + offsetX/PIXELS_PER_METER,
+                player.getBody().getPosition().y + offsetY/PIXELS_PER_METER);
 
-    public  Rectangle getBoundingBox() {
-        return BoundingBox;
+            this.attachedBody = world.createBody(bodyDef);
+            this.attachedBody.setUserData("weapon");
+
+            PolygonShape shape = new PolygonShape();
+            float scaledWidth = textureRegion.getRegionWidth() / PIXELS_PER_METER;
+            float scaledHeight = textureRegion.getRegionHeight() / PIXELS_PER_METER;
+            shape.setAsBox(scaledWidth, scaledHeight);
+
+            FixtureDef fixtureDef = new FixtureDef();
+            fixtureDef.shape = shape;
+            fixtureDef.isSensor = true;
+            this.attachedBody.createFixture(fixtureDef).setUserData("weapon");
+            shape.dispose();
+
+            isAttached = true;
+        }
     }
-
-    public void render(SpriteBatch batch) {
-        batch.draw(
-            textureRegion,
-            BoundingBox.x,
-            BoundingBox.y,
-            textureRegion.getRegionWidth() * scale / 2f, // 原点偏移
-            textureRegion.getRegionHeight() * scale / 2f, // 原点偏移
-            textureRegion.getRegionWidth() * scale, // 宽度
-            textureRegion.getRegionHeight() * scale, // 高度
-            1, 1, 0 // 缩放和旋转
-        );
+    public void updatePosition(Player player,float x, float y, float offsetX, float offsetY){
+        if (isAttached && attachedBody != null && player.getPlayerController() != null) {
+            //获取玩家位置并更新武器位置
+            Body playerBody = player.getPlayerController().getBody(); // 需要从Player类获取控制器
+            if (playerBody != null) {
+                Vector2 playerPos = playerBody.getPosition();
+                attachedBody.setTransform(
+                    playerPos.x + offsetX/PIXELS_PER_METER,
+                    playerPos.y + offsetY/PIXELS_PER_METER,
+                    0
+                );
+            }
+        }
     }
 }

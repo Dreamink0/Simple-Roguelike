@@ -8,13 +8,13 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Character.Player.PlayerController;
-import io.github.SimpleGame.Resource.MapManager;
-import io.github.SimpleGame.Resource.ResourceManager;
-import io.github.SimpleGame.Resource.WorldManager;
-import io.github.SimpleGame.Resource.CameraManager;
+import io.github.SimpleGame.Item.Weapon;
+import io.github.SimpleGame.Resource.*;
 import io.github.SimpleGame.Tool.Animation_Tool;
+import io.github.SimpleGame.Tool.Listener;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class MainTest extends ApplicationAdapter {
@@ -26,6 +26,7 @@ public class MainTest extends ApplicationAdapter {
     private Animation<TextureRegion> currentAnimation;
     private Player player;
     private ResourceManager resourceManager;
+    private Weapon item;
     @Override
     public void create() {
         try {
@@ -42,8 +43,8 @@ public class MainTest extends ApplicationAdapter {
             player.getAnimation(resourceManager);
             //4初始化精灵
             player.getSprite(resourceManager);
-            //playerSprite = resourceManager.getPlayerSprite();
             currentAnimation = player.getPlayerIdleAnimation();
+            item=new Weapon(worldManager.getWorld(),Config.WORLD_WIDTH,Config.WORLD_HEIGHT+5,1f);
             //5其他初始化
             batch = new SpriteBatch();
             mapManager = resourceManager.getMapManager(worldManager.getWorld());
@@ -51,7 +52,6 @@ public class MainTest extends ApplicationAdapter {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
             throw new RuntimeException("Failed to initialize game", e);
         }
-        //Listener.Bound(world);
     }
     @Override
     public void render() {
@@ -70,9 +70,10 @@ public class MainTest extends ApplicationAdapter {
         //其他
         batch.begin();
         player.FilpCheck(player.getPlayerSprite(),player.getPlayerController(),batch).draw(batch);
+        item.render(batch,player);
         batch.end();
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
-            worldManager.getDebugRenderer().render(worldManager.getWorld(), cameraManager.getCamera().combined.scl(25f/Config.PIXELS_PER_METER));
+            worldManager.getDebugRenderer().render(worldManager.getWorld(), cameraManager.getCamera().combined);
         }
     }
     @Override

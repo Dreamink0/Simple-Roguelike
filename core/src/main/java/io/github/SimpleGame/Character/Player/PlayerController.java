@@ -22,7 +22,7 @@ public class PlayerController {
     private float attackTimer = 0f;
     private boolean isAttacking = false;
     private boolean isMoving = false;
-
+    private Vector2 moveDirection;
 
     public PlayerController(Body body) {
         this.body = body;
@@ -62,7 +62,6 @@ public class PlayerController {
 
         if (moveDirection.len2() > 0) {
             moveDirection.nor(); // 归一化
-
             Vector2 force = moveDirection.scl(MOVE_FORCE);
             body.applyForceToCenter(force, true);
 
@@ -114,5 +113,17 @@ public class PlayerController {
             attackTimer = ATTACK_DURATION;
             MAX_SPEED=0;
         }
+    }
+
+    public Body getBody() {
+        return body;
+    }
+
+    public float getMoveX() {
+        return moveDirection.x;
+    }
+
+    public float getMoveY() {
+        return moveDirection.y;
     }
 }
