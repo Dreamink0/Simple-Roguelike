@@ -137,27 +137,27 @@ public class Main extends ApplicationAdapter {
             playerPos.y - playerSprite.getHeight() / 2
         );
         playerSprite.setFlip(isFlipped, false);
-        /*if (frame != null) {
-            if(Gdx.input.isKeyPressed(Input.Keys.F)){
-                batch.draw(frame,
-                    playerPos.x - playerSprite.getWidth()+3,
-                    playerPos.y - playerSprite.getWidth()/2,
-                    15,
-                    10
-                );
-                batch.draw(frame,
-                    playerPos.x - playerSprite.getWidth()-9,
-                    playerPos.y - playerSprite.getWidth()/2+2,
-                    15,
-                    10,
-                    15,
-                    10,
-                    1,
-                    1,
-                    90
-                );
-            }
-        }*/
+//        if (frame != null) {
+//            if(Gdx.input.isKeyPressed(Input.Keys.F)){
+//                batch.draw(frame,
+//                    playerPos.x - playerSprite.getWidth()+3,
+//                    playerPos.y - playerSprite.getWidth()/2,
+//                    15,
+//                    10
+//                );
+//                batch.draw(frame,
+//                    playerPos.x - playerSprite.getWidth()-9,
+//                    playerPos.y - playerSprite.getWidth()/2+2,
+//                    15,
+//                    10,
+//                    15,
+//                    10,
+//                    1,
+//                    1,
+//                    90
+//                );
+//            }
+//        }
         playerSprite.draw(batch);
         batch.end();
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
