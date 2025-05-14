@@ -122,6 +122,7 @@ public class ResourceManager {
     }
     public void Set(){
         //设置所有纹理过滤模式为Nearest
+        //这里其实可以手动去.atlas文件里面改下或者打包的时候就选上
         for (Texture texture : playerTextureAtlas.getTextures()) {
             texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         }

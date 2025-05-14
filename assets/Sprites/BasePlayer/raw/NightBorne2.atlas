@@ -1,0 +1,61 @@
+NightBorne2.png
+size: 41, 248
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+run
+  rotate: false
+  xy: 1, 128
+  size: 37, 30
+  orig: 80, 80
+  offset: 18, 15
+  index: -1
+run
+  rotate: false
+  xy: 1, 220
+  size: 38, 27
+  orig: 80, 80
+  offset: 18, 16
+  index: -1
+run
+  rotate: false
+  xy: 1, 66
+  size: 39, 29
+  orig: 80, 80
+  offset: 17, 16
+  index: -1
+run
+  rotate: false
+  xy: 1, 160
+  size: 38, 29
+  orig: 80, 80
+  offset: 18, 15
+  index: -1
+run
+  rotate: false
+  xy: 1, 97
+  size: 39, 29
+  orig: 80, 80
+  offset: 17, 16
+  index: -1
+run
+  rotate: false
+  xy: 1, 1
+  size: 39, 30
+  orig: 80, 80
+  offset: 16, 15
+  index: -1
+run
+  rotate: false
+  xy: 1, 191
+  size: 39, 27
+  orig: 80, 80
+  offset: 16, 17
+  index: -1
+run
+  rotate: false
+  xy: 1, 33
+  size: 37, 31
+  orig: 80, 80
+  offset: 18, 15
+  index: -1

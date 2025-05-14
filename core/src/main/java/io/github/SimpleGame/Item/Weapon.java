@@ -35,10 +35,6 @@ public class Weapon {
     private  World world;
     private Body attachedBody;
     private boolean isAttached = false;
-    private float targetAngle = 0;  // 目标角度
-    private float currentAngle = 0; // 当前角度
-    private float rotationSpeed = 5f; // 旋转速度（度/秒）
-    private Vector2 aimDirection = new Vector2(); // 瞄准方向
     public Weapon(World world, float x, float y, float scale) {
         this.world = world;
         assetManager = new AssetManager();
@@ -108,19 +104,17 @@ public class Weapon {
         if (player.isIsequipped()) {
             attachToPlayer(player,player.getX(),player.getY());
             updatePosition(player,player.getX(), player.getY(), offsetX, offsetY);
-            int flag=0;
-            if(player.getPlayerController().isFlipped){
-                flag=-1;
+            if(!player.getPlayerController().isFlipped){
                 batch.draw(
                     textureRegion.getTexture(),
-                    (float) (player.getX() - (float) textureRegion.getRegionWidth() /2 * scale+0.5f+Math.cos(player.getX())),
-                    (float) (player.getY() - (float) textureRegion.getRegionHeight() /2 * scale-0.75f-Math.sin(player.getY())),
+                    (float) (player.getX() - (float) textureRegion.getRegionWidth() /2 * scale),
+                    (float) (player.getY() - (float) textureRegion.getRegionHeight() /2 * scale)-0.2f,
                     (float) textureRegion.getRegionWidth() /2 * scale,
                     (float) textureRegion.getRegionHeight() /2 * scale,
                     textureRegion.getRegionWidth() * scale,
                     textureRegion.getRegionHeight() * scale,
-                    0.1f, 0.1f,
-                    180+(player.getY()+player.getX())%5,  // 旋转角度
+                    0.09f, 0.09f,
+                    180,  // 旋转角度
                     0, 0,  // 纹理坐标
                     textureRegion.getRegionWidth(),
                     textureRegion.getRegionHeight(),
@@ -128,17 +122,16 @@ public class Weapon {
                     true
                 );
             }else{
-                flag=1;
                 batch.draw(
                     textureRegion.getTexture(),
-                    (float) (player.getX() - (float) textureRegion.getRegionWidth() /2 * scale+0.5f+Math.cos(player.getX())),
-                    (float) (player.getY() - (float) textureRegion.getRegionHeight() /2 * scale-0.75f-Math.sin(player.getY())),
+                    (player.getX() - (float) textureRegion.getRegionWidth() /2 * scale),
+                    (player.getY() - (float) textureRegion.getRegionHeight() /2 * scale)-0.2f,
                     (float) textureRegion.getRegionWidth() /2 * scale,
                     (float) textureRegion.getRegionHeight() /2 * scale,
                     textureRegion.getRegionWidth() * scale,
                     textureRegion.getRegionHeight() * scale,
-                    0.1f, 0.1f,
-                    180+(player.getY()+player.getX())%5,  // 旋转角度
+                    0.09f, 0.09f,
+                    180,  // 旋转角度
                     0, 0,  // 纹理坐标
                     textureRegion.getRegionWidth(),
                     textureRegion.getRegionHeight(),

@@ -5,16 +5,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import io.github.SimpleGame.Character.Player.Player;
-import io.github.SimpleGame.Character.Player.PlayerController;
 import io.github.SimpleGame.Item.Weapon;
-import io.github.SimpleGame.Resource.*;
-import io.github.SimpleGame.Tool.Animation_Tool;
-import io.github.SimpleGame.Tool.Listener;
+import io.github.SimpleGame.Magic.Lightning_Magic;
+import io.github.SimpleGame.Resource.CameraManager;
+import io.github.SimpleGame.Resource.MapManager;
+import io.github.SimpleGame.Resource.ResourceManager;
+import io.github.SimpleGame.Resource.WorldManager;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class MainTest extends ApplicationAdapter {
@@ -27,6 +26,7 @@ public class MainTest extends ApplicationAdapter {
     private Player player;
     private ResourceManager resourceManager;
     private Weapon item;
+    Lightning_Magic lightningMagic;
     @Override
     public void create() {
         try {
@@ -45,6 +45,8 @@ public class MainTest extends ApplicationAdapter {
             player.getSprite(resourceManager);
             currentAnimation = player.getPlayerIdleAnimation();
             item=new Weapon(worldManager.getWorld(),Config.WORLD_WIDTH,Config.WORLD_HEIGHT+5,1f);
+            lightningMagic=new Lightning_Magic();
+            lightningMagic.Magic_create(worldManager.getWorld(),Config.WORLD_WIDTH+4,Config.WORLD_HEIGHT);
             //5其他初始化
             batch = new SpriteBatch();
             mapManager = resourceManager.getMapManager(worldManager.getWorld());
@@ -71,6 +73,8 @@ public class MainTest extends ApplicationAdapter {
         batch.begin();
         player.FilpCheck(player.getPlayerSprite(),player.getPlayerController(),batch).draw(batch);
         item.render(batch,player);
+        lightningMagic.Magic_obtain(batch, player); //检测拾取
+        lightningMagic.Magic_render(batch,player);
         batch.end();
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
             worldManager.getDebugRenderer().render(worldManager.getWorld(), cameraManager.getCamera().combined);
