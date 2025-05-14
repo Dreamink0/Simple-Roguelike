@@ -3,9 +3,10 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "TestMap.tmx",
+    "activeFile": "Base/0101.tmx",
     "expandedProjectPaths": [
-        "."
+        ".",
+        "Base"
     ],
     "fileStates": {
         "Air.tsx": {
@@ -16,37 +17,171 @@
             "scaleInDock": 2,
             "scaleInEditor": 4
         },
+        "Base/0000.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 300.5,
+                "y": 88.75
+            }
+        },
+        "Base/0001.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 334.5,
+                "y": 87.75
+            }
+        },
+        "Base/0010.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 245,
+                "y": 91.75
+            }
+        },
+        "Base/0011.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 301,
+                "y": 146.25
+            }
+        },
+        "Base/0100.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 371,
+                "y": 236.75
+            }
+        },
+        "Base/0101.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 370,
+                "y": 143.25
+            }
+        },
+        "Base/0110.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 301.5,
+                "y": 146.25
+            }
+        },
+        "Base/0111.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 301.5,
+                "y": 146.25
+            }
+        },
+        "Base/1000.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 398,
+                "y": 156.33333333333331
+            }
+        },
+        "Base/1001.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 301.5,
+                "y": 146.25
+            }
+        },
+        "Base/1010.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 301.5,
+                "y": 146.25
+            }
+        },
+        "Base/1011.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 301.5,
+                "y": 146.25
+            }
+        },
+        "Base/1100.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 301,
+                "y": 146.25
+            }
+        },
+        "Base/1101.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 301.5,
+                "y": 146.25
+            }
+        },
+        "Base/1110.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 301.5,
+                "y": 146.25
+            }
+        },
+        "Base/1111.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 301,
+                "y": 146.25
+            }
+        },
         "Decor.tsx": {
             "scaleInDock": 4,
             "scaleInEditor": 5.5
         },
         "TestMap.tmx": {
-            "scale": 3,
+            "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 528.3333333333333,
-                "y": 509.8333333333333
+                "x": 379,
+                "y": 348.75
             }
         }
     },
     "last.imagePath": "F:/Projects/Java/SimpleGame/assets/Maps",
-    "map.height": 30,
+    "map.height": 12,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 24,
     "map.tileWidth": 24,
+    "map.width": 20,
     "openFiles": [
-        "Base.tsx",
-        "TestMap.tmx",
-        "Decor.tsx",
-        "Air.tsx"
+        "Base/0101.tmx"
     ],
     "project": "Simple-Roguelike.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "Base.tsx",
-        "Air.tsx",
-        "Decor.tsx",
-        "TestMap.tmx"
+        "Base/0101.tmx",
+        "Base/0111.tmx",
+        "Base/1011.tmx",
+        "Base/1101.tmx",
+        "Base/1110.tmx",
+        "Base/0110.tmx",
+        "Base/1001.tmx",
+        "Base/1010.tmx",
+        "Base/1100.tmx",
+        "Base/0010.tmx",
+        "Base/0100.tmx",
+        "Base/1000.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
