@@ -1,0 +1,82 @@
+Lightning.png
+size: 121, 117
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Lightning
+  rotate: false
+  xy: 106, 40
+  size: 12, 7
+  orig: 48, 48
+  offset: 5, 0
+  index: -1
+Lightning
+  rotate: true
+  xy: 97, 76
+  size: 25, 19
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+Lightning
+  rotate: true
+  xy: 1, 92
+  size: 21, 31
+  orig: 48, 48
+  offset: 2, 0
+  index: -1
+Lightning
+  rotate: false
+  xy: 89, 1
+  size: 31, 37
+  orig: 48, 48
+  offset: 0, 1
+  index: -1
+Lightning
+  rotate: false
+  xy: 67, 40
+  size: 37, 34
+  orig: 48, 48
+  offset: 0, 5
+  index: -1
+Lightning
+  rotate: false
+  xy: 51, 1
+  size: 36, 37
+  orig: 48, 48
+  offset: 6, 2
+  index: -1
+Lightning
+  rotate: false
+  xy: 1, 1
+  size: 48, 45
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+Lightning
+  rotate: false
+  xy: 1, 48
+  size: 34, 42
+  orig: 48, 48
+  offset: 14, 0
+  index: -1
+Lightning
+  rotate: false
+  xy: 37, 48
+  size: 28, 39
+  orig: 48, 48
+  offset: 20, 0
+  index: -1
+Lightning
+  rotate: false
+  xy: 67, 76
+  size: 28, 33
+  orig: 48, 48
+  offset: 20, 0
+  index: -1
+Lightning
+  rotate: true
+  xy: 37, 89
+  size: 27, 28
+  orig: 48, 48
+  offset: 21, 0
+  index: -1
