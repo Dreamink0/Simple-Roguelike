@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Base/0101.tmx",
+    "activeFile": "Base/Base.tmx",
     "expandedProjectPaths": [
         ".",
         "Base"
@@ -61,7 +61,7 @@
             "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 370,
+                "x": 327.75,
                 "y": 143.25
             }
         },
@@ -145,6 +145,14 @@
                 "y": 146.25
             }
         },
+        "Base/Base.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": -112.5,
+                "y": 76.5
+            }
+        },
         "Decor.tsx": {
             "scaleInDock": 4,
             "scaleInEditor": 5.5
@@ -159,17 +167,19 @@
         }
     },
     "last.imagePath": "F:/Projects/Java/SimpleGame/assets/Maps",
+    "map.fixedSize": false,
     "map.height": 12,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 24,
     "map.tileWidth": 24,
     "map.width": 20,
     "openFiles": [
-        "Base/0101.tmx"
+        "Base/Base.tmx"
     ],
     "project": "Simple-Roguelike.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "Base/Base.tmx",
         "Base/0101.tmx",
         "Base/0111.tmx",
         "Base/1011.tmx",
@@ -180,8 +190,7 @@
         "Base/1010.tmx",
         "Base/1100.tmx",
         "Base/0010.tmx",
-        "Base/0100.tmx",
-        "Base/1000.tmx"
+        "Base/0100.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

@@ -10,11 +10,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import io.github.SimpleGame.Config;
 import io.github.SimpleGame.Item.Weapon;
-
-import java.util.Random;
 
 public class ResourceManager {
     private static ResourceManager instance;
@@ -24,6 +23,7 @@ public class ResourceManager {
     private TextureAtlas playerAttackTextureAtlas;
     //Map
     private TiledMap tiledMap;
+    private ObjectMap<String, TiledMap> baseMaps;
     private MapManager mapManager;
     //Player
     private Sprite playerSprite;
@@ -86,7 +86,6 @@ public class ResourceManager {
     }
 
     public void dispose() {
-
         if (mapManager != null) {
             mapManager.dispose();
             mapManager = null;
@@ -100,8 +99,13 @@ public class ResourceManager {
         if (playerTextureAtlas != null) {
             playerTextureAtlas.dispose();
         }
+        if (baseMaps != null) {
+            for (TiledMap map : baseMaps.values()) {
+                map.dispose();
+            }
+            baseMaps.clear();
+        }
     }
-
 
     public void Load(){
         //使用 AssetManager 加载所有资源
@@ -109,6 +113,19 @@ public class ResourceManager {
         assetManager.load(Config.MAP_PATH, TiledMap.class);
         assetManager.load("Magic/Gravity-Sheet.png",Texture.class);
         assetManager.load(Config.PLAYERATTACK_ATLAS_PATH,TextureAtlas.class);
+        
+        // 加载所有基础地图
+        String[] baseMapNames = {
+            "0000", "0001", "0010", "0011",
+            "0100", "0101", "0110", "0111",
+            "1000", "1001", "1010", "1011",
+            "1100", "1101", "1110", "1111"
+        };
+        
+        for (String mapName : baseMapNames) {
+            assetManager.load("Maps/Base/" + mapName + ".tmx", TiledMap.class);
+        }
+        
         assetManager.finishLoading();
     }
     public void Get(){
@@ -116,6 +133,20 @@ public class ResourceManager {
         playerTextureAtlas = assetManager.get(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
         tiledMap = assetManager.get(Config.MAP_PATH, TiledMap.class);
         playerAttackTextureAtlas = assetManager.get(Config.PLAYERATTACK_ATLAS_PATH, TextureAtlas.class);
+        
+        // 获取所有基础地图
+        baseMaps = new ObjectMap<>();
+        String[] baseMapNames = {
+            "0000", "0001", "0010", "0011",
+            "0100", "0101", "0110", "0111",
+            "1000", "1001", "1010", "1011",
+            "1100", "1101", "1110", "1111"
+        };
+        
+        for (String mapName : baseMapNames) {
+            baseMaps.put(mapName, assetManager.get("Maps/Base/" + mapName + ".tmx", TiledMap.class));
+        }
+        
         if (playerTextureAtlas == null || tiledMap == null) {
             throw new RuntimeException("Failed to load required resources");
         }
@@ -137,5 +168,9 @@ public class ResourceManager {
                 (2*playerSprite.getWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
                 (2*playerSprite.getHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE
         );
+    }
+
+    public TiledMap getBaseMap(String mapName) {
+        return baseMaps.get(mapName);
     }
 }
