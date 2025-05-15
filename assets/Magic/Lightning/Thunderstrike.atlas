@@ -1,0 +1,89 @@
+Thunderstrike.png
+size: 128, 251
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Thunderstrike
+  rotate: true
+  xy: 118, 67
+  size: 22, 9
+  orig: 64, 64
+  offset: 22, 2
+  index: -1
+Thunderstrike
+  rotate: false
+  xy: 55, 216
+  size: 35, 8
+  orig: 64, 64
+  offset: 15, 2
+  index: -1
+Thunderstrike
+  rotate: false
+  xy: 55, 226
+  size: 22, 7
+  orig: 64, 64
+  offset: 22, 1
+  index: -1
+Thunderstrike
+  rotate: true
+  xy: 118, 91
+  size: 24, 7
+  orig: 64, 64
+  offset: 20, 1
+  index: -1
+Thunderstrike
+  rotate: false
+  xy: 67, 67
+  size: 49, 64
+  orig: 64, 64
+  offset: 9, 0
+  index: -1
+Thunderstrike
+  rotate: false
+  xy: 67, 1
+  size: 57, 64
+  orig: 64, 64
+  offset: 2, 0
+  index: -1
+Thunderstrike
+  rotate: false
+  xy: 1, 133
+  size: 62, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Thunderstrike
+  rotate: false
+  xy: 65, 133
+  size: 62, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Thunderstrike
+  rotate: false
+  xy: 1, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Thunderstrike
+  rotate: false
+  xy: 1, 67
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Thunderstrike
+  rotate: false
+  xy: 1, 199
+  size: 52, 51
+  orig: 64, 64
+  offset: 7, 4
+  index: -1
+Thunderstrike
+  rotate: false
+  xy: 55, 199
+  size: 52, 15
+  orig: 64, 64
+  offset: 7, 38
+  index: -1

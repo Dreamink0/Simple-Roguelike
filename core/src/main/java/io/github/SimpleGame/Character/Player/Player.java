@@ -22,7 +22,6 @@ public class Player {
     private Body playerBody;
     private Sprite playerSprite;
     //动画
-    private CharacterAttributes characterAttributes;
     private Animation<TextureRegion> playerIdleAnimation;
     private Animation<TextureRegion> playerRunAnimation;
     private Animation<TextureRegion> playerAttackAnimation;
@@ -32,7 +31,6 @@ public class Player {
     //状态界定
     private boolean isequipped = false;
     public Player(World world, float WORLD_WIDTH, float WORLD_HEIGHT) {
-        this.characterAttributes=new CharacterAttributes(20,50,10);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
@@ -103,7 +101,7 @@ public class Player {
         return playerBody;
     }
 
-    public CharacterAttributes getCharacterAttributes() {return characterAttributes;}
+    //public CharacterAttributes getCharacterAttributes() {return characterAttributes;}
 
     public void getAnimation(ResourceManager resourceManager) {
         this.playerIdleAnimation = resourceManager.getPlayerIdleAnimation();
@@ -118,11 +116,6 @@ public class Player {
     public Sprite getPlayerSprite() {return playerSprite;}
 
     public Animation<TextureRegion> getPlayerIdleAnimation() {return playerIdleAnimation;}
-
-    public Animation<TextureRegion> getPlayerRunAnimation() {return playerRunAnimation;}
-
-    public Animation<TextureRegion> getPlayerAttackAnimation() {return playerAttackAnimation;}
-
     public float getX() {return playerBody.getPosition().x;}
 
     public float getY() {return playerBody.getPosition().y;}

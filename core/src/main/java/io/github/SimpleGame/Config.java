@@ -9,12 +9,13 @@ public class Config {
     public static final float PLAYER_SCALE = 8f;
 
     // 资源路径
-    public static final String PLAYER_TEXTURE_PATH = "Sprites/NAILONG.png";
-    public static final String FIRE_TEXTURE_PATH = "Magic/FR.png";
     public static final String MAP_PATH = "Maps/TestMap.tmx";
     public static final String PLAYER_ATLAS_PATH = "Sprites/BasePlayer/BasePlayer.atlas";
     public static final String POWER_ATLAS_PATH = "Magic/ElectricA.atlas";
     public static final String PLAYERATTACK_ATLAS_PATH = "Sprites/BasePlayer/raw/attack/Attack.atlas";
+    public static final String LIGHTNING_MAGIC_PATH="Magic/Lightning/Lightning.atlas";
+    public static final String LIGHTNING_MAGIC_ICON_PATH="Magic/Lightning/ICON.png";
+    public static final String THUNDER_STRIKE_PATH="Magic/Lightning/Thunderstrike.atlas";
 
     // 动画配置
     public static final float IDLE_ANIMATION_FRAME_DURATION = 0.1f;

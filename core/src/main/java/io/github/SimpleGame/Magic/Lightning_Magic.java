@@ -4,34 +4,40 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.box2d.*;
 import io.github.SimpleGame.Character.Player.Player;
-import io.github.SimpleGame.Resource.ResourceManager;
+import io.github.SimpleGame.Config;
+
+import java.util.Random;
 
 import static io.github.SimpleGame.Config.PIXELS_PER_METER;
 
 public class Lightning_Magic extends Magic{
+    //材质
     private TextureAtlas Lighting_Magic_Atlas;
+    private TextureAtlas ThunderStrike_Atlas;
     private Animation<TextureRegion> Lightning_Magic_Animation;
+    private Animation<TextureRegion> ThunderStrike_Animation;
     private Texture ICON;
     private AssetManager assetManager;
-    private String Lightning_Magic_PATH="Magic/Lightning/Lightning.atlas";
-    private String Lightning_Magic_ICON_PATH="Magic/Lightning/ICON.png";
     private World world;
+    //碰撞
     private Rectangle boundingBox;
     private Rectangle ICON_BoundingBox;
     private Body body;
     private Body ICON_Body;
     private Body attachedBody;
     private boolean isAttached = false;
-    private  float offsetX;
-    private  float offsetY;
-    private float speedX = 15f; // 水平速度
-    private float speedY = 3f; // 初始垂直速度
+    //物理
+    private float speedX = 2f; // 水平速度
+    private float speedY = 0f; // 初始垂直速度
     private float gravity = 0f; // 重力加速度
     private float startX, startY;
     private float stateTime=0f;
@@ -39,20 +45,26 @@ public class Lightning_Magic extends Magic{
     private Boolean flag=false;//标记是否被拾取
     float x;
     float y;
-    private float magicDuration = 1.0f; // 魔法持续时间（秒）
-    private float magicStartTime = 0f;  // 魔法开始释放的时间
+    private float magicDuration  =3.33f; // 魔法持续时间（秒）
+    private float magicStartTime = 0f;
+    private long magicStartTimeNano = 0;
+
     //默认构造方法设置动画，传入参数类型：xxx.atlas;
     public Lightning_Magic(){
         //读取
         assetManager = new AssetManager();
-        assetManager.load(Lightning_Magic_ICON_PATH, Texture.class);
-        assetManager.load(Lightning_Magic_PATH,TextureAtlas.class);
+        assetManager.load(Config.LIGHTNING_MAGIC_ICON_PATH, Texture.class);
+        assetManager.load(Config.LIGHTNING_MAGIC_PATH,TextureAtlas.class);
+        assetManager.load(Config.THUNDER_STRIKE_PATH,TextureAtlas.class);
         assetManager.finishLoading();
         //赋值
-        this.ICON = assetManager.get(Lightning_Magic_ICON_PATH,Texture.class);
-        this.Lighting_Magic_Atlas=assetManager.get(Lightning_Magic_PATH,TextureAtlas.class);
-        this.Lightning_Magic_Animation = new Animation<>(0.05f,Lighting_Magic_Atlas.findRegions("Lightning"));
+        this.ICON = assetManager.get(Config.LIGHTNING_MAGIC_ICON_PATH,Texture.class);
+        this.Lighting_Magic_Atlas=assetManager.get(Config.LIGHTNING_MAGIC_PATH,TextureAtlas.class);
+        this.ThunderStrike_Atlas=assetManager.get(Config.THUNDER_STRIKE_PATH,TextureAtlas.class);
+        this.Lightning_Magic_Animation = new Animation<>(0.1f,Lighting_Magic_Atlas.findRegions("Lightning"));
+        this.ThunderStrike_Animation = new Animation<>(0.1f,ThunderStrike_Atlas.findRegions("Thunderstrike"));
         this.currentFrame = Lightning_Magic_Animation.getKeyFrame(0f);
+        this.magicStartTime = Gdx.graphics.getDeltaTime();
     }
     //该方法实现魔法在世界中创建可以拾取的道具
     @Override
@@ -90,7 +102,7 @@ public class Lightning_Magic extends Magic{
         updatePos(player,player.getX(), player.getY());
         if (!flag){//如果未施法，显示在施法位置
             updatePos(player, player.getX(), player.getY());
-            batch.draw(ICON, x, y, ICON.getWidth() / 16, ICON.getHeight() / 16);
+            batch.draw(ICON, player.getX()+18,player.getY()-8, ICON.getWidth() / 16, ICON.getHeight() / 16);
         }else{//如果已施法，显示在物品栏位置
             batch.draw(ICON, player.getX()+18,player.getY()-8, ICON.getWidth() / 16, ICON.getHeight() / 16);
         }
@@ -101,13 +113,13 @@ public class Lightning_Magic extends Magic{
             this.startX = player.getX();
             this.startY = player.getY() - 1.7f;
             this.stateTime = 0f;
+            this.magicStartTimeNano = System.nanoTime();
         }
     }
     //该方法实现使用魔法的渲染
     @Override
     public void Magic_render(SpriteBatch batch,Player player) {
         if (flag) {
-            float time=Gdx.graphics.getDeltaTime();
             float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
             stateTime += deltaTime;
             this.currentFrame = Lightning_Magic_Animation.getKeyFrame(stateTime, true);
@@ -120,17 +132,35 @@ public class Lightning_Magic extends Magic{
             float currentX = startX + effectiveSpeedX * currentTime; // 水平移动（受朝向影响）
             float currentY = startY + speedY * currentTime + 0.5f * gravity * currentTime * currentTime;
             speedY += gravity * deltaTime;
-            // 绘制魔法效果（翻转贴图）
+            // 绘制魔法效果（翻转贴图）;
             float scaleX = isFlipped ? -1f : 1f;
-            batch.draw(
-                currentFrame,
-                currentX,
-                currentY,
-                scaleX * currentFrame.getRegionWidth() * 0.2f, // 水平翻转
-                currentFrame.getRegionHeight() * 0.2f
-            );
-            if (currentY < 0 || currentX > Gdx.graphics.getWidth()) {
-                flag = false;
+                batch.draw(currentFrame, currentX, currentY,
+                    scaleX * currentFrame.getRegionWidth() * 0.15f, // 水平翻转
+                    currentFrame.getRegionHeight() * 0.15f
+                );
+            if (magicStartTimeNano > 1) { // 确保已记录开始时间
+                long currentTimeNano = System.nanoTime();
+                float elapsedTimeSeconds = (currentTimeNano - magicStartTimeNano) / 1_000_000_000f; // 转换为秒
+                if (elapsedTimeSeconds >= magicDuration || currentY < 0 || currentX > Gdx.graphics.getWidth()) {
+                    flag = false;
+                    magicStartTimeNano = 0; // 重置开始时间
+                }
+            }
+            currentX = startX + effectiveSpeedX * currentTime; // 水平移动（受朝向影响）
+            currentY = startY + speedY * currentTime + 0.5f * gravity * currentTime * currentTime;
+            this.currentFrame = ThunderStrike_Animation.getKeyFrame(stateTime, true);
+            for(int i=0;i<=360;i+=120){
+                batch.draw(currentFrame, currentX-0.1f, currentY- i%360-MathUtils.sin(i)*3,
+                    scaleX * currentFrame.getRegionWidth() * 0.15f, // 水平翻转
+                    currentFrame.getRegionHeight() * 0.15f
+                );
+            }
+            if (magicStartTimeNano>0) { // 确保已记录开始时间
+                long currentTimeNano = System.nanoTime();
+                float elapsedTimeSeconds = (currentTimeNano - magicStartTimeNano) / 1_000_000_000f; // 转换为秒
+                if (elapsedTimeSeconds >= magicDuration || currentY < 0 || currentX > Gdx.graphics.getWidth()) {
+                    magicStartTimeNano = 0; // 重置开始时间
+                }
             }
         }
     }
@@ -158,22 +188,24 @@ public class Lightning_Magic extends Magic{
             }
             BodyDef bodyDef = new BodyDef();
             bodyDef.type = BodyDef.BodyType.KinematicBody;
-            bodyDef.position.set(player.getBody().getPosition().x + offsetX/PIXELS_PER_METER,
-                player.getBody().getPosition().y + offsetY/PIXELS_PER_METER);
+            bodyDef.position.set(
+                player.getBody().getPosition().x /PIXELS_PER_METER,
+                player.getBody().getPosition().y /PIXELS_PER_METER
+            );
 
             this.attachedBody = world.createBody(bodyDef);
-            this.attachedBody.setUserData("weapon");
+            this.attachedBody.setUserData("Lightning");
 
             PolygonShape shape = new PolygonShape();
-            float scaledWidth = ICON.getWidth()/ PIXELS_PER_METER/2;
-            float scaledHeight = ICON.getHeight()/ PIXELS_PER_METER/2;
+            float scaledWidth = 2*ICON.getWidth()/ PIXELS_PER_METER;
+            float scaledHeight = 2*ICON.getHeight()/ PIXELS_PER_METER;
 
-            shape.setAsBox(scaledWidth/2, scaledHeight/2);
+            shape.setAsBox(scaledWidth, scaledHeight);
 
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
             fixtureDef.isSensor = true;
-            this.attachedBody.createFixture(fixtureDef).setUserData("weapon");
+            this.attachedBody.createFixture(fixtureDef).setUserData("Lightning");
             shape.dispose();
 
             isAttached = true;
