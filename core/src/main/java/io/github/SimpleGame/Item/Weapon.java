@@ -67,7 +67,6 @@ public class Weapon {
         this.body.createFixture(fixtureDef).setUserData("weapon");
         shape.dispose();
     }
-
     public Weapon(World world, TextureRegion textureRegion, float x, float y, float scale) {
         this.world = world;
         this.textureRegion = textureRegion;
@@ -104,27 +103,10 @@ public class Weapon {
         if (player.isIsequipped()) {
             attachToPlayer(player,player.getX(),player.getY());
             updatePosition(player,player.getX(), player.getY(), offsetX, offsetY);
-            if(!player.getPlayerController().isFlipped){
+            float scaleX = player.getPlayerController().isFlipped?-1f:1f;
                 batch.draw(
                     textureRegion.getTexture(),
-                    (float) (player.getX() - (float) textureRegion.getRegionWidth() /2 * scale),
-                    (float) (player.getY() - (float) textureRegion.getRegionHeight() /2 * scale)-0.2f,
-                    (float) textureRegion.getRegionWidth() /2 * scale,
-                    (float) textureRegion.getRegionHeight() /2 * scale,
-                    textureRegion.getRegionWidth() * scale,
-                    textureRegion.getRegionHeight() * scale,
-                    0.09f, 0.09f,
-                    180,  // 旋转角度
-                    0, 0,  // 纹理坐标
-                    textureRegion.getRegionWidth(),
-                    textureRegion.getRegionHeight(),
-                    player.getPlayerController().isFlipped,
-                    true
-                );
-            }else{
-                batch.draw(
-                    textureRegion.getTexture(),
-                    (player.getX() - (float) textureRegion.getRegionWidth() /2 * scale),
+                    (player.getX() - (float) textureRegion.getRegionWidth() /2 * scale)*scale,
                     (player.getY() - (float) textureRegion.getRegionHeight() /2 * scale)-0.2f,
                     (float) textureRegion.getRegionWidth() /2 * scale,
                     (float) textureRegion.getRegionHeight() /2 * scale,
@@ -138,7 +120,6 @@ public class Weapon {
                     player.getPlayerController().isFlipped,
                     true
                 );
-            }
         }else{
                 updatePosition(player,player.getX(), player.getY(), offsetX, offsetY);
                 Vector2 pos = body.getPosition();

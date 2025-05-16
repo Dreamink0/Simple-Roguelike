@@ -4,9 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Item.Weapon;
 import io.github.SimpleGame.Magic.Lightning_Magic;
@@ -14,7 +12,6 @@ import io.github.SimpleGame.Resource.CameraManager;
 import io.github.SimpleGame.Resource.MapManager;
 import io.github.SimpleGame.Resource.ResourceManager;
 import io.github.SimpleGame.Resource.WorldManager;
-
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class MainTest extends ApplicationAdapter {
     private WorldManager worldManager;
@@ -22,7 +19,6 @@ public class MainTest extends ApplicationAdapter {
     private SpriteBatch batch;
     private MapManager mapManager;
     float stateTime=0f;
-    private Animation<TextureRegion> currentAnimation;
     private Player player;
     private ResourceManager resourceManager;
     private Weapon item;
@@ -40,10 +36,7 @@ public class MainTest extends ApplicationAdapter {
             resourceManager.loadResources();
             //3初始化玩家
             player = new Player(worldManager.getWorld(), Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
-            player.getAnimation(resourceManager);
-            //4初始化精灵
             player.getSprite(resourceManager);
-            currentAnimation = player.getPlayerIdleAnimation();
             item=new Weapon(worldManager.getWorld(),Config.WORLD_WIDTH,Config.WORLD_HEIGHT+5,1f);
             lightningMagic=new Lightning_Magic();
             lightningMagic.Magic_create(worldManager.getWorld(),Config.WORLD_WIDTH+4,Config.WORLD_HEIGHT);
@@ -63,7 +56,7 @@ public class MainTest extends ApplicationAdapter {
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
         stateTime += deltaTime;
         // 根据玩家移动状态选择动画
-        player.ActionCheck(player.getPlayerController(),player,worldManager.getWorld()).update();
+        player.setAction(player.getPlayerController(),player,worldManager.getWorld()).update();
         // 更新相机位置
         cameraManager.getCamera(player.getPlayerController());
         mapManager.setView(cameraManager.getCamera());

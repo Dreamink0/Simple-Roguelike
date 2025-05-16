@@ -2,13 +2,11 @@ package io.github.SimpleGame.Character.Player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
-import io.github.SimpleGame.Config;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 public class PlayerController {
     private final Body body;
@@ -21,9 +19,6 @@ public class PlayerController {
     private static final float ATTACK_DURATION = 0.4f; // 攻击动画持续时间
     private float attackTimer = 0f;
     private boolean isAttacking = false;
-    private boolean isMoving = false;
-    private Vector2 moveDirection;
-
     public PlayerController(Body body) {
         this.body = body;
         setupBody();
@@ -76,11 +71,9 @@ public class PlayerController {
             body.setLinearVelocity(velocity);
         }
     }
-
     public Vector2 getPosition() {
         return body.getPosition();
     }
-
     public boolean isFlipped() {
         boolean leftPressed = Gdx.input.isKeyPressed(Input.Keys.A);
         boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.D);
@@ -92,7 +85,6 @@ public class PlayerController {
         }
         return isFlipped;
     }
-
     public boolean isMoving() {
         Vector2 velocity = body.getLinearVelocity();
         return velocity.len2() > 0.5f;
@@ -114,16 +106,7 @@ public class PlayerController {
             MAX_SPEED=0;
         }
     }
-
     public Body getBody() {
         return body;
-    }
-
-    public float getMoveX() {
-        return moveDirection.x;
-    }
-
-    public float getMoveY() {
-        return moveDirection.y;
     }
 }

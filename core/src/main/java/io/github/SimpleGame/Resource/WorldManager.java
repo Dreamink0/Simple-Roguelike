@@ -1,7 +1,9 @@
 package io.github.SimpleGame.Resource;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Box2D;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 public class WorldManager{
     private World world;
     private Box2DDebugRenderer debugRenderer;

@@ -1,35 +1,21 @@
 package io.github.SimpleGame.Character.Player;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
-import io.github.SimpleGame.Attribute.CharacterAttributes;
-import io.github.SimpleGame.Config;
-import io.github.SimpleGame.Item.Weapon;
 import io.github.SimpleGame.Resource.ResourceManager;
-import io.github.SimpleGame.Resource.WorldManager;
 
 public class Player {
-    //身体
-    private PlayerController playerController;
-    private Body playerBody;
-    private Sprite playerSprite;
-    //动画
-    private Animation<TextureRegion> playerIdleAnimation;
-    private Animation<TextureRegion> playerRunAnimation;
-    private Animation<TextureRegion> playerAttackAnimation;
-    private Animation<TextureRegion> currentAnimation;
-    float stateTime=0f;
-    private float accumulator = 0f;
-    //状态界定
-    private boolean isequipped = false;
+    //身体//
+    protected PlayerController playerController;
+    protected Body playerBody;
+    protected Sprite playerSprite;
+    //接口//
+    private PlayerAnimationHandler actionHandler;
+    private PlayerFilpHandler flipChecker;
+    //状态//
+    protected boolean isequipped = false;
+    public Player() {}
     public Player(World world, float WORLD_WIDTH, float WORLD_HEIGHT) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -49,73 +35,26 @@ public class Player {
 
         playerBody.createFixture(fixtureDef);
         BoundingBox.dispose();
+        this.actionHandler = new PlayerAniamtion();
+        this.flipChecker = new PlayerPlayerFilpCheck();
     }
-
-    public PlayerController ActionCheck(PlayerController playerController, Player player, World world) {
-        float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
-        stateTime += deltaTime;
-        boolean isAttacking = playerController.isAttacking();
-        boolean isMoving = playerController.isMoving();
-        Animation<TextureRegion> newAnimation;
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.J)) {
-            playerController.startAttack();
-            isAttacking = true;
-        }
-        if (isAttacking) {
-            newAnimation = playerAttackAnimation;
-        } else {
-            newAnimation = isMoving ? playerRunAnimation : playerIdleAnimation;
-        }
-
-        if (newAnimation != currentAnimation) {
-            stateTime = 0;
-            currentAnimation = newAnimation;
-        }
-
-        TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
-        playerSprite.setRegion(currentFrame);
-        accumulator += deltaTime;
-        while (accumulator >= Config.TIME_STEP) {
-            world.step(Config.TIME_STEP, 6, 2);
-            accumulator -= Config.TIME_STEP;
-        }
-        return playerController;
+    //玩家动画更新//
+    public PlayerController setAction(PlayerController playerController, Player player, World world) {
+        return actionHandler.handleAction(playerController, this, world);
     }
-
+    //玩家是否翻转//
     public Sprite FilpCheck(Sprite sprite,PlayerController playerController,SpriteBatch batch) {
-        boolean isFlipped =playerController.isFlipped();
-        playerSprite.setPosition(
-            playerController.getPosition().x - playerSprite.getWidth() / 2,
-            playerController.getPosition().y - playerSprite.getHeight() / 2
-        );
-        playerSprite.setFlip(isFlipped, false);
-        return playerSprite;
+        return flipChecker.checkFlip(sprite,playerController,batch);
     }
+    /////常用的getter和setter////
+    public PlayerController getPlayerController() {return playerController;}
 
-    public PlayerController getPlayerController() {
-        return playerController;
-    }
+    public Body getBody() {return playerBody;}
 
-    public Body getBody() {
-        return playerBody;
-    }
-
-    //public CharacterAttributes getCharacterAttributes() {return characterAttributes;}
-
-    public void getAnimation(ResourceManager resourceManager) {
-        this.playerIdleAnimation = resourceManager.getPlayerIdleAnimation();
-        this.playerRunAnimation = resourceManager.getPlayerRunAnimation();
-        this.playerAttackAnimation = resourceManager.getPlayerAttackAnimation();
-    }
-
-    public void getSprite(ResourceManager resourceManager) {
-        this.playerSprite = resourceManager.getPlayerSprite();
-    }
+    public void getSprite(ResourceManager resourceManager) {this.playerSprite = resourceManager.getPlayerSprite();}
 
     public Sprite getPlayerSprite() {return playerSprite;}
 
-    public Animation<TextureRegion> getPlayerIdleAnimation() {return playerIdleAnimation;}
     public float getX() {return playerBody.getPosition().x;}
 
     public float getY() {return playerBody.getPosition().y;}

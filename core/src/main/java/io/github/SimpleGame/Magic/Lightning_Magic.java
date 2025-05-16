@@ -15,10 +15,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Config;
 
-import java.util.Random;
-
 import static io.github.SimpleGame.Config.PIXELS_PER_METER;
-
 public class Lightning_Magic extends Magic{
     //材质
     private TextureAtlas Lighting_Magic_Atlas;
@@ -61,6 +58,12 @@ public class Lightning_Magic extends Magic{
         this.ICON = assetManager.get(Config.LIGHTNING_MAGIC_ICON_PATH,Texture.class);
         this.Lighting_Magic_Atlas=assetManager.get(Config.LIGHTNING_MAGIC_PATH,TextureAtlas.class);
         this.ThunderStrike_Atlas=assetManager.get(Config.THUNDER_STRIKE_PATH,TextureAtlas.class);
+        for(Texture texture : Lighting_Magic_Atlas.getTextures()) {
+            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        }
+        for(Texture texture : ThunderStrike_Atlas.getTextures()) {
+            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        }
         this.Lightning_Magic_Animation = new Animation<>(0.1f,Lighting_Magic_Atlas.findRegions("Lightning"));
         this.ThunderStrike_Animation = new Animation<>(0.1f,ThunderStrike_Atlas.findRegions("Thunderstrike"));
         this.currentFrame = Lightning_Magic_Animation.getKeyFrame(0f);
@@ -123,19 +126,18 @@ public class Lightning_Magic extends Magic{
             float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
             stateTime += deltaTime;
             this.currentFrame = Lightning_Magic_Animation.getKeyFrame(stateTime, true);
-            // 获取玩家朝向（假设 isFlipped() 返回 true 表示朝左，false 表示朝右）
-            boolean isFlipped = player.getPlayerController().isFlipped();
+            //boolean isFlipped = player.getPlayerController().isFlipped();
             // 根据朝向调整水平速度（speedX）
-            float effectiveSpeedX = isFlipped ? -Math.abs(speedX) : Math.abs(speedX);
+            //float effectiveSpeedX = isFlipped ? -Math.abs(speedX) : Math.abs(speedX);
             // 计算当前位置（水平+垂直）
             float currentTime = stateTime;
-            float currentX = startX + effectiveSpeedX * currentTime; // 水平移动（受朝向影响）
+            float currentX = startX + 1 * currentTime; // 水平移动（受朝向影响）
             float currentY = startY + speedY * currentTime + 0.5f * gravity * currentTime * currentTime;
             speedY += gravity * deltaTime;
             // 绘制魔法效果（翻转贴图）;
-            float scaleX = isFlipped ? -1f : 1f;
+            //float scaleX = Gdx.input.isKeyJustPressed(Input.Keys.A) ? -1f : 1f;
                 batch.draw(currentFrame, currentX, currentY,
-                    scaleX * currentFrame.getRegionWidth() * 0.15f, // 水平翻转
+                    currentFrame.getRegionWidth() * 0.15f, // 水平翻转
                     currentFrame.getRegionHeight() * 0.15f
                 );
             if (magicStartTimeNano > 1) { // 确保已记录开始时间
@@ -146,12 +148,12 @@ public class Lightning_Magic extends Magic{
                     magicStartTimeNano = 0; // 重置开始时间
                 }
             }
-            currentX = startX + effectiveSpeedX * currentTime; // 水平移动（受朝向影响）
+            currentX = startX + 1 * currentTime; // 水平移动（受朝向影响）
             currentY = startY + speedY * currentTime + 0.5f * gravity * currentTime * currentTime;
             this.currentFrame = ThunderStrike_Animation.getKeyFrame(stateTime, true);
             for(int i=0;i<=360;i+=120){
                 batch.draw(currentFrame, currentX-0.1f, currentY- i%360-MathUtils.sin(i)*3,
-                    scaleX * currentFrame.getRegionWidth() * 0.15f, // 水平翻转
+                    currentFrame.getRegionWidth() * 0.15f, // 水平翻转
                     currentFrame.getRegionHeight() * 0.15f
                 );
             }
