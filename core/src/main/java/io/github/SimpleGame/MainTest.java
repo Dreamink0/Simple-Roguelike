@@ -36,7 +36,6 @@ public class MainTest extends ApplicationAdapter {
             resourceManager.loadResources();
             //3初始化玩家
             player = new Player(worldManager.getWorld(), Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
-            player.getSprite(resourceManager);
             item=new Weapon(worldManager.getWorld(),Config.WORLD_WIDTH,Config.WORLD_HEIGHT+5,1f);
             lightningMagic=new Lightning_Magic();
             lightningMagic.Magic_create(worldManager.getWorld(),Config.WORLD_WIDTH+4,Config.WORLD_HEIGHT);

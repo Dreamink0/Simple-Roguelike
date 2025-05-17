@@ -12,6 +12,20 @@ public abstract class Magic {
 }
 //魔法物品栏管理,后续实现
 class MagicManager{
-    private ArrayList<Magic> magics = new ArrayList<Magic>();
-
+    private ArrayList<Magic> magicArrayList = new ArrayList<Magic>();
+    public void addMagic(Magic magic)
+    {
+        magicArrayList.add(magic);
+    }
+    public void removeMagic(Magic magic)
+    {
+        magicArrayList.remove(magic);
+    }
+    public void render(SpriteBatch batch,Player player)
+    {
+        for(Magic magic:magicArrayList)
+        {
+            magic.Magic_render(batch,player);
+        }
+    }
 }

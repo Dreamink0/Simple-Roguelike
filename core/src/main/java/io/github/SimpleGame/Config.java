@@ -15,9 +15,13 @@ public class Config {
     public static final String PLAYERATTACK_ATLAS_PATH = "Sprites/BasePlayer/raw/attack/Attack.atlas";
     public static final String LIGHTNING_MAGIC_PATH="Magic/Lightning/Lightning.atlas";
     public static final String LIGHTNING_MAGIC_ICON_PATH="Magic/Lightning/ICON.png";
+    public static final String LIGHTNING_MAGIC_ICON2_PATH="Magic/Lightning/ICON2.png";
     public static final String THUNDER_STRIKE_PATH="Magic/Lightning/Thunderstrike.atlas";
 
     // 动画配置
     public static final float IDLE_ANIMATION_FRAME_DURATION = 0.1f;
     public static final float FIRE_ANIMATION_FRAME_DURATION = 0.033f;
+    public static final short BIT_MAGIC = (short) 2f;
+    public static final short BIT_ENEMY = (short) 2f;
+    public static final boolean DEBUG_PHYSICS = true;
 }
