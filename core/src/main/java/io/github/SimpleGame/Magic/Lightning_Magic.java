@@ -34,11 +34,11 @@ public class Lightning_Magic extends Magic {
     protected Body attachedBody;
     protected boolean isAttached = false;
     protected Body lightningBody;
-    PolygonShape shape;
+    protected PolygonShape shape;
 
     // 状态管理
     protected float stateTime = 0f;
-    protected float magicDuration = 5.95f;
+    protected float magicDuration = 5.95f*4f;
     protected long magicStartTimeNano = 0;
     protected boolean active = false;
 
@@ -49,6 +49,9 @@ public class Lightning_Magic extends Magic {
     protected float startX, startY;
     protected float currentX, currentY;
     protected float x, y;
+    private static final float COOLDOWN_DURATION = 10f;
+    private long lastUsedTime = 0;
+    private Player player;
 
     // 构造函数
     public Lightning_Magic() {
@@ -114,30 +117,43 @@ public class Lightning_Magic extends Magic {
         this.iconBody.createFixture(fixtureDef).setUserData("Lightning");
 
         shape.dispose();
+
     }
 
     // 拾取魔法
     @Override
     public void Magic_obtain(SpriteBatch batch, Player player) {
+        this.player = player;
         updatePosition(player);
-
         if (!active) {
-            iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON2_PATH, Texture.class);
+            if (!isCooldownElapsed()) {
+                iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON_PATH, Texture.class);
+            } else {
+                iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON2_PATH, Texture.class);
+            }
             batch.draw(iconTexture, player.getX() + 18, player.getY() - 8,
                 iconTexture.getWidth() / 16, iconTexture.getHeight() / 16);
         } else {
-            iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON_PATH, Texture.class);
+            if (!isCooldownElapsed()) {
+                iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON_PATH, Texture.class);
+            }
             batch.draw(iconTexture, player.getX() + 18, player.getY() - 8,
                 iconTexture.getWidth() / 16, iconTexture.getHeight() / 16);
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            if (active || !isCooldownElapsed()) {
+                return; // 已激活或冷却未结束时不执行
+            }
             attachToPlayer(player);
             active = true;
             startX = player.getX();
             startY = player.getY() - 1.7f;
             stateTime = 0f;
             magicStartTimeNano = System.nanoTime();
+            lastUsedTime = System.nanoTime(); //记录魔法使用时间
+            boolean isFlipped = player.getPlayerController().isFlipped();
+            speedX = isFlipped ? -2f : 2f;
         }
     }
 
@@ -182,7 +198,12 @@ public class Lightning_Magic extends Magic {
     public void Magic_render(SpriteBatch batch, Player player) {
         if (!active) return;
         updateMagicState(Gdx.graphics.getDeltaTime());
-
+        if (lightningBody != null) {
+            // 根据朝向设置固定角度
+            boolean isFlipped = player.getPlayerController().isFlipped();
+            float angle = isFlipped ? MathUtils.degreesToRadians * 120 : MathUtils.degreesToRadians * 60;
+            lightningBody.setTransform(currentX + 2, currentY + 2, angle);
+        }
         // 创建或更新碰撞体位置
         if (lightningBody == null && getElapsedTime() < magicDuration) {
             // 创建新的碰撞体
@@ -194,7 +215,7 @@ public class Lightning_Magic extends Magic {
             lightningBody.setUserData("lightning_Magic");
 
             shape = new PolygonShape();
-            shape.setAsBox(6f, 6f);
+            shape.setAsBox(8f, 8f);
 
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
@@ -241,10 +262,14 @@ public class Lightning_Magic extends Magic {
     // 渲染闪电效果
     private void renderLightningEffect(SpriteBatch batch) {
         TextureRegion frame = lightningAnimation.getKeyFrame(stateTime, false);
-        // 使用固定偏移模式替代随机抖动，创建更稳定的视觉效果
-        for (int i = 0; i <= 360; i += 45) { // 增加密度，减少随机性
+        boolean isFlipped = player.getPlayerController().isFlipped();
+        // 自动镜像纹理区域
+        if (isFlipped != frame.isFlipX()) {
+            frame.flip(true, false);
+        }        // 使用固定偏移模式替代随机抖动，创建更稳定的视觉效果
+        for (int i = 0; i <= 360; i += 45) {
             float angle = i;
-            // 使用正弦和余弦函数的组合产生平滑动画效果
+            // 产生平滑动画效果
             float offsetX = cos(angle + stateTime * 5) * 1 * (1 + stateTime);
             float offsetY = MathUtils.sin(angle + stateTime * 5) * 1 * (1 + stateTime);
             float colorOffset = 7+MathUtils.sin(stateTime * 7 + i) * 0.1f;
@@ -265,16 +290,19 @@ public class Lightning_Magic extends Magic {
     // 渲染雷电特效
     private void renderThunderEffects(SpriteBatch batch) {
         TextureRegion frame = thunderAnimation.getKeyFrame(stateTime, true);
+        boolean isFlipped = player.getPlayerController().isFlipped();
+        // 自动镜像纹理区域
+        if (isFlipped != frame.isFlipX()) {
+            frame.flip(true, false);
+        }
         // 创建同心圆扩散效果，提供更连贯的运动感
         for (int i = 0; i <= 360; i += 45) {
             float angle = i;
-            // 使用统一的时间因子确保整体协调性
             float radius = 5 + 2 * MathUtils.sin(stateTime * 5);
-            float offsetX = cos(angle+stateTime * 12) * radius;
+            float offsetX = cos(angle/2+stateTime * 12) * radius;
             float offsetY = MathUtils.sin(2*angle-stateTime*10) * radius;
             // 添加轻微的颜色变化效果
             float colorOffset = stateTime;
-            // 保存当前颜色
             float[] originalColor = new float[4];
             originalColor[0] = batch.getColor().r;
             originalColor[1] = batch.getColor().g;
@@ -305,4 +333,13 @@ public class Lightning_Magic extends Magic {
         magicStartTimeNano = 0;
         speedY = 0f;
     }
+    private boolean isCooldownElapsed() {
+        if (lastUsedTime == 0) {
+            return true; //初始状态无冷却限制
+        }
+        long currentTime = System.nanoTime();
+        long cooldownNanos = (long) (COOLDOWN_DURATION * 1_000_000_000L);
+        return (currentTime - lastUsedTime) >= cooldownNanos;
+    }
+
 }
