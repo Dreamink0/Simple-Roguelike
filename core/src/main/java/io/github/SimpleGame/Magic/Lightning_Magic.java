@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Config;
 
+import static com.badlogic.gdx.math.MathUtils.cos;
 import static io.github.SimpleGame.Config.*;
 
 public class Lightning_Magic extends Magic {
@@ -37,7 +38,7 @@ public class Lightning_Magic extends Magic {
 
     // 状态管理
     protected float stateTime = 0f;
-    protected float magicDuration = 3.33f;
+    protected float magicDuration = 5.95f;
     protected long magicStartTimeNano = 0;
     protected boolean active = false;
 
@@ -186,22 +187,22 @@ public class Lightning_Magic extends Magic {
         if (lightningBody == null && getElapsedTime() < magicDuration) {
             // 创建新的碰撞体
             BodyDef bodyDef = new BodyDef();
-            bodyDef.type = BodyDef.BodyType.KinematicBody;
+            bodyDef.type = BodyDef.BodyType.DynamicBody;
             bodyDef.position.set(currentX, currentY);
 
             lightningBody = world.createBody(bodyDef);
             lightningBody.setUserData("lightning_Magic");
 
             shape = new PolygonShape();
-            shape.setAsBox(4f, 3f);
+            shape.setAsBox(6f, 6f);
 
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
             fixtureDef.isSensor = true;
-            lightningBody.createFixture(fixtureDef);
+            lightningBody.createFixture(fixtureDef).setUserData("lightning_Magic");
         } else if (lightningBody != null) {
             // 更新现有碰撞体位置
-            lightningBody.setTransform(currentX + 5, currentY, 0f);
+            lightningBody.setTransform(currentX+2, currentY+2, 60f);
         }
 
         renderLightningEffect(batch);
@@ -239,22 +240,57 @@ public class Lightning_Magic extends Magic {
 
     // 渲染闪电效果
     private void renderLightningEffect(SpriteBatch batch) {
-        TextureRegion frame = lightningAnimation.getKeyFrame(stateTime, true);
-        batch.draw(frame, currentX, currentY,
-            frame.getRegionWidth() * 0.15f,
-            frame.getRegionHeight() * 0.15f);
+        TextureRegion frame = lightningAnimation.getKeyFrame(stateTime, false);
+        // 使用固定偏移模式替代随机抖动，创建更稳定的视觉效果
+        for (int i = 0; i <= 360; i += 45) { // 增加密度，减少随机性
+            float angle = i;
+            // 使用正弦和余弦函数的组合产生平滑动画效果
+            float offsetX = cos(angle + stateTime * 5) * 1 * (1 + stateTime);
+            float offsetY = MathUtils.sin(angle + stateTime * 5) * 1 * (1 + stateTime);
+            float colorOffset = 7+MathUtils.sin(stateTime * 7 + i) * 0.1f;
+            // 保存当前颜色
+            float[] originalColor = new float[4];
+            originalColor[0] = batch.getColor().r;
+            originalColor[1] = batch.getColor().g;
+            originalColor[2] = batch.getColor().b;
+            originalColor[3] = batch.getColor().a;
+            batch.setColor(1 + colorOffset, 0.8f + colorOffset, 0.2f + colorOffset, 1);
+            batch.draw(frame, currentX + offsetX, currentY + offsetY,
+                frame.getRegionWidth() * 0.1f,
+                frame.getRegionHeight() * 0.1f);
+            batch.setColor(originalColor[0], originalColor[1], originalColor[2], originalColor[3]);
+        }
     }
 
     // 渲染雷电特效
     private void renderThunderEffects(SpriteBatch batch) {
         TextureRegion frame = thunderAnimation.getKeyFrame(stateTime, true);
-        for (int i = 0; i <= 360; i += 120) {
-            batch.draw(frame, currentX - 0.1f, currentY - MathUtils.sin(i) * 3,
-                frame.getRegionWidth() * 0.15f,
-                frame.getRegionHeight() * 0.15f);
+        // 创建同心圆扩散效果，提供更连贯的运动感
+        for (int i = 0; i <= 360; i += 45) {
+            float angle = i;
+            // 使用统一的时间因子确保整体协调性
+            float radius = 5 + 2 * MathUtils.sin(stateTime * 5);
+            float offsetX = cos(angle+stateTime * 12) * radius;
+            float offsetY = MathUtils.sin(2*angle-stateTime*10) * radius;
+            // 添加轻微的颜色变化效果
+            float colorOffset = stateTime;
+            // 保存当前颜色
+            float[] originalColor = new float[4];
+            originalColor[0] = batch.getColor().r;
+            originalColor[1] = batch.getColor().g;
+            originalColor[2] = batch.getColor().b;
+            originalColor[3] = batch.getColor().a;
+            // 应用临时颜色进行绘制
+            batch.setColor(1 + colorOffset, 0.8f + colorOffset, 0.2f + colorOffset, 1);
+
+            batch.draw(frame, currentX + offsetX - 0.1f, currentY + offsetY,
+                frame.getRegionWidth() * 0.2f,
+                frame.getRegionHeight() * 0.2f);
+
+            // 恢复原始颜色
+            batch.setColor(originalColor[0], originalColor[1], originalColor[2], originalColor[3]);
         }
     }
-
     // 检查去激活条件
     private void checkDeactivation() {
         if (getElapsedTime() >= magicDuration || currentY < 0 || currentX > Gdx.graphics.getWidth()) {
