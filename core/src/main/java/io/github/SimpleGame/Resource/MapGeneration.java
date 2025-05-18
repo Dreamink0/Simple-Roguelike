@@ -60,6 +60,7 @@ public class MapGeneration {
         groundLayer.setName("图块层 1");
         TiledMapTileLayer wallLayer = new TiledMapTileLayer(DUNGEON_SIZE * ROOM_WIDTH, DUNGEON_SIZE * ROOM_HEIGHT, TILE_SIZE, TILE_SIZE);
         wallLayer.setName("Wall");
+        wallLayer.setOpacity(0f);  // 设置Wall层的不透明度为0
 
         // 生成房间布局
         String[][] roomLayout = generateConnectedRoomLayout();
