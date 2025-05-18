@@ -6,7 +6,11 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
 public class MapManager{
@@ -86,11 +90,18 @@ public class MapManager{
 
     public void dispose() {
         if (mapRenderer != null) {
-           mapRenderer = null;
+            mapRenderer.dispose();
+            mapRenderer = null;
+        }
+
+        if (tiledMap != null) {
+            tiledMap.dispose();
         }
 
         for (Body body : wallBodies) {
-            world.destroyBody(body);
+            if (body != null) {
+                world.destroyBody(body);
+            }
         }
         wallBodies.clear();
     }
