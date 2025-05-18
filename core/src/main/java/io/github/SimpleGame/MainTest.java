@@ -5,18 +5,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 import io.github.SimpleGame.Character.Player.Player;
+import static io.github.SimpleGame.Config.WORLD_HEIGHT;
+import static io.github.SimpleGame.Config.WORLD_WIDTH;
 import io.github.SimpleGame.Item.Weapon;
 import io.github.SimpleGame.Magic.Lightning_Magic;
 import io.github.SimpleGame.Resource.CameraManager;
+import io.github.SimpleGame.Resource.MapGeneration;
 import io.github.SimpleGame.Resource.MapManager;
 import io.github.SimpleGame.Resource.ResourceManager;
 import io.github.SimpleGame.Resource.WorldManager;
-
-import static io.github.SimpleGame.Config.WORLD_HEIGHT;
-import static io.github.SimpleGame.Config.WORLD_WIDTH;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class MainTest extends ApplicationAdapter {
@@ -24,6 +24,7 @@ public class MainTest extends ApplicationAdapter {
     private CameraManager cameraManager;
     private SpriteBatch batch;
     private MapManager mapManager;
+    private MapGeneration mapGeneration;
     float stateTime=0f;
     private Player player;
     private ResourceManager resourceManager;
@@ -47,6 +48,7 @@ public class MainTest extends ApplicationAdapter {
             lightningMagic.magicCreate(worldManager.getWorld(), WORLD_WIDTH+4, WORLD_HEIGHT);
             //5其他初始化
             batch = new SpriteBatch();
+            mapGeneration = new MapGeneration();
             mapManager = resourceManager.getMapManager(worldManager.getWorld());
         } catch (Exception e) {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
@@ -97,6 +99,22 @@ public class MainTest extends ApplicationAdapter {
                 player.DEFtexture = null;
             player.HP -= 25;
             player.DEF-=5;
+        }
+        // 按R键生成新地图
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            try {
+                // 清理旧地图
+                if (mapManager != null) {
+                    mapManager.dispose();
+                }
+                // 生成新地图
+                mapManager = new MapManager(mapGeneration.generateRandomMap(), Config.PIXELS_PER_METER/512, worldManager.getWorld());
+                // 重置玩家位置到地图中心
+                player.getBody().setTransform(WORLD_WIDTH, WORLD_HEIGHT, 0);
+                Gdx.app.debug("SimpleGame", "New map generated successfully");
+            } catch (Exception e) {
+                Gdx.app.error("SimpleGame", "Error generating new map: " + e.getMessage());
+            }
         }
     }
     @Override
