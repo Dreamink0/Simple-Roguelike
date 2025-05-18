@@ -1,5 +1,7 @@
 package io.github.SimpleGame.Resource;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 
 import com.badlogic.gdx.maps.MapProperties;
@@ -60,7 +62,7 @@ public class MapGeneration {
         wallLayer.setName("Wall");
 
         // 生成房间布局
-        String[][] roomLayout = generateRoomLayout();
+        String[][] roomLayout = generateConnectedRoomLayout();
         
         // 放置房间
         for (int x = 0; x < DUNGEON_SIZE; x++) {
@@ -80,6 +82,125 @@ public class MapGeneration {
         dungeonMap.getLayers().add(wallLayer);
 
         return dungeonMap;
+    }
+
+    private String[][] generateConnectedRoomLayout() {
+        String[][] layout = new String[DUNGEON_SIZE][DUNGEON_SIZE];
+        boolean[][] visited = new boolean[DUNGEON_SIZE][DUNGEON_SIZE];
+        
+        // 从中心房间开始
+        int centerX = DUNGEON_SIZE / 2;
+        int centerY = DUNGEON_SIZE / 2;
+        
+        // 放置中心房间（随机选择一个有多个出口的房间）
+        String[] centerRoomTypes = {"0111", "1011", "1101", "1110", "1111"};
+        layout[centerX][centerY] = centerRoomTypes[random.nextInt(centerRoomTypes.length)];
+        visited[centerX][centerY] = true;
+
+        // 使用广度优先搜索确保连通性
+        Queue<int[]> queue = new LinkedList<>();
+        queue.add(new int[]{centerX, centerY});
+
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+            int x = current[0];
+            int y = current[1];
+            String currentRoom = layout[x][y];
+
+            // 检查四个方向
+            if (y + 1 < DUNGEON_SIZE && !visited[x][y + 1] && currentRoom.charAt(0) == '1') {
+                // 上方向
+                String[] upRooms = {"0001", "0101", "1001", "1101"};
+                layout[x][y + 1] = upRooms[random.nextInt(upRooms.length)];
+                visited[x][y + 1] = true;
+                queue.add(new int[]{x, y + 1});
+            }
+            if (x + 1 < DUNGEON_SIZE && !visited[x + 1][y] && currentRoom.charAt(1) == '1') {
+                // 右方向
+                String[] rightRooms = {"0010", "0110", "1010", "1110"};
+                layout[x + 1][y] = rightRooms[random.nextInt(rightRooms.length)];
+                visited[x + 1][y] = true;
+                queue.add(new int[]{x + 1, y});
+            }
+            if (y - 1 >= 0 && !visited[x][y - 1] && currentRoom.charAt(2) == '1') {
+                // 下方向
+                String[] downRooms = {"0100", "0110", "1100", "1110"};
+                layout[x][y - 1] = downRooms[random.nextInt(downRooms.length)];
+                visited[x][y - 1] = true;
+                queue.add(new int[]{x, y - 1});
+            }
+            if (x - 1 >= 0 && !visited[x - 1][y] && currentRoom.charAt(3) == '1') {
+                // 左方向
+                String[] leftRooms = {"1000", "1001", "1100", "1101"};
+                layout[x - 1][y] = leftRooms[random.nextInt(leftRooms.length)];
+                visited[x - 1][y] = true;
+                queue.add(new int[]{x - 1, y});
+            }
+        }
+
+        // 确保所有房间都被访问到
+        for (int x = 0; x < DUNGEON_SIZE; x++) {
+            for (int y = 0; y < DUNGEON_SIZE; y++) {
+                if (!visited[x][y]) {
+                    // 如果房间未被访问，将其连接到最近的已访问房间
+                    connectToNearestRoom(layout, visited, x, y);
+                }
+            }
+        }
+
+        return layout;
+    }
+
+    private void connectToNearestRoom(String[][] layout, boolean[][] visited, int x, int y) {
+        // 找到最近的已访问房间
+        int[] nearest = findNearestVisitedRoom(visited, x, y);
+        if (nearest == null) return;
+
+        // 确定连接方向
+        int dx = nearest[0] - x;
+        int dy = nearest[1] - y;
+
+        // 选择适当的房间类型
+        String roomType;
+        if (dx == 1) {
+            // 需要向右连接
+            String[] rightRooms = {"0010", "0110", "1010", "1110"};
+            roomType = rightRooms[random.nextInt(rightRooms.length)];
+        } else if (dx == -1) {
+            // 需要向左连接
+            String[] leftRooms = {"1000", "1001", "1100", "1101"};
+            roomType = leftRooms[random.nextInt(leftRooms.length)];
+        } else if (dy == 1) {
+            // 需要向上连接
+            String[] upRooms = {"0001", "0101", "1001", "1101"};
+            roomType = upRooms[random.nextInt(upRooms.length)];
+        } else {
+            // 需要向下连接
+            String[] downRooms = {"0100", "0110", "1100", "1110"};
+            roomType = downRooms[random.nextInt(downRooms.length)];
+        }
+
+        layout[x][y] = roomType;
+        visited[x][y] = true;
+    }
+
+    private int[] findNearestVisitedRoom(boolean[][] visited, int x, int y) {
+        int minDistance = Integer.MAX_VALUE;
+        int[] nearest = null;
+
+        for (int i = 0; i < DUNGEON_SIZE; i++) {
+            for (int j = 0; j < DUNGEON_SIZE; j++) {
+                if (visited[i][j]) {
+                    int distance = Math.abs(i - x) + Math.abs(j - y);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        nearest = new int[]{i, j};
+                    }
+                }
+            }
+        }
+
+        return nearest;
     }
 
     private void processRoomConnections(String[][] roomLayout, TiledMapTileLayer wallLayer) {
@@ -102,54 +223,6 @@ public class MapGeneration {
                     wallLayer.setCell(wallX, wallY, null);
                 }
             }
-        }
-    }
-
-    private String[][] generateRoomLayout() {
-        String[][] layout = new String[DUNGEON_SIZE][DUNGEON_SIZE];
-        
-        // 从中心房间开始
-        int centerX = DUNGEON_SIZE / 2;
-        int centerY = DUNGEON_SIZE / 2;
-        
-        // 放置中心房间（随机选择一个有多个出口的房间）
-        String[] centerRoomTypes = {"0111", "1011", "1101", "1110", "1111"};
-        layout[centerX][centerY] = centerRoomTypes[random.nextInt(centerRoomTypes.length)];
-        
-        // 根据中心房间的出口生成相邻房间
-        generateConnectedRooms(layout, centerX, centerY);
-        
-        return layout;
-    }
-
-    private void generateConnectedRooms(String[][] layout, int x, int y) {
-        String currentRoom = layout[x][y];
-        if (currentRoom == null) return;
-
-        // 检查四个方向
-        if (currentRoom.charAt(0) == '1' && y + 1 < DUNGEON_SIZE && layout[x][y + 1] == null) {
-            // 上方向
-            String[] upRooms = {"0001", "0101", "1001", "1101"};
-            layout[x][y + 1] = upRooms[random.nextInt(upRooms.length)];
-            generateConnectedRooms(layout, x, y + 1);
-        }
-        if (currentRoom.charAt(1) == '1' && x + 1 < DUNGEON_SIZE && layout[x + 1][y] == null) {
-            // 右方向
-            String[] rightRooms = {"0010", "0110", "1010", "1110"};
-            layout[x + 1][y] = rightRooms[random.nextInt(rightRooms.length)];
-            generateConnectedRooms(layout, x + 1, y);
-        }
-        if (currentRoom.charAt(2) == '1' && y - 1 >= 0 && layout[x][y - 1] == null) {
-            // 下方向
-            String[] downRooms = {"0100", "0110", "1100", "1110"};
-            layout[x][y - 1] = downRooms[random.nextInt(downRooms.length)];
-            generateConnectedRooms(layout, x, y - 1);
-        }
-        if (currentRoom.charAt(3) == '1' && x - 1 >= 0 && layout[x - 1][y] == null) {
-            // 左方向
-            String[] leftRooms = {"1000", "1001", "1100", "1101"};
-            layout[x - 1][y] = leftRooms[random.nextInt(leftRooms.length)];
-            generateConnectedRooms(layout, x - 1, y);
         }
     }
 
