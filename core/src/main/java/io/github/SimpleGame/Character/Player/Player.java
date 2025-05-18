@@ -91,7 +91,6 @@ public class Player {
             this.HPtexture = assetManager.get("UI/HP/HP5.png", Texture.class);
             this.MPtexture = assetManager.get("UI/MP/MP5.png", Texture.class);
             this.DEFtexture = assetManager.get("UI/DEF/DEF5.png", Texture.class);
-            if(HP<100){
                 if(HP<=75&&HP>=50){
                     this.HPtexture = assetManager.get("UI/HP/HP4.png", Texture.class);
                 }
@@ -104,8 +103,6 @@ public class Player {
                 if(HP<=0){
                     this.HPtexture = assetManager.get("UI/HP/HP1.png", Texture.class);
                 }
-            }
-            if(HP<50){
                 if(MP<50&&MP>=40){
                     MPtexture = assetManager.get("UI/MP/MP4.png", Texture.class);
                 }
@@ -118,8 +115,6 @@ public class Player {
                 if(MP<=10){
                     MPtexture = assetManager.get("UI/MP/MP1.png", Texture.class);
                 }
-            }
-            if(DEF<20){
                 if(DEF<20&&DEF>=10){
                     DEFtexture = assetManager.get("UI/DEF/DEF4.png", Texture.class);
                 }
@@ -129,7 +124,6 @@ public class Player {
                 if(DEF==0){
                     DEFtexture = assetManager.get("UI/DEF/DEF1.png", Texture.class);
                 }
-            }
         }
         float uiScale = 0.1f; // 缩放因子，可以根据需要调整
         // 使用固定屏幕坐标绘制UI，避免摄像机缩放影响
