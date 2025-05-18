@@ -6,9 +6,9 @@ import io.github.SimpleGame.Character.Player.Player;
 import java.util.ArrayList;
 public abstract class Magic {
     //必须实现的方法
-    public abstract void Magic_create(World world,float x,float y);
-    public abstract void Magic_obtain(SpriteBatch batch, Player player);
-    public abstract void Magic_render(SpriteBatch batch,Player player);
+    public abstract void magicCreate(World world,float x,float y);
+    public abstract void magicObtain(SpriteBatch batch, Player player);
+    public abstract void magicRender(SpriteBatch batch,Player player);
 }
 //魔法物品栏管理,后续实现
 class MagicManager{
@@ -25,7 +25,7 @@ class MagicManager{
     {
         for(Magic magic:magicArrayList)
         {
-            magic.Magic_render(batch,player);
+            magic.magicRender(batch,player);
         }
     }
 }

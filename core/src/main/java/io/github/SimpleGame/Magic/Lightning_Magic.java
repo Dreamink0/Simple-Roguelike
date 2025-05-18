@@ -38,7 +38,7 @@ public class Lightning_Magic extends Magic {
 
     // 状态管理
     protected float stateTime = 0f;
-    protected float magicDuration = 5.95f*4f;
+    protected float magicDuration = 5.95f;
     protected long magicStartTimeNano = 0;
     protected boolean active = false;
 
@@ -92,7 +92,7 @@ public class Lightning_Magic extends Magic {
 
     // 创建魔法道具
     @Override
-    public void Magic_create(World world, float x, float y) {
+    public void magicCreate(World world, float x, float y) {
         this.world = world;
         this.x = x;
         this.y = y;
@@ -122,7 +122,7 @@ public class Lightning_Magic extends Magic {
 
     // 拾取魔法
     @Override
-    public void Magic_obtain(SpriteBatch batch, Player player) {
+    public void magicObtain(SpriteBatch batch, Player player) {
         this.player = player;
         updatePosition(player);
         if (!active) {
@@ -131,20 +131,22 @@ public class Lightning_Magic extends Magic {
             } else {
                 iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON2_PATH, Texture.class);
             }
-            batch.draw(iconTexture, player.getX() + 18, player.getY() - 8,
-                iconTexture.getWidth() / 16, iconTexture.getHeight() / 16);
+            batch.draw(iconTexture, WORLD_WIDTH/2f+8f, WORLD_WIDTH/2f-10f,
+                iconTexture.getWidth()*2/PIXELS_PER_METER, iconTexture.getHeight()*2/PIXELS_PER_METER);
         } else {
             if (!isCooldownElapsed()) {
                 iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON_PATH, Texture.class);
             }
-            batch.draw(iconTexture, player.getX() + 18, player.getY() - 8,
-                iconTexture.getWidth() / 16, iconTexture.getHeight() / 16);
+            batch.draw(iconTexture, WORLD_WIDTH/2+8f, WORLD_WIDTH/2f-10f,
+                iconTexture.getWidth()*2/PIXELS_PER_METER, iconTexture.getHeight()*2/PIXELS_PER_METER);
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             if (active || !isCooldownElapsed()) {
                 return; // 已激活或冷却未结束时不执行
             }
+            player.MPtexture = null;
+            player.MP -= 50;
             attachToPlayer(player);
             active = true;
             startX = player.getX();
@@ -195,7 +197,7 @@ public class Lightning_Magic extends Magic {
 
     // 渲染魔法效果
     @Override
-    public void Magic_render(SpriteBatch batch, Player player) {
+    public void magicRender(SpriteBatch batch, Player player) {
         if (!active) return;
         updateMagicState(Gdx.graphics.getDeltaTime());
         if (lightningBody != null) {
@@ -215,7 +217,7 @@ public class Lightning_Magic extends Magic {
             lightningBody.setUserData("lightning_Magic");
 
             shape = new PolygonShape();
-            shape.setAsBox(8f, 8f);
+            shape.setAsBox(5f, 5f);
 
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
@@ -262,16 +264,12 @@ public class Lightning_Magic extends Magic {
     // 渲染闪电效果
     private void renderLightningEffect(SpriteBatch batch) {
         TextureRegion frame = lightningAnimation.getKeyFrame(stateTime, false);
-        boolean isFlipped = player.getPlayerController().isFlipped();
-        // 自动镜像纹理区域
-        if (isFlipped != frame.isFlipX()) {
-            frame.flip(true, false);
-        }        // 使用固定偏移模式替代随机抖动，创建更稳定的视觉效果
-        for (int i = 0; i <= 360; i += 45) {
+      //使用固定偏移模式替代随机抖动，创建更稳定的视觉效果
+        for (int i = 0; i <= 360; i += 60) {
             float angle = i;
             // 产生平滑动画效果
-            float offsetX = cos(angle + stateTime * 5) * 1 * (1 + stateTime);
-            float offsetY = MathUtils.sin(angle + stateTime * 5) * 1 * (1 + stateTime);
+            float offsetX = cos(angle + stateTime * 5)*(1+stateTime/2);
+            float offsetY = MathUtils.sin(angle + stateTime * 5)*(1+stateTime/2);
             float colorOffset = 7+MathUtils.sin(stateTime * 7 + i) * 0.1f;
             // 保存当前颜色
             float[] originalColor = new float[4];
@@ -299,8 +297,8 @@ public class Lightning_Magic extends Magic {
         for (int i = 0; i <= 360; i += 45) {
             float angle = i;
             float radius = 5 + 2 * MathUtils.sin(stateTime * 5);
-            float offsetX = cos(angle/2+stateTime * 12) * radius;
-            float offsetY = MathUtils.sin(2*angle-stateTime*10) * radius;
+            float offsetX = cos(angle + stateTime * 2)*(1+stateTime/2);
+            float offsetY = MathUtils.sin(angle + stateTime * 2)*(1+stateTime/2);
             // 添加轻微的颜色变化效果
             float colorOffset = stateTime;
             float[] originalColor = new float[4];
@@ -312,8 +310,8 @@ public class Lightning_Magic extends Magic {
             batch.setColor(1 + colorOffset, 0.8f + colorOffset, 0.2f + colorOffset, 1);
 
             batch.draw(frame, currentX + offsetX - 0.1f, currentY + offsetY,
-                frame.getRegionWidth() * 0.2f,
-                frame.getRegionHeight() * 0.2f);
+                frame.getRegionWidth() * 0.1f,
+                frame.getRegionHeight() * 0.1f);
 
             // 恢复原始颜色
             batch.setColor(originalColor[0], originalColor[1], originalColor[2], originalColor[3]);
@@ -341,5 +339,4 @@ public class Lightning_Magic extends Magic {
         long cooldownNanos = (long) (COOLDOWN_DURATION * 1_000_000_000L);
         return (currentTime - lastUsedTime) >= cooldownNanos;
     }
-
 }

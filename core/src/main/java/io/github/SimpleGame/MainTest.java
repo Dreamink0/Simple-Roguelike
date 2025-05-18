@@ -4,6 +4,8 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Item.Weapon;
@@ -12,6 +14,10 @@ import io.github.SimpleGame.Resource.CameraManager;
 import io.github.SimpleGame.Resource.MapManager;
 import io.github.SimpleGame.Resource.ResourceManager;
 import io.github.SimpleGame.Resource.WorldManager;
+
+import static io.github.SimpleGame.Config.WORLD_HEIGHT;
+import static io.github.SimpleGame.Config.WORLD_WIDTH;
+
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class MainTest extends ApplicationAdapter {
     private WorldManager worldManager;
@@ -35,10 +41,10 @@ public class MainTest extends ApplicationAdapter {
             //2加载资产
             resourceManager.loadResources();
             //3初始化玩家
-            player = new Player(worldManager.getWorld(), Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
-            item=new Weapon(worldManager.getWorld(),Config.WORLD_WIDTH,Config.WORLD_HEIGHT+5,1f);
+            player = new Player(worldManager.getWorld(), WORLD_WIDTH, WORLD_HEIGHT);
+            item=new Weapon(worldManager.getWorld(), WORLD_WIDTH, WORLD_HEIGHT+5,1f);
             lightningMagic=new Lightning_Magic();
-            lightningMagic.Magic_create(worldManager.getWorld(),Config.WORLD_WIDTH+4,Config.WORLD_HEIGHT);
+            lightningMagic.magicCreate(worldManager.getWorld(), WORLD_WIDTH+4, WORLD_HEIGHT);
             //5其他初始化
             batch = new SpriteBatch();
             mapManager = resourceManager.getMapManager(worldManager.getWorld());
@@ -55,28 +61,49 @@ public class MainTest extends ApplicationAdapter {
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
         stateTime += deltaTime;
         // 根据玩家移动状态选择动画
-        player.setAction(player.getPlayerController(),player,worldManager.getWorld()).update();
+        player.setAction(player.getPlayerController(), player, worldManager.getWorld()).update();
         // 更新相机位置
+        // 主摄像机跟随玩家
         cameraManager.getCamera(player.getPlayerController());
         mapManager.setView(cameraManager.getCamera());
-        batch.setProjectionMatrix(cameraManager.getCamera().combined);
+        // 设置主游戏画面渲染
         mapManager.render(batch);
-        //其他
+        // 新增UI摄像机管理UI元素
+        SpriteBatch uiBatch = new SpriteBatch();
+        OrthographicCamera uiCamera = new OrthographicCamera();
+        uiCamera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
+        uiCamera.position.set(Config.WORLD_WIDTH/2, Config.WORLD_HEIGHT/2, 0);
+        uiCamera.update();
+        batch.setProjectionMatrix(cameraManager.getCamera().combined);
+        uiBatch.setProjectionMatrix(uiCamera.combined);
+        // 此处可以添加具体的UI渲染代码，如血条、技能栏等
         batch.begin();
-        player.FilpCheck(player.getPlayerSprite(),player.getPlayerController(),batch).draw(batch);
-        item.render(batch,player);
-        lightningMagic.Magic_obtain(batch, player); //检测拾取
-        lightningMagic.Magic_render(batch,player);
+        player.filpCheck(player.getPlayerSprite(), player.getPlayerController(), batch).draw(batch);
+        item.render(batch, player);
+        lightningMagic.magicRender(batch, player);
         batch.end();
+        uiBatch.begin();
+        lightningMagic.magicObtain(uiBatch, player); //检测拾取
+        player.render(uiBatch);
+        uiBatch.end();
+        // 调试渲染
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
             worldManager.getDebugRenderer().render(worldManager.getWorld(), cameraManager.getCamera().combined);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.K)){
+                // 触发纹理更新
+                player.HPtexture = null;
+                player.MPtexture = null;
+                player.DEFtexture = null;
+            player.HP -= 25;
+            player.DEF-=5;
         }
     }
     @Override
     public void resize(int width, int height) {
         float aspectRatio = (float) width / height;
-        cameraManager.getCamera().viewportWidth = 2*Config.WORLD_WIDTH;
-        cameraManager.getCamera().viewportHeight = 2*Config.WORLD_WIDTH / aspectRatio;
+        cameraManager.getCamera().viewportWidth = 2* WORLD_WIDTH;
+        cameraManager.getCamera().viewportHeight = 2* WORLD_WIDTH / aspectRatio;
         cameraManager.getCamera().update();
     }
     @Override
@@ -86,6 +113,5 @@ public class MainTest extends ApplicationAdapter {
         if (batch != null) batch.dispose();
         if (worldManager.getWorld() != null) worldManager.getWorld().dispose();
         if (resourceManager != null) resourceManager.dispose();
-        if (worldManager.getDebugRenderer() != null) worldManager.getDebugRenderer().dispose();
-    }
+        if (worldManager.getDebugRenderer() != null) worldManager.getDebugRenderer().dispose();}
 }

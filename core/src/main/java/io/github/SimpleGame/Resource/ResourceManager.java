@@ -26,6 +26,9 @@ public class ResourceManager {
     private MapManager mapManager;
     //Player
     private Sprite playerSprite;
+    private Texture playerHP;
+    private Texture playerMP;
+    private Texture playerDEF;
     //Animation
     public Animation<TextureRegion> playerIdleAnimation;
     public Animation<TextureRegion> playerRunAnimation;
@@ -112,7 +115,6 @@ public class ResourceManager {
         assetManager.load(Config.MAP_PATH, TiledMap.class);
         assetManager.load("Magic/Gravity-Sheet.png",Texture.class);
         assetManager.load(Config.PLAYERATTACK_ATLAS_PATH,TextureAtlas.class);
-
         // 加载所有基础地图
         String[] baseMapNames = {
             "0000", "0001", "0010", "0011",
@@ -132,7 +134,6 @@ public class ResourceManager {
         playerTextureAtlas = assetManager.get(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
         tiledMap = assetManager.get(Config.MAP_PATH, TiledMap.class);
         playerAttackTextureAtlas = assetManager.get(Config.PLAYERATTACK_ATLAS_PATH, TextureAtlas.class);
-
         // 获取所有基础地图
         baseMaps = new ObjectMap<>();
         String[] baseMapNames = {
