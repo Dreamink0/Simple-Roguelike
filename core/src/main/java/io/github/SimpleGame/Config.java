@@ -17,6 +17,7 @@ public class Config {
     public static final String LIGHTNING_MAGIC_ICON_PATH="Magic/Lightning/ICON.png";
     public static final String LIGHTNING_MAGIC_ICON2_PATH="Magic/Lightning/ICON2.png";
     public static final String THUNDER_STRIKE_PATH="Magic/Lightning/Thunderstrike.atlas";
+    public static final String TRALALEROTRLALA_PATH="Enemy/tralalo_telala-sheet.png";
     public static final String HP4_PATH="UI/HP/HP4.png";
     public static final String HP3_PATH="UI/HP/HP3.png";
     public static final String HP2_PATH="UI/HP/HP2.png";

@@ -21,8 +21,8 @@ public class Player {
     protected boolean isequipped = false;
     //属性
     public Texture HPtexture;
-    public Texture  MPtexture;
-    public Texture   DEFtexture;
+    public Texture MPtexture;
+    public Texture DEFtexture;
     public float HP;
     public float MP;
     public float DEF;
@@ -53,7 +53,7 @@ public class Player {
         this.actionHandler = new PlayerAniamtion();
         this.flipChecker = new PlayerPlayerFilpCheck();
         //初始化玩家属性
-        this.HP=100f;this.MP=50f;this.DEF=20f;
+        this.HP=20f;this.MP=50f;this.DEF=20f;
     }
     //玩家动画更新//
     public PlayerController setAction(PlayerController playerController, Player player, World world) {
@@ -78,7 +78,7 @@ public class Player {
 
     public void setIsequipped(boolean isequipped) {this.isequipped = isequipped;}
 
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch,float deltaTime) {
         // 静态资源加载优化：避免在 render 中重复创建 AssetManager
         if (HPtexture == null || MPtexture == null || DEFtexture == null) {
             AssetManager assetManager = new AssetManager();
@@ -103,16 +103,16 @@ public class Player {
                 if(HP<=0){
                     this.HPtexture = assetManager.get("UI/HP/HP1.png", Texture.class);
                 }
-                if(MP<50&&MP>=40){
+                if(MP<40&&MP>=30){
                     MPtexture = assetManager.get("UI/MP/MP4.png", Texture.class);
                 }
                 if(MP<30&&MP>=20){
                     MPtexture = assetManager.get("UI/MP/MP3.png", Texture.class);
                 }
-                if(MP<=20&&MP>=10){
+                if(MP<20&&MP>=10){
                     MPtexture = assetManager.get("UI/MP/MP2.png", Texture.class);
                 }
-                if(MP<=10){
+                if(MP<=0){
                     MPtexture = assetManager.get("UI/MP/MP1.png", Texture.class);
                 }
                 if(DEF<20&&DEF>=10){
@@ -121,12 +121,44 @@ public class Player {
                 if(DEF<=10&&DEF>=0){
                     DEFtexture = assetManager.get("UI/DEF/DEF3.png", Texture.class);
                 }
-                if(DEF==0){
+                if(DEF<=0){
                     DEFtexture = assetManager.get("UI/DEF/DEF1.png", Texture.class);
                 }
+            if(HP<100||MP<50||DEF<20){
+                // 如果玩家属性未满，开始恢复计时
+                if (recoveryStartTime == 0) {
+                    recoveryStartTime = System.currentTimeMillis();
+                }
+                // 计算已过去的时间
+                long elapsedTime = System.currentTimeMillis() -recoveryStartTime;
+                float elapsedSeconds = elapsedTime / 10f;
+
+                // 如果超过恢复延迟，开始恢复属性
+                if (elapsedSeconds >= Player.RECOVERY_DELAY/10) {
+                    // 每秒恢复MP_RECOVERY_RATE点属性
+                    if (HP < 100) {
+                        HP += MP_RECOVERY_RATE * deltaTime*100;
+                        if (HP > 100) HP = 100;
+                    }
+
+                    if (MP < 50) {
+                        MP += MP_RECOVERY_RATE * deltaTime*100;
+                        if (MP > 50) MP = 50;
+                    }
+
+                    if (DEF < 20) {
+                        DEF += MP_RECOVERY_RATE * deltaTime*100;
+                        if (DEF > 20) DEF = 20;
+                    }
+                    // 重置计时器以便持续恢复
+                   recoveryStartTime = System.currentTimeMillis();
+                }
+            } else {
+                // 如果属性已满，重置恢复计时器
+                recoveryStartTime = 0;
+            }
         }
-        float uiScale = 0.1f; // 缩放因子，可以根据需要调整
-        // 使用固定屏幕坐标绘制UI，避免摄像机缩放影响
+        float uiScale = 0.1f; //缩放因子，可以根据需要调整
         batch.draw(HPtexture, Config.WORLD_WIDTH/2-10f, Config.WORLD_HEIGHT/2+6.5f, HPtexture.getWidth() * uiScale , HPtexture.getHeight() * uiScale);
         batch.draw(MPtexture, Config.WORLD_WIDTH/2-10f, Config.WORLD_HEIGHT/2+6.1f, MPtexture.getWidth() * uiScale , MPtexture.getHeight() * uiScale);
         batch.draw(DEFtexture, Config.WORLD_WIDTH/2-10f, Config.WORLD_HEIGHT/2+5.7f, DEFtexture.getWidth()*uiScale/2,DEFtexture.getHeight() * uiScale/2);

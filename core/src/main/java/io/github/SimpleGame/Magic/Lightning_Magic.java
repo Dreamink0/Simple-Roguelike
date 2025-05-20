@@ -339,4 +339,10 @@ public class Lightning_Magic extends Magic {
         long cooldownNanos = (long) (COOLDOWN_DURATION * 1_000_000_000L);
         return (currentTime - lastUsedTime) >= cooldownNanos;
     }
+    public void dispose() {
+        lightningAtlas.dispose();
+        thunderAtlas.dispose();
+        iconTexture.dispose();
+        assetManager.dispose();
+    }
 }
