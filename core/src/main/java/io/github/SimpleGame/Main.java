@@ -5,79 +5,85 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2D;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Pool;
 
 import io.github.SimpleGame.Character.Player.Player;
-import io.github.SimpleGame.Character.Player.PlayerController;
+import static io.github.SimpleGame.Config.WORLD_HEIGHT;
+import static io.github.SimpleGame.Config.WORLD_WIDTH;
+import io.github.SimpleGame.Item.Weapon;
+import io.github.SimpleGame.Magic.Lightning_Magic;
+import io.github.SimpleGame.Resource.CameraManager;
+import io.github.SimpleGame.Resource.MapGeneration;
 import io.github.SimpleGame.Resource.MapManager;
 import io.github.SimpleGame.Resource.ResourceManager;
-import io.github.SimpleGame.Tool.Animation_Tool;
+import io.github.SimpleGame.Resource.WorldManager;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
-    private World world;
-    private PlayerController playerController;
+    private WorldManager worldManager;
+    private CameraManager cameraManager;
     private SpriteBatch batch;
-    private OrthographicCamera camera;
-    private float accumulator = 0f;
-    private Animation<TextureRegion> playerIdleAnimation;
-    private Animation<TextureRegion> playerRunAnimation;
-    private Animation<TextureRegion> playerAttackAnimation;
-
+    private SpriteBatch uiBatch;
+    private OrthographicCamera uiCamera;
     private MapManager mapManager;
-    float stateTime;
-    private Animation<TextureRegion> currentAnimation;
-    private Sprite playerSprite;
+    private MapGeneration mapGeneration;
+    private float stateTime = 0f;
     private Player player;
     private ResourceManager resourceManager;
-    private Box2DDebugRenderer debugRenderer;
-    private final Animation_Tool animation_tool=new Animation_Tool();
+    private Weapon item;
+    private Lightning_Magic lightningMagic;
+
+    // 物理更新相关常量
+    private static final float MAX_STEP_TIME = 0.25f;
+    private static final float MIN_STEP_TIME = 1/60f;
+    private static final int MAX_STEPS = 5;
+    private float accumulator = 0f;
+
+    // 对象池
+    private final Pool<SpriteBatch> batchPool = new Pool<SpriteBatch>(2) {
+        @Override
+        protected SpriteBatch newObject() {
+            return new SpriteBatch();
+        }
+    };
+
     @Override
     public void create() {
         try {
             Gdx.app.debug("SimpleGame", "DebugMessage");
             Gdx.app.error("SimpleGame", "errorMessage");
-            Box2D.init();
-            world = new World(new Vector2(0, 0), true);
-            debugRenderer = new Box2DDebugRenderer();
-            camera = new OrthographicCamera();
-            camera.setToOrtho(false, Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
-            camera.position.set(Config.WORLD_WIDTH/2, Config.WORLD_HEIGHT/2, 0);
-            camera.update();
 
+            // 1. 核心资源加载
+            worldManager = new WorldManager();
+            cameraManager = new CameraManager();
             resourceManager = ResourceManager.getInstance();
+
+            // 2. 加载资产
             resourceManager.loadResources();
 
-            playerIdleAnimation = resourceManager.getPlayerIdleAnimation();
-            playerRunAnimation = resourceManager.getPlayerRunAnimation();
-            playerSprite = resourceManager.getPlayerSprite();
-            playerAttackAnimation = resourceManager.getPlayerAttackAnimation();
+            // 3. 初始化玩家和游戏对象
+            player = new Player(worldManager.getWorld(), WORLD_WIDTH, WORLD_HEIGHT);
+            item = new Weapon(worldManager.getWorld(), WORLD_WIDTH, WORLD_HEIGHT + 5, 1f);
+            lightningMagic = new Lightning_Magic();
+            lightningMagic.magicCreate(worldManager.getWorld(), WORLD_WIDTH + 4, WORLD_HEIGHT);
 
-            if (playerIdleAnimation == null || playerRunAnimation == null || playerSprite == null) {
-                throw new RuntimeException("Failed to initialize player resources");
-            }
+            // 4. 初始化渲染器
+            batch = batchPool.obtain();
+            uiBatch = batchPool.obtain();
+            uiCamera = new OrthographicCamera();
+            uiCamera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
+            uiCamera.position.set(Config.WORLD_WIDTH/2, Config.WORLD_HEIGHT/2, 0);
+            uiCamera.update();
 
-            currentAnimation = playerIdleAnimation;
+            // 5. 初始化地图
+            mapGeneration = new MapGeneration();
+            mapManager = resourceManager.getMapManager(worldManager.getWorld());
 
-            batch = new SpriteBatch();
-            stateTime = 0f;
-            mapManager = resourceManager.getMapManager(world);
-            player = new Player(world, Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
-            playerController = player.getPlayerController();
-
-           //animation_tool.Create("TEST",resourceManager.Test_,5,4);
         } catch (Exception e) {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
             throw new RuntimeException("Failed to initialize game", e);
         }
-        //Listener.Bound(world);
     }
 
     @Override
@@ -85,101 +91,105 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
+
+        float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), MAX_STEP_TIME);
         stateTime += deltaTime;
-        //animation_tool.update("TEST",deltaTime);
-        //TextureRegion frame = animation_tool.getKeyFrame("TEST",true);
-        // 根据玩家移动状态选择动画
-        boolean isAttacking = playerController.isAttacking();
-        boolean isMoving = playerController.isMoving();
-        Animation<TextureRegion> newAnimation;
-        if (Gdx.input.isKeyPressed(Input.Keys.J)) {
-            playerController.startAttack();
-        }
-        if (isAttacking) {
-            newAnimation = playerAttackAnimation;
-        }else{
-            newAnimation = isMoving ? playerRunAnimation : playerIdleAnimation;
-        }
-        if (newAnimation != currentAnimation) {
-            stateTime = 0;
-            currentAnimation = newAnimation;
-        }
-        TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
-        playerSprite.setRegion(currentFrame);
-        if (isAttacking) {
-            TextureRegion attackFrame = playerAttackAnimation.getKeyFrame(stateTime, true);
-            if (attackFrame != null) {
-                playerSprite.setRegion(attackFrame); // 使用攻击动画帧
-            }
-        }
+
         accumulator += deltaTime;
-        while (accumulator >= Config.TIME_STEP) {
-            world.step(Config.TIME_STEP, 6, 2);
-            accumulator -= Config.TIME_STEP;
+        int steps = 0;
+        while (accumulator >= MIN_STEP_TIME && steps < MAX_STEPS) {
+            worldManager.getWorld().step(MIN_STEP_TIME, 6, 2);
+            accumulator -= MIN_STEP_TIME;
+            steps++;
         }
-        playerController.update();
 
-        // 更新相机位置
-        Vector2 playerPos = playerController.getPosition();
-        camera.position.set(playerPos.x, playerPos.y, 0);
-        camera.update();
-        mapManager.setView(camera);
+        if (accumulator > 0 && steps < MAX_STEPS) {
+            worldManager.getWorld().step(accumulator, 6, 2);
+            accumulator = 0;
+        }
 
-        batch.setProjectionMatrix(camera.combined);
+        if (accumulator > MAX_STEP_TIME) {
+            accumulator = MAX_STEP_TIME;
+        }
+
+        player.setAction(player.getPlayerController(), player, worldManager.getWorld()).update();
+
+        cameraManager.getCamera(player.getPlayerController());
+        mapManager.setView(cameraManager.getCamera());
+
         mapManager.render(batch);
 
-        batch.begin();
+        batch.setProjectionMatrix(cameraManager.getCamera().combined);
+        uiBatch.setProjectionMatrix(uiCamera.combined);
 
-        boolean isFlipped = playerController.isFlipped();
-        playerSprite.setPosition(
-            playerPos.x - playerSprite.getWidth() / 2,
-            playerPos.y - playerSprite.getHeight() / 2
-        );
-        playerSprite.setFlip(isFlipped, false);
-//        if (frame != null) {
-//            if(Gdx.input.isKeyPressed(Input.Keys.F)){
-//                batch.draw(frame,
-//                    playerPos.x - playerSprite.getWidth()+3,
-//                    playerPos.y - playerSprite.getWidth()/2,
-//                    15,
-//                    10
-//                );
-//                batch.draw(frame,
-//                    playerPos.x - playerSprite.getWidth()-9,
-//                    playerPos.y - playerSprite.getWidth()/2+2,
-//                    15,
-//                    10,
-//                    15,
-//                    10,
-//                    1,
-//                    1,
-//                    90
-//                );
-//            }
-//        }
-        playerSprite.draw(batch);
+        batch.begin();
+        player.filpCheck(player.getPlayerSprite(), player.getPlayerController(), batch).draw(batch);
+        item.render(batch, player);
+        lightningMagic.magicRender(batch, player);
         batch.end();
+
+        uiBatch.begin();
+        lightningMagic.magicObtain(uiBatch, player);
+        player.render(uiBatch);
+        uiBatch.end();
+
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
-            debugRenderer.render(world, camera.combined.scl(25f/Config.PIXELS_PER_METER));
+            worldManager.getDebugRenderer().render(worldManager.getWorld(), cameraManager.getCamera().combined);
+        }
+
+        // 测试按键
+        if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+            player.HPtexture = null;
+            player.MPtexture = null;
+            player.DEFtexture = null;
+            player.HP -= 25;
+            player.DEF -= 5;
+        }
+
+        // 重新生成地图
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            regenerateMap();
+        }
+    }
+
+    private void regenerateMap() {
+        try {
+            if (mapManager != null) {
+                mapManager.dispose();
+            }
+            mapManager = new MapManager(mapGeneration.generateRandomMap(), Config.PIXELS_PER_METER/512, worldManager.getWorld());
+            player.getBody().setTransform(WORLD_WIDTH, WORLD_HEIGHT, 0);
+            Gdx.app.debug("SimpleGame", "New map generated successfully");
+        } catch (Exception e) {
+            Gdx.app.error("SimpleGame", "Error generating new map: " + e.getMessage());
         }
     }
 
     @Override
     public void resize(int width, int height) {
         float aspectRatio = (float) width / height;
-        camera.viewportWidth = 2*Config.WORLD_WIDTH;
-        camera.viewportHeight = 2*Config.WORLD_WIDTH / aspectRatio;
-        camera.update();
+        cameraManager.getCamera().viewportWidth = 2 * WORLD_WIDTH;
+        cameraManager.getCamera().viewportHeight = 2 * WORLD_WIDTH / aspectRatio;
+        cameraManager.getCamera().update();
     }
 
     @Override
     public void dispose() {
         if (mapManager != null) mapManager.dispose();
-        if(player!=null) player.dispose();
-        if (batch != null) batch.dispose();
-        if (world != null) world.dispose();
+        if (player != null) player.dispose();
+        if (batch != null) {
+            batch.dispose();
+            batchPool.free(batch);
+        }
+        if (uiBatch != null) {
+            uiBatch.dispose();
+            batchPool.free(uiBatch);
+        }
+        if (worldManager.getWorld() != null) worldManager.getWorld().dispose();
         if (resourceManager != null) resourceManager.dispose();
-        if (debugRenderer != null) debugRenderer.dispose();
+        if (worldManager.getDebugRenderer() != null) worldManager.getDebugRenderer().dispose();
+
+        // 清理对象池
+        batchPool.clear();
     }
 }
