@@ -145,8 +145,6 @@ public class Lightning_Magic extends Magic {
             if (active || !isCooldownElapsed()) {
                 return; // 已激活或冷却未结束时不执行
             }
-            player.MPtexture = null;
-            player.MP -= 50;
             attachToPlayer(player);
             active = true;
             startX = player.getX();

@@ -111,7 +111,18 @@ public class Main extends ApplicationAdapter {
         if (accumulator > MAX_STEP_TIME) {
             accumulator = MAX_STEP_TIME;
         }
-
+        // 测试按键
+        if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
+            player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - 10f);
+            player.getAttributeHandler().setMP(player.getAttributeHandler().getMaxMP() - 20f);
+            player.getAttributeHandler().setDEF(player.getAttributeHandler().getMaxDEF() - 10f);
+            player.getPlayerTextureHandler().get();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.H)){
+            System.out.println("HP:"+player.getAttributeHandler().getMaxHP());
+            System.out.println("MP:"+player.getAttributeHandler().getMaxMP());
+            System.out.println("DEF:"+player.getAttributeHandler().getMaxDEF());
+        }
         player.setAction(player.getPlayerController(), player, worldManager.getWorld()).update();
 
         cameraManager.getCamera(player.getPlayerController());
@@ -130,22 +141,12 @@ public class Main extends ApplicationAdapter {
 
         uiBatch.begin();
         lightningMagic.magicObtain(uiBatch, player);
-        player.render(uiBatch);
+        player.render(uiBatch,deltaTime);
         uiBatch.end();
 
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
             worldManager.getDebugRenderer().render(worldManager.getWorld(), cameraManager.getCamera().combined);
         }
-
-        // 测试按键
-        if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-            player.HPtexture = null;
-            player.MPtexture = null;
-            player.DEFtexture = null;
-            player.HP -= 25;
-            player.DEF -= 5;
-        }
-
         // 重新生成地图
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             regenerateMap();

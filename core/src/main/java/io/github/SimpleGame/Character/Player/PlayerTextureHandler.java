@@ -6,4 +6,5 @@ public interface PlayerTextureHandler {
     void load();
     void get();
     void render(SpriteBatch batch,float deltaTime);
+    void dispose();
 }

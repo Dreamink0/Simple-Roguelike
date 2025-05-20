@@ -1,24 +1,124 @@
 package io.github.SimpleGame.Character.Player;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Gdx;
 
-public class PlayerAttribute extends Player implements PlayerAttributeHandler{
-    public float HP;
-    public float MP;
-    public float DEF;
+public class PlayerAttribute implements PlayerAttributeHandler{
+    private float HP;
+    private float maxHP;
+    private float MP;
+    private float maxMP;
+    private float DEF;
+    private float maxDEF;
     private float Damage;
-    public final float MP_RECOVERY_RATE = 5f; //每秒恢复量
-    public static final float RECOVERY_DELAY = 1.0f;//恢复延迟
-    public long recoveryStartTime = 0;//恢复开始时间
-    public PlayerAttribute(float HP, float MP, float DEF,float Damage) {
+    private PlayerTextureHandler textureHandler;
+    public PlayerAttribute(float HP, float MP, float DEF, float Damage)
+    {
         this.HP = HP;
+        this.maxHP = HP;
         this.MP = MP;
+        this.maxMP = MP;
         this.DEF = DEF;
+        this.maxDEF = DEF;
         this.Damage = Damage;
-        setAttribute(HP, MP, DEF,Damage);
     }
     @Override
-    public void setAttribute(float HP, float MP, float DEF,float Damage){
+    public void setHP(float HP) {
+        if(HP<=0) HP=0;
+        this.HP = HP;
+        if(textureHandler != null){
+            textureHandler.get();
+        }
+    }
 
+    @Override
+    public float getHP() {return HP/maxHP;}
+
+    @Override
+    public void setMP(float MP) {
+        if(MP<=0)MP=0;
+        this.MP = MP;
+        if(textureHandler != null){
+            textureHandler.get();
+        }
+    }
+
+    @Override
+    public float getMP() {return MP/maxMP;}
+
+    @Override
+    public void setDEF(float DEF) {
+        if(DEF<=0)DEF=0;
+        this.DEF = DEF;
+        if(textureHandler != null){
+            textureHandler.get();
+        }
+    }
+
+    @Override
+    public float getDEF() {return DEF/maxDEF;}
+
+    @Override
+    public void setDamage(float Damage) {this.Damage = Damage;}
+
+    @Override
+    public float getDamage() {return 0;}
+
+    @Override
+    public void setMaxHP(float maxHP) {
+
+    }
+
+    @Override
+    public float getMaxHP() {
+        return HP;
+    }
+
+    @Override
+    public void setMaxMP(float maxMP) {
+
+    }
+
+    @Override
+    public float getMaxMP() {
+        return MP;
+    }
+
+    @Override
+    public void setMaxDEF(float maxDEF) {
+
+    }
+
+    @Override
+    public float getMaxDEF() {
+        return DEF;
+    }
+
+    public void setTextureHandler(PlayerTextureHandler textureHandler) {
+        this.textureHandler = textureHandler;
+    }
+    @Override
+    public void update(PlayerTextureHandler textureHandler) {
+        boolean wasTextureRequested = false;
+        if (getHP() < 1.0f) {
+            HP += 0.01f * Gdx.graphics.getDeltaTime()*100; // 按一定速率恢复HP
+            if (HP > maxHP) HP = maxHP;
+            setHP(HP);
+            wasTextureRequested = true;
+        }
+        if (getMP() < 1.0f) {
+            MP += 0.01f * Gdx.graphics.getDeltaTime()*100; // 按一定速率恢复MP
+            if (MP > maxMP) MP = maxMP;
+            setMP(MP);
+            wasTextureRequested = true;
+        }
+        if (getDEF() < 1.0f) {
+            DEF += 0.01f * Gdx.graphics.getDeltaTime()*200; // 按一定速率恢复DEF
+            if (DEF > maxDEF) DEF = maxDEF;
+            setDEF(DEF);
+            wasTextureRequested = true;
+        }
+        if (wasTextureRequested && textureHandler != null) {
+            textureHandler.get();
+        }
     }
 }

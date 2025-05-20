@@ -17,19 +17,13 @@ public class Player {
     //接口//
     private PlayerAnimationHandler actionHandler;
     private PlayerFilpHandler flipChecker;
+    private PlayerAttributeHandler attributeHandler;
+    protected PlayerTextureHandler playerTextureHandler;
     //状态//
     protected boolean isequipped = false;
     //属性
-    public Texture HPtexture;
-    public Texture MPtexture;
-    public Texture DEFtexture;
-    public float HP;
-    public float MP;
-    public float DEF;
-    private float Damage;
-    public final float MP_RECOVERY_RATE = 5f; //每秒恢复量
-    public static final float RECOVERY_DELAY = 1.0f;//恢复延迟
-    public long recoveryStartTime = 0;//恢复开始时间
+
+
     public Player() {}
     public Player(World world, float WORLD_WIDTH, float WORLD_HEIGHT) {
         BodyDef bodyDef = new BodyDef();
@@ -52,8 +46,9 @@ public class Player {
         BoundingBox.dispose();
         this.actionHandler = new PlayerAniamtion();
         this.flipChecker = new PlayerPlayerFilpCheck();
-        //初始化玩家属性
-        this.HP=20f;this.MP=50f;this.DEF=20f;
+        this.attributeHandler = new PlayerAttribute(20,50,20,5);
+        this.playerTextureHandler = new PlayerTexture(attributeHandler);
+        this.playerTextureHandler.load();
     }
     //玩家动画更新//
     public PlayerController setAction(PlayerController playerController, Player player, World world) {
@@ -70,6 +65,10 @@ public class Player {
 
     public Sprite getPlayerSprite() {return playerSprite;}
 
+    public PlayerAttributeHandler getAttributeHandler() {return attributeHandler;}
+
+    public PlayerTextureHandler getPlayerTextureHandler() {return playerTextureHandler;}
+
     public float getX() {return playerBody.getPosition().x;}
 
     public float getY() {return playerBody.getPosition().y;}
@@ -79,131 +78,18 @@ public class Player {
     public void setIsequipped(boolean isequipped) {this.isequipped = isequipped;}
 
     public void render(SpriteBatch batch,float deltaTime) {
-        // 静态资源加载优化：避免在 render 中重复创建 AssetManager
-        if (HPtexture == null || MPtexture == null || DEFtexture == null) {
-            AssetManager assetManager = new AssetManager();
-            for (int i = 1; i <= 5; i++) {
-                assetManager.load("UI/HP/HP" + i + ".png", Texture.class);
-                assetManager.load("UI/MP/MP" + i + ".png", Texture.class);
-                assetManager.load("UI/DEF/DEF" + i + ".png", Texture.class);
-            }
-            assetManager.finishLoading();
-            this.HPtexture = assetManager.get("UI/HP/HP5.png", Texture.class);
-            this.MPtexture = assetManager.get("UI/MP/MP5.png", Texture.class);
-            this.DEFtexture = assetManager.get("UI/DEF/DEF5.png", Texture.class);
-                if(HP<=75&&HP>=50){
-                    this.HPtexture = assetManager.get("UI/HP/HP4.png", Texture.class);
-                }
-                if(HP<=50&&HP>=25){
-                    this.HPtexture = assetManager.get("UI/HP/HP3.png", Texture.class);
-                }
-                if(HP<=25){
-                    this.HPtexture = assetManager.get("UI/HP/HP2.png", Texture.class);
-                }
-                if(HP<=0){
-                    this.HPtexture = assetManager.get("UI/HP/HP1.png", Texture.class);
-                }
-                if(MP<40&&MP>=30){
-                    MPtexture = assetManager.get("UI/MP/MP4.png", Texture.class);
-                }
-                if(MP<30&&MP>=20){
-                    MPtexture = assetManager.get("UI/MP/MP3.png", Texture.class);
-                }
-                if(MP<20&&MP>=10){
-                    MPtexture = assetManager.get("UI/MP/MP2.png", Texture.class);
-                }
-                if(MP<=0){
-                    MPtexture = assetManager.get("UI/MP/MP1.png", Texture.class);
-                }
-                if(DEF<20&&DEF>=10){
-                    DEFtexture = assetManager.get("UI/DEF/DEF4.png", Texture.class);
-                }
-                if(DEF<=10&&DEF>=0){
-                    DEFtexture = assetManager.get("UI/DEF/DEF3.png", Texture.class);
-                }
-                if(DEF<=0){
-                    DEFtexture = assetManager.get("UI/DEF/DEF1.png", Texture.class);
-                }
-            if(HP<100||MP<50||DEF<20){
-                // 如果玩家属性未满，开始恢复计时
-                if (recoveryStartTime == 0) {
-                    recoveryStartTime = System.currentTimeMillis();
-                }
-                // 计算已过去的时间
-                long elapsedTime = System.currentTimeMillis() -recoveryStartTime;
-                float elapsedSeconds = elapsedTime / 10f;
-
-                // 如果超过恢复延迟，开始恢复属性
-                if (elapsedSeconds >= Player.RECOVERY_DELAY/10) {
-                    // 每秒恢复MP_RECOVERY_RATE点属性
-                    if (HP < 100) {
-                        HP += MP_RECOVERY_RATE * deltaTime*100;
-                        if (HP > 100) HP = 100;
-                    }
-
-                    if (MP < 50) {
-                        MP += MP_RECOVERY_RATE * deltaTime*100;
-                        if (MP > 50) MP = 50;
-                    }
-
-                    if (DEF < 20) {
-                        DEF += MP_RECOVERY_RATE * deltaTime*100;
-                        if (DEF > 20) DEF = 20;
-                    }
-                    // 重置计时器以便持续恢复
-                   recoveryStartTime = System.currentTimeMillis();
-                }
-            } else {
-                // 如果属性已满，重置恢复计时器
-                recoveryStartTime = 0;
-            }
-        }
-        float uiScale = 0.1f; //缩放因子，可以根据需要调整
-        batch.draw(HPtexture, Config.WORLD_WIDTH/2-10f, Config.WORLD_HEIGHT/2+6.5f, HPtexture.getWidth() * uiScale , HPtexture.getHeight() * uiScale);
-        batch.draw(MPtexture, Config.WORLD_WIDTH/2-10f, Config.WORLD_HEIGHT/2+6.1f, MPtexture.getWidth() * uiScale , MPtexture.getHeight() * uiScale);
-        batch.draw(DEFtexture, Config.WORLD_WIDTH/2-10f, Config.WORLD_HEIGHT/2+5.7f, DEFtexture.getWidth()*uiScale/2,DEFtexture.getHeight() * uiScale/2);
+        attributeHandler.update(playerTextureHandler);
+        playerTextureHandler.render(batch,deltaTime);
     }
-        public void dispose() {
+    public void dispose() {
         if (playerBody != null) {
             playerBody.getWorld().destroyBody(playerBody);
             playerBody = null;
         }
-        if(HPtexture!=null){
-            HPtexture.dispose();
-        }
-        if (MPtexture!=null){
-            MPtexture.dispose();
-        }
-        if (DEFtexture!=null){
-            DEFtexture.dispose();
-        }
-    }
-
-    public float getHealth(){
-        return HP;
-    }
-
-    public float getMana(){
-        return MP;
-    }
-
-    public float getDefense(){
-        return DEF;
-    }
-
-    public void setMP(float MP) {
-        this.MP = MP;
-    }
-
-    public void setDEF(float DEF) {
-        this.DEF = DEF;
-    }
-
-    public void setHP(float HP) {
-        this.HP = HP;
-    }
-
-    public void setDamage(float damage) {
-        Damage = damage;
+        playerTextureHandler.dispose();
+        playerTextureHandler = null;
+        playerController = null;
+        playerSprite = null;
+        actionHandler = null;
     }
 }
