@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public abstract class Magic {
     //必须实现的方法
     public abstract void magicCreate(World world,float x,float y);
-    public abstract void magicObtain(SpriteBatch batch, Player player);
+    public abstract void magicObtain(SpriteBatch batch,SpriteBatch UIbatch,Player player);
     public abstract void magicRender(SpriteBatch batch,Player player);
 }
 //魔法物品栏管理,后续实现

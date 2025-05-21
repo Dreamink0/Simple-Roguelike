@@ -90,7 +90,7 @@ public class Weapon {
     public Rectangle getBoundingBox() {return BoundingBox;}
     public void render(SpriteBatch batch,Player player) {
         Listener.Bound(world,player);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E)&&Listener.equip){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E)&&Listener.equip&&(Math.abs(player.getX())-getX())<=1&&(Math.abs(player.getY())-getY())<=1){
             player.setIsequipped(true);
         }
         if (player.isIsequipped()) {
@@ -138,7 +138,8 @@ public class Weapon {
             bodyDef.type = BodyDef.BodyType.KinematicBody;
             bodyDef.position.set(player.getBody().getPosition().x + offsetX/PIXELS_PER_METER,
                 player.getBody().getPosition().y + offsetY/PIXELS_PER_METER);
-
+            body = world.createBody(bodyDef);
+            isAttached=true;
             this.attachedBody = world.createBody(bodyDef);
             this.attachedBody.setUserData("weapon");
 

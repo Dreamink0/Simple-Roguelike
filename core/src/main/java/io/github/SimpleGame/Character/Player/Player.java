@@ -21,8 +21,6 @@ public class Player {
     protected PlayerTextureHandler playerTextureHandler;
     //状态//
     protected boolean isequipped = false;
-    //属性
-
 
     public Player() {}
     public Player(World world, float WORLD_WIDTH, float WORLD_HEIGHT) {
@@ -58,7 +56,7 @@ public class Player {
     public Sprite filpCheck(Sprite sprite,PlayerController playerController,SpriteBatch batch) {
         return flipChecker.checkFlip(sprite,playerController,batch);
     }
-    /////常用的getter和setter////
+    //常用的getter和setter//
     public PlayerController getPlayerController() {return playerController;}
 
     public Body getBody() {return playerBody;}

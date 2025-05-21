@@ -9,6 +9,7 @@ import io.github.SimpleGame.Resource.WorldManager;
 
 public class Listener{
     public static boolean equip;
+    public static boolean LightningMagic_Flag;
 
     public static void Bound(World world, Player player){
         world.setContactListener(new ContactListener() {
@@ -35,10 +36,10 @@ public class Listener{
                 }
 
                 if ((bodyA.getUserData() != null && bodyA.getUserData().equals("player") &&
-                        bodyB.getUserData() != null && bodyB.getUserData().equals("wall")) ||
-                        (bodyA.getUserData() != null && bodyA.getUserData().equals("wall") &&
-                                bodyB.getUserData() != null && bodyB.getUserData().equals("player"))) {
-                    System.out.println("The player collided with the wall!"); // 调试信息
+                    bodyB.getUserData() != null && bodyB.getUserData().equals("Lightning")) ||
+                    (bodyA.getUserData() != null && bodyA.getUserData().equals("Lightning") &&
+                        bodyB.getUserData() != null && bodyB.getUserData().equals("player"))) {
+                    Flag_LightningMagic();
                 }
             }
             @Override
@@ -51,7 +52,6 @@ public class Listener{
             public void postSolve(Contact contact, ContactImpulse impulse) {}
         });
     }
-    private static void Flag_equip() {
-        equip=true;
-    }
+    private static void Flag_equip() {equip=true;}
+    private static void Flag_LightningMagic() {LightningMagic_Flag=true;}
 }

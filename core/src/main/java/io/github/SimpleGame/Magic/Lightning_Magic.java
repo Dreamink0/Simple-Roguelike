@@ -14,6 +14,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Config;
+import io.github.SimpleGame.Main;
+import io.github.SimpleGame.Tool.Listener;
 
 import static com.badlogic.gdx.math.MathUtils.cos;
 import static io.github.SimpleGame.Config.*;
@@ -41,6 +43,7 @@ public class Lightning_Magic extends Magic {
     protected float magicDuration = 5.95f;
     protected long magicStartTimeNano = 0;
     protected boolean active = false;
+    public boolean flag=false;
 
     // 运动参数
     protected float speedX = 2f;
@@ -52,7 +55,6 @@ public class Lightning_Magic extends Magic {
     private static final float COOLDOWN_DURATION = 10f;
     private long lastUsedTime = 0;
     private Player player;
-
     // 构造函数
     public Lightning_Magic() {
         assetManager = new AssetManager();
@@ -93,17 +95,14 @@ public class Lightning_Magic extends Magic {
     // 创建魔法道具
     @Override
     public void magicCreate(World world, float x, float y) {
-        this.world = world;
-        this.x = x;
-        this.y = y;
-
+        this.world = world;this.x = x;this.y = y;
         float width = iconTexture.getWidth() / PIXELS_PER_METER;
         float height = iconTexture.getHeight() / PIXELS_PER_METER;
         this.iconBoundingBox = new Rectangle(x - width/2, y - height/2, width, height);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
-        bodyDef.position.set(x + 2.5f * width, y + 8 * height);
+        bodyDef.position.set(x + width, y + height);
 
         this.iconBody = world.createBody(bodyDef);
         this.iconBody.setUserData("Lightning");
@@ -115,45 +114,62 @@ public class Lightning_Magic extends Magic {
         fixtureDef.shape = shape;
         fixtureDef.isSensor = true;
         this.iconBody.createFixture(fixtureDef).setUserData("Lightning");
-
         shape.dispose();
-
     }
 
     // 拾取魔法
     @Override
-    public void magicObtain(SpriteBatch batch, Player player) {
+    public void magicObtain(SpriteBatch batch,SpriteBatch UIbatch,Player player) {
         this.player = player;
         updatePosition(player);
-        if (!active) {
-            if (!isCooldownElapsed()) {
-                iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON_PATH, Texture.class);
-            } else {
-                iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON2_PATH, Texture.class);
+        if(Listener.LightningMagic_Flag
+            &&(Gdx.input.isKeyJustPressed(Input.Keys.E))
+            &&((Math.abs(player.getX()-x)<=2f)
+            &&(Math.abs(player.getY()-y)<=2f))){
+            if (iconBody != null) {
+                world.destroyBody(iconBody);
+                iconBody = null;
             }
-            batch.draw(iconTexture, WORLD_WIDTH/2f+8f, WORLD_WIDTH/2f-10f,
-                iconTexture.getWidth()*2/PIXELS_PER_METER, iconTexture.getHeight()*2/PIXELS_PER_METER);
-        } else {
-            if (!isCooldownElapsed()) {
-                iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON_PATH, Texture.class);
-            }
-            batch.draw(iconTexture, WORLD_WIDTH/2+8f, WORLD_WIDTH/2f-10f,
-                iconTexture.getWidth()*2/PIXELS_PER_METER, iconTexture.getHeight()*2/PIXELS_PER_METER);
+            flag=true;
         }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
-            if (active || !isCooldownElapsed()) {
-                return; // 已激活或冷却未结束时不执行
+        if(flag==true){
+            UIbatch.begin();
+            if (!active) {
+                if (!isCooldownElapsed()) {
+                    iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON_PATH, Texture.class);
+                } else {
+                    iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON2_PATH, Texture.class);
+                }
+                UIbatch.draw(iconTexture, WORLD_WIDTH/2f+8f, WORLD_WIDTH/2f-10f,
+                    iconTexture.getWidth()*2/PIXELS_PER_METER, iconTexture.getHeight()*2/PIXELS_PER_METER);
+            } else {
+                if (!isCooldownElapsed()) {
+                    iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON_PATH, Texture.class);
+                }
+                UIbatch.draw(iconTexture, WORLD_WIDTH/2+8f, WORLD_WIDTH/2f-10f,
+                    iconTexture.getWidth()*2/PIXELS_PER_METER, iconTexture.getHeight()*2/PIXELS_PER_METER);
             }
-            attachToPlayer(player);
-            active = true;
-            startX = player.getX();
-            startY = player.getY() - 1.7f;
-            stateTime = 0f;
-            magicStartTimeNano = System.nanoTime();
-            lastUsedTime = System.nanoTime(); //记录魔法使用时间
-            boolean isFlipped = player.getPlayerController().isFlipped();
-            speedX = isFlipped ? -2f : 2f;
+            UIbatch.end();
+            if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+                if (active || !isCooldownElapsed()) {
+                    return; // 已激活或冷却未结束时不执行
+                }
+                player.getAttributeHandler().setMP(player.getAttributeHandler().getMaxMP() - 25f);
+                attachToPlayer(player);
+                active = true;
+                startX = player.getX();
+                startY = player.getY() - 1.7f;
+                stateTime = 0f;
+                magicStartTimeNano = System.nanoTime();
+                lastUsedTime = System.nanoTime(); //记录魔法使用时间
+                boolean isFlipped = player.getPlayerController().isFlipped();
+                speedX = isFlipped ? -2f : 2f;
+            }
+        }else{
+            batch.begin();
+            batch.draw(iconTexture, x, y,
+                iconTexture.getWidth()*4/PIXELS_PER_METER, iconTexture.getHeight()*4/PIXELS_PER_METER);
+            batch.end();
         }
     }
 

@@ -12,8 +12,8 @@ public class PlayerController {
     private final Body body;
     public boolean isFlipped = false;
 
-    private static final float MOVE_FORCE = 100f;
-    private static float MAX_SPEED = 10f;
+    private static final float MOVE_FORCE = 500f;
+    private static float MAX_SPEED = 8f;
     private static final float DAMPING = 0.08f; // 阻尼
     private static final float BOX_SIZE = 0.5f; // 碰撞大小
     private static final float ATTACK_DURATION = 0.4f; // 攻击动画持续时间

@@ -64,22 +64,17 @@ public class Main extends ApplicationAdapter {
 
             // 3. 初始化玩家和游戏对象
             player = new Player(worldManager.getWorld(), WORLD_WIDTH, WORLD_HEIGHT);
-            item = new Weapon(worldManager.getWorld(), WORLD_WIDTH, WORLD_HEIGHT + 5, 1f);
-            lightningMagic = new Lightning_Magic();
-            lightningMagic.magicCreate(worldManager.getWorld(), WORLD_WIDTH + 4, WORLD_HEIGHT);
 
             // 4. 初始化渲染器
             batch = batchPool.obtain();
             uiBatch = batchPool.obtain();
-            uiCamera = new OrthographicCamera();
-            uiCamera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
-            uiCamera.position.set(Config.WORLD_WIDTH/2, Config.WORLD_HEIGHT/2, 0);
-            uiCamera.update();
 
             // 5. 初始化地图
             mapGeneration = new MapGeneration();
             mapManager = resourceManager.getMapManager(worldManager.getWorld());
-
+            item = new Weapon(worldManager.getWorld(), WORLD_WIDTH, WORLD_HEIGHT + 5, 1f);
+            lightningMagic = new Lightning_Magic();
+            lightningMagic.magicCreate(worldManager.getWorld(), WORLD_WIDTH+10, WORLD_HEIGHT+6);
         } catch (Exception e) {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
             throw new RuntimeException("Failed to initialize game", e);
@@ -131,16 +126,15 @@ public class Main extends ApplicationAdapter {
         mapManager.render(batch);
 
         batch.setProjectionMatrix(cameraManager.getCamera().combined);
-        uiBatch.setProjectionMatrix(uiCamera.combined);
+        uiBatch.setProjectionMatrix(cameraManager.getUiCamera().combined);
 
         batch.begin();
         player.filpCheck(player.getPlayerSprite(), player.getPlayerController(), batch).draw(batch);
         item.render(batch, player);
         lightningMagic.magicRender(batch, player);
         batch.end();
-
+        lightningMagic.magicObtain(batch,uiBatch,player);
         uiBatch.begin();
-        lightningMagic.magicObtain(uiBatch, player);
         player.render(uiBatch,deltaTime);
         uiBatch.end();
 
