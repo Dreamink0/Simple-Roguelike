@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import io.github.SimpleGame.Character.Player.Player;
+import io.github.SimpleGame.Config;
 import io.github.SimpleGame.Tool.Listener;
 
 import java.util.Random;
@@ -88,24 +89,24 @@ public class Weapon {
     }
     public Body getBody() {return body;}
     public Rectangle getBoundingBox() {return BoundingBox;}
-    public void render(SpriteBatch batch,Player player) {
+    public void render(SpriteBatch batch,SpriteBatch UIbatch,Player player) {
         Listener.Bound(world,player);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.E)&&Listener.equip&&(Math.abs(player.getX())-getX())<=1&&(Math.abs(player.getY())-getY())<=1){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.E)&&Listener.equip&&(Math.abs(player.getX())-getX())<=2&&(Math.abs(player.getY())-getY())<=2){
             player.setIsequipped(true);
         }
         if (player.isIsequipped()) {
             attachToPlayer(player,player.getX(),player.getY());
             updatePosition(player,player.getX(), player.getY(), offsetX, offsetY);
-            float scaleX = player.getPlayerController().isFlipped?-1f:1f;
+            batch.begin();
                 batch.draw(
                     textureRegion.getTexture(),
-                    (player.getX() - (float) textureRegion.getRegionWidth() /2 * scale)*scale,
-                    (player.getY() - (float) textureRegion.getRegionHeight() /2 * scale)-0.2f,
+                    (player.getX() - (float) textureRegion.getRegionWidth() /2 * scale)-1f,
+                    (player.getY() - (float) textureRegion.getRegionHeight() /2 * scale)-0.6f,
                     (float) textureRegion.getRegionWidth() /2 * scale,
                     (float) textureRegion.getRegionHeight() /2 * scale,
                     textureRegion.getRegionWidth() * scale,
                     textureRegion.getRegionHeight() * scale,
-                    0.09f, 0.09f,
+                    0.07f, 0.07f,
                     180,  // 旋转角度
                     0, 0,  // 纹理坐标
                     textureRegion.getRegionWidth(),
@@ -113,7 +114,15 @@ public class Weapon {
                     player.getPlayerController().isFlipped,
                     true
                 );
+            batch.end();
+            UIbatch.begin();
+
+            UIbatch.draw(textureRegion.getTexture(),
+                Config.WORLD_WIDTH/2+5f,Config.WORLD_WIDTH/2-9.5f,
+                textureRegion.getRegionWidth()/2*scale*0.1f,textureRegion.getRegionHeight()/2*scale*0.1f);
+          UIbatch.end();
         }else{
+            batch.begin();
                 updatePosition(player,player.getX(), player.getY(), offsetX, offsetY);
                 Vector2 pos = body.getPosition();
                 batch.draw(
@@ -124,6 +133,7 @@ public class Weapon {
                     textureRegion.getRegionHeight() * scale,
                     0.1f, 0.1f, 0
                 );
+            batch.end();
         }
     }
     public float getX() {return body.getPosition().x;}

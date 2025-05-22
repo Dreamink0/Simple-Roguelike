@@ -3,6 +3,7 @@ package io.github.SimpleGame.Magic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,15 +15,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Config;
-import io.github.SimpleGame.Main;
 import io.github.SimpleGame.Tool.Listener;
 
+import static com.badlogic.gdx.graphics.Color.WHITE;
 import static com.badlogic.gdx.math.MathUtils.cos;
 import static io.github.SimpleGame.Config.*;
 
-public class Lightning_Magic extends Magic {
+public class LightningMagic extends Magic {
     // 资源管理
-    private AssetManager assetManager;
     protected TextureAtlas lightningAtlas;
     protected TextureAtlas thunderAtlas;
     protected Animation<TextureRegion> lightningAnimation;
@@ -44,6 +44,7 @@ public class Lightning_Magic extends Magic {
     protected long magicStartTimeNano = 0;
     protected boolean active = false;
     public boolean flag=false;
+    float totalTime=0;
 
     // 运动参数
     protected float speedX = 2f;
@@ -56,15 +57,14 @@ public class Lightning_Magic extends Magic {
     private long lastUsedTime = 0;
     private Player player;
     // 构造函数
-    public Lightning_Magic() {
-        assetManager = new AssetManager();
+    public LightningMagic() {
         loadAssets();
         initAnimations();
         resetMagicState();
     }
 
     // 资源加载
-    private void loadAssets() {
+    public void loadAssets() {
         assetManager.load(Config.LIGHTNING_MAGIC_ICON_PATH, Texture.class);
         assetManager.load(LIGHTNING_MAGIC_ICON2_PATH,Texture.class);
         assetManager.load(Config.LIGHTNING_MAGIC_PATH, TextureAtlas.class);
@@ -132,39 +132,55 @@ public class Lightning_Magic extends Magic {
             }
             flag=true;
         }
-        if(flag==true){
+        if(flag){
             UIbatch.begin();
             if (!active) {
-                if (!isCooldownElapsed()) {
+                if (isCooldownElapsed()) {
                     iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON_PATH, Texture.class);
                 } else {
                     iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON2_PATH, Texture.class);
                 }
-                UIbatch.draw(iconTexture, WORLD_WIDTH/2f+8f, WORLD_WIDTH/2f-10f,
+
+                UIbatch.draw(iconTexture, WORLD_WIDTH/2f+8f, WORLD_WIDTH/2f-9.5f,
                     iconTexture.getWidth()*2/PIXELS_PER_METER, iconTexture.getHeight()*2/PIXELS_PER_METER);
+
             } else {
-                if (!isCooldownElapsed()) {
+                if (isCooldownElapsed()) {
                     iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON_PATH, Texture.class);
                 }
-                UIbatch.draw(iconTexture, WORLD_WIDTH/2+8f, WORLD_WIDTH/2f-10f,
+
+                UIbatch.draw(iconTexture, WORLD_WIDTH/2+8f, WORLD_WIDTH/2f-9.5f,
                     iconTexture.getWidth()*2/PIXELS_PER_METER, iconTexture.getHeight()*2/PIXELS_PER_METER);
             }
+
+            if(player.getAttributeHandler().getMaxMP()-30f<=0){
+                iconTexture = assetManager.get(Config.LIGHTNING_MAGIC_ICON_PATH, Texture.class);
+                UIbatch.draw(iconTexture, WORLD_WIDTH/2f+8f, WORLD_WIDTH/2f-9.5f,
+                    iconTexture.getWidth()*2/PIXELS_PER_METER, iconTexture.getHeight()*2/PIXELS_PER_METER);
+            }
+
             UIbatch.end();
+
             if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
-                if (active || !isCooldownElapsed()) {
+                if (active || isCooldownElapsed()) {
                     return; // 已激活或冷却未结束时不执行
                 }
-                player.getAttributeHandler().setMP(player.getAttributeHandler().getMaxMP() - 25f);
+
+                if(player.getAttributeHandler().getMaxMP() - 30f<=0){return;
+                }else{player.getAttributeHandler().setMP(player.getAttributeHandler().getMaxMP() - 30f);}
                 attachToPlayer(player);
+
                 active = true;
                 startX = player.getX();
                 startY = player.getY() - 1.7f;
+
                 stateTime = 0f;
                 magicStartTimeNano = System.nanoTime();
                 lastUsedTime = System.nanoTime(); //记录魔法使用时间
                 boolean isFlipped = player.getPlayerController().isFlipped();
                 speedX = isFlipped ? -2f : 2f;
             }
+
         }else{
             batch.begin();
             batch.draw(iconTexture, x, y,
@@ -280,13 +296,12 @@ public class Lightning_Magic extends Magic {
         TextureRegion frame = lightningAnimation.getKeyFrame(stateTime, false);
       //使用固定偏移模式替代随机抖动，创建更稳定的视觉效果
         for (int i = 0; i <= 360; i += 60) {
-            float angle = i;
             // 产生平滑动画效果
-            float offsetX = cos(angle + stateTime * 5)*(1+stateTime/2);
-            float offsetY = MathUtils.sin(angle + stateTime * 5)*(1+stateTime/2);
+            float offsetX = cos((float) i + stateTime * 5)*(1+stateTime/2);
+            float offsetY = MathUtils.sin((float) i + stateTime * 5)*(1+stateTime/2);
             float colorOffset = 7+MathUtils.sin(stateTime * 7 + i) * 0.1f;
             // 保存当前颜色
-            float[] originalColor = new float[4];
+            var originalColor = new float[4];
             originalColor[0] = batch.getColor().r;
             originalColor[1] = batch.getColor().g;
             originalColor[2] = batch.getColor().b;
@@ -296,6 +311,7 @@ public class Lightning_Magic extends Magic {
                 frame.getRegionWidth() * 0.1f,
                 frame.getRegionHeight() * 0.1f);
             batch.setColor(originalColor[0], originalColor[1], originalColor[2], originalColor[3]);
+            batch.setColor(WHITE);
         }
     }
 
@@ -309,10 +325,9 @@ public class Lightning_Magic extends Magic {
         }
         // 创建同心圆扩散效果，提供更连贯的运动感
         for (int i = 0; i <= 360; i += 45) {
-            float angle = i;
-            float radius = 5 + 2 * MathUtils.sin(stateTime * 5);
-            float offsetX = cos(angle + stateTime * 2)*(1+stateTime/2);
-            float offsetY = MathUtils.sin(angle + stateTime * 2)*(1+stateTime/2);
+//            float radius = 5 + 2 * MathUtils.sin(stateTime * 5);
+            float offsetX = cos((float) i + stateTime * 2)*(1+stateTime/2);
+            float offsetY = MathUtils.sin((float) i + stateTime * 2)*(1+stateTime/2);
             // 添加轻微的颜色变化效果
             float colorOffset = stateTime;
             float[] originalColor = new float[4];
@@ -322,13 +337,10 @@ public class Lightning_Magic extends Magic {
             originalColor[3] = batch.getColor().a;
             // 应用临时颜色进行绘制
             batch.setColor(1 + colorOffset, 0.8f + colorOffset, 0.2f + colorOffset, 1);
-
             batch.draw(frame, currentX + offsetX - 0.1f, currentY + offsetY,
                 frame.getRegionWidth() * 0.1f,
                 frame.getRegionHeight() * 0.1f);
-
-            // 恢复原始颜色
-            batch.setColor(originalColor[0], originalColor[1], originalColor[2], originalColor[3]);
+            batch.setColor(WHITE);
         }
     }
     // 检查去激活条件
@@ -347,16 +359,15 @@ public class Lightning_Magic extends Magic {
     }
     private boolean isCooldownElapsed() {
         if (lastUsedTime == 0) {
-            return true; //初始状态无冷却限制
+            return false; //初始状态无冷却限制
         }
         long currentTime = System.nanoTime();
         long cooldownNanos = (long) (COOLDOWN_DURATION * 1_000_000_000L);
-        return (currentTime - lastUsedTime) >= cooldownNanos;
+        return (currentTime - lastUsedTime) < cooldownNanos;
     }
     public void dispose() {
         lightningAtlas.dispose();
         thunderAtlas.dispose();
         iconTexture.dispose();
-        assetManager.dispose();
     }
 }

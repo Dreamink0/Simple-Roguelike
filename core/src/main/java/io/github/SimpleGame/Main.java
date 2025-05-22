@@ -12,7 +12,8 @@ import io.github.SimpleGame.Character.Player.Player;
 import static io.github.SimpleGame.Config.WORLD_HEIGHT;
 import static io.github.SimpleGame.Config.WORLD_WIDTH;
 import io.github.SimpleGame.Item.Weapon;
-import io.github.SimpleGame.Magic.Lightning_Magic;
+import io.github.SimpleGame.Magic.GravityMagic;
+import io.github.SimpleGame.Magic.LightningMagic;
 import io.github.SimpleGame.Resource.CameraManager;
 import io.github.SimpleGame.Resource.MapGeneration;
 import io.github.SimpleGame.Resource.MapManager;
@@ -32,8 +33,8 @@ public class Main extends ApplicationAdapter {
     private Player player;
     private ResourceManager resourceManager;
     private Weapon item;
-    private Lightning_Magic lightningMagic;
-
+    private LightningMagic lightningMagic;
+    GravityMagic gravityMagic;
     // 物理更新相关常量
     private static final float MAX_STEP_TIME = 0.25f;
     private static final float MIN_STEP_TIME = 1/60f;
@@ -73,8 +74,9 @@ public class Main extends ApplicationAdapter {
             mapGeneration = new MapGeneration();
             mapManager = resourceManager.getMapManager(worldManager.getWorld());
             item = new Weapon(worldManager.getWorld(), WORLD_WIDTH, WORLD_HEIGHT + 5, 1f);
-            lightningMagic = new Lightning_Magic();
+            lightningMagic = new LightningMagic();
             lightningMagic.magicCreate(worldManager.getWorld(), WORLD_WIDTH+10, WORLD_HEIGHT+6);
+            gravityMagic = new GravityMagic();
         } catch (Exception e) {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
             throw new RuntimeException("Failed to initialize game", e);
@@ -130,9 +132,10 @@ public class Main extends ApplicationAdapter {
 
         batch.begin();
         player.filpCheck(player.getPlayerSprite(), player.getPlayerController(), batch).draw(batch);
-        item.render(batch, player);
         lightningMagic.magicRender(batch, player);
+        gravityMagic.magicRender(batch, player);
         batch.end();
+        item.render(batch,uiBatch,player);
         lightningMagic.magicObtain(batch,uiBatch,player);
         uiBatch.begin();
         player.render(uiBatch,deltaTime);

@@ -113,7 +113,6 @@ public class ResourceManager {
         //使用 AssetManager 加载所有资源
         assetManager.load(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
         assetManager.load(Config.MAP_PATH, TiledMap.class);
-        assetManager.load("Magic/Gravity-Sheet.png",Texture.class);
         assetManager.load(Config.PLAYERATTACK_ATLAS_PATH,TextureAtlas.class);
         // 加载所有基础地图
         String[] baseMapNames = {

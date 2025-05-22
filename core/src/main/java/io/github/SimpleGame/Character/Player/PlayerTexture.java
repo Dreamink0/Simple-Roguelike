@@ -45,10 +45,12 @@ public class PlayerTexture implements PlayerTextureHandler{
     @Override
     public void render(SpriteBatch batch, float deltaTime) {
         float uiScale=0.1f;
-        batch.draw(HPtexture, Config.WORLD_WIDTH/2-10f, Config.WORLD_HEIGHT/2+6.5f, HPtexture.getWidth() * uiScale , HPtexture.getHeight() * uiScale);
-        batch.draw(MPtexture, Config.WORLD_WIDTH/2-10f, Config.WORLD_HEIGHT/2+6.1f, MPtexture.getWidth() * uiScale , MPtexture.getHeight() * uiScale);
-        batch.draw(DEFtexture, Config.WORLD_WIDTH/2-10f, Config.WORLD_HEIGHT/2+5.7f, DEFtexture.getWidth()*uiScale/2,DEFtexture.getHeight() * uiScale/2);
-    }
+        batch.draw(MPtexture, Config.WORLD_WIDTH/2-10f, Config.WORLD_HEIGHT/2-6.5f, MPtexture.getWidth() * uiScale*1.5f , MPtexture.getHeight() * uiScale);
+        batch.draw(DEFtexture, Config.WORLD_WIDTH/2-10f, Config.WORLD_HEIGHT/2-6.7f, DEFtexture.getWidth()*uiScale,DEFtexture.getHeight() * uiScale/2);
+        batch.draw(HPtexture, Config.WORLD_WIDTH/2-10f, Config.WORLD_HEIGHT/2-6f, HPtexture.getWidth() * uiScale*1.5f , HPtexture.getHeight() * uiScale);
+
+        // 恢复默认颜色
+        batch.setColor(1, 1, 1, 1);    }
 
     @Override
     public void dispose() {

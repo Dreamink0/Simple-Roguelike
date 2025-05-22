@@ -1,10 +1,12 @@
 package io.github.SimpleGame.Magic;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Character.Player.Player;
 
 import java.util.ArrayList;
 public abstract class Magic {
+    protected AssetManager assetManager=new AssetManager();;
     //必须实现的方法
     public abstract void magicCreate(World world,float x,float y);
     public abstract void magicObtain(SpriteBatch batch,SpriteBatch UIbatch,Player player);

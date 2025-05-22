@@ -1,13 +1,8 @@
 package io.github.SimpleGame.Character.Player;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.*;
-import io.github.SimpleGame.Config;
-import io.github.SimpleGame.Resource.ResourceManager;
 
 public class Player {
     //身体//
