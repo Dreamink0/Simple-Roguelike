@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -106,5 +108,27 @@ public class AnimationTool {
         stateTimes.clear();
         animations=null;
         stateTimes=null;
+    }
+    public TextureRegion KeyFrame(boolean loop) {
+
+        if (!animations.containsKey(framename)) {
+            System.out.println("ERROR: Animation "+framename+" not found!");
+        }
+
+        animation = animations.get(framename);
+        float stateTime = stateTimes.get(framename);
+        return animation.getKeyFrame(stateTime,loop);
+    }
+    public TextureRegion getTextureRegion(){
+        return textureRegion;
+    }
+    public Animation<TextureRegion> getAnimation(){
+        return animation;
+    }
+    public String getFramename(){
+        return framename;
+    }
+    public float getFrameDuration(){
+        return frameDuration;
     }
 }

@@ -36,6 +36,21 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
 
         TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, true);
         playerSprite.setRegion(currentFrame);
+
+        // 根据不同动画调整尺寸
+        if (isAttacking) {
+            // 攻击动画时使用较小的尺寸
+            playerSprite.setSize(
+                (2.1f * currentFrame.getRegionWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
+                (2 * currentFrame.getRegionHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE
+            );
+        } else {
+            // 其他动画使用标准尺寸
+            playerSprite.setSize(
+                (2 * currentFrame.getRegionWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
+                (2 * currentFrame.getRegionHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE
+            );
+        }
         accumulator += deltaTime;
         while (accumulator >= Config.TIME_STEP) {
             world.step(Config.TIME_STEP, 6, 2);

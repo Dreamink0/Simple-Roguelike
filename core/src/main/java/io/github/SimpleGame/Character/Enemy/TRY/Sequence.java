@@ -1,4 +1,4 @@
-package io.github.SimpleGame.Character.Enemy;
+package io.github.SimpleGame.Character.Enemy.TRY;
 
 import java.util.LinkedList;
 

@@ -98,8 +98,6 @@ public class LightningMagic extends Magic {
         this.world = world;this.x = x;this.y = y;
         float width = iconTexture.getWidth() / PIXELS_PER_METER;
         float height = iconTexture.getHeight() / PIXELS_PER_METER;
-        this.iconBoundingBox = new Rectangle(x - width/2, y - height/2, width, height);
-
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
         bodyDef.position.set(x + width, y + height);

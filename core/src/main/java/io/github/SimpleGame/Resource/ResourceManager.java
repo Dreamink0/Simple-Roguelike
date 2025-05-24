@@ -36,6 +36,8 @@ public class ResourceManager {
     //Weapon
     private Texture WeaponTexture;
     private Weapon weapon;
+    private TextureAtlas playerTextureAtlas2;
+
     private ResourceManager() {
         assetManager = new AssetManager();
         // 注册TiledMap加载器
@@ -111,9 +113,10 @@ public class ResourceManager {
 
     public void Load(){
         //使用 AssetManager 加载所有资源
-        assetManager.load(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
+        assetManager.load("Sprites/BasePlayer/Player-Idle.atlas", TextureAtlas.class);
         assetManager.load(Config.MAP_PATH, TiledMap.class);
-        assetManager.load(Config.PLAYERATTACK_ATLAS_PATH,TextureAtlas.class);
+        assetManager.load("Sprites/BasePlayer/Player-attack.atlas",TextureAtlas.class);
+        assetManager.load("Sprites/BasePlayer/Player-run.atlas", TextureAtlas.class);
         // 加载所有基础地图
         String[] baseMapNames = {
             "0000", "0001", "0010", "0011",
@@ -130,9 +133,10 @@ public class ResourceManager {
     }
     public void Get(){
         //获取加载的资源
-        playerTextureAtlas = assetManager.get(Config.PLAYER_ATLAS_PATH, TextureAtlas.class);
+        playerTextureAtlas = assetManager.get("Sprites/BasePlayer/Player-Idle.atlas", TextureAtlas.class);
+        playerTextureAtlas2=assetManager.get("Sprites/BasePlayer/Player-run.atlas",TextureAtlas.class);
         tiledMap = assetManager.get(Config.MAP_PATH, TiledMap.class);
-        playerAttackTextureAtlas = assetManager.get(Config.PLAYERATTACK_ATLAS_PATH, TextureAtlas.class);
+        playerAttackTextureAtlas = assetManager.get("Sprites/BasePlayer/Player-attack.atlas", TextureAtlas.class);
         // 获取所有基础地图
         baseMaps = new ObjectMap<>();
         String[] baseMapNames = {
@@ -152,6 +156,9 @@ public class ResourceManager {
     }
     public void Set(){
         //设置所有纹理过滤模式为Nearest
+        for (Texture texture : playerTextureAtlas2.getTextures()) {
+            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        }
         for (Texture texture : playerTextureAtlas.getTextures()) {
             texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         }
@@ -159,12 +166,12 @@ public class ResourceManager {
             texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         }
         playerIdleAnimation = new Animation<>(0.15f, playerTextureAtlas.findRegions("idle"), Animation.PlayMode.LOOP);
-        playerRunAnimation = new Animation<>(0.08f, playerTextureAtlas.findRegions("run"), Animation.PlayMode.LOOP);
+        playerRunAnimation = new Animation<>(0.08f, playerTextureAtlas2.findRegions("run"), Animation.PlayMode.LOOP);
         playerSprite = new Sprite(playerTextureAtlas.findRegion("idle"));
-        playerAttackAnimation = new Animation<>(0.08f,playerAttackTextureAtlas.findRegions("Attack"));
+        playerAttackAnimation = new Animation<>(0.1f, playerAttackTextureAtlas.findRegions("attack"), Animation.PlayMode.LOOP);
         playerSprite.setSize(
-                (2*playerSprite.getWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
-                (2*playerSprite.getHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE
+            (2 * playerSprite.getWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
+            (2 * playerSprite.getHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE
         );
     }
 

@@ -1,0 +1,215 @@
+Player-run.png
+size: 468, 468
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+run
+  rotate: false
+  xy: 8, 8
+  size: 51, 54
+  orig: 51, 54
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 90, 8
+  size: 50, 60
+  orig: 50, 60
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 171, 8
+  size: 46, 59
+  orig: 46, 59
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 248, 8
+  size: 48, 59
+  orig: 48, 59
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 327, 8
+  size: 51, 57
+  orig: 51, 57
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 409, 8
+  size: 51, 54
+  orig: 51, 54
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 8, 99
+  size: 48, 60
+  orig: 48, 60
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 87, 99
+  size: 45, 59
+  orig: 45, 59
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 163, 99
+  size: 48, 59
+  orig: 48, 59
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 242, 99
+  size: 51, 57
+  orig: 51, 57
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 324, 99
+  size: 51, 54
+  orig: 51, 54
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 406, 99
+  size: 48, 60
+  orig: 48, 60
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 8, 190
+  size: 45, 59
+  orig: 45, 59
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 84, 190
+  size: 48, 59
+  orig: 48, 59
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 163, 190
+  size: 51, 57
+  orig: 51, 57
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 245, 190
+  size: 51, 54
+  orig: 51, 54
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 327, 190
+  size: 48, 60
+  orig: 48, 60
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 406, 190
+  size: 45, 59
+  orig: 45, 59
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 8, 281
+  size: 48, 59
+  orig: 48, 59
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 87, 281
+  size: 51, 57
+  orig: 51, 57
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 169, 281
+  size: 51, 54
+  orig: 51, 54
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 251, 281
+  size: 48, 60
+  orig: 48, 60
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 330, 281
+  size: 45, 59
+  orig: 45, 59
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 406, 281
+  size: 48, 59
+  orig: 48, 59
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 8, 372
+  size: 51, 57
+  orig: 51, 57
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 90, 372
+  size: 51, 54
+  orig: 51, 54
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 172, 372
+  size: 48, 60
+  orig: 48, 60
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 251, 372
+  size: 45, 59
+  orig: 45, 59
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 327, 372
+  size: 48, 59
+  orig: 48, 59
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 406, 372
+  size: 51, 58
+  orig: 51, 58
+  offset: 0, 0
+  index: -1

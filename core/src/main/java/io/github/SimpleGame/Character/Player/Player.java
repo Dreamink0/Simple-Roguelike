@@ -1,8 +1,14 @@
 package io.github.SimpleGame.Character.Player;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+
+import static io.github.SimpleGame.Config.WORLD_HEIGHT;
+import static io.github.SimpleGame.Config.WORLD_WIDTH;
 
 public class Player {
     //身体//
@@ -16,9 +22,11 @@ public class Player {
     protected PlayerTextureHandler playerTextureHandler;
     //状态//
     protected boolean isequipped = false;
+    private World world;
 
     public Player() {}
     public Player(World world, float WORLD_WIDTH, float WORLD_HEIGHT) {
+        this.world = world;
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
@@ -28,7 +36,7 @@ public class Player {
         playerController = new PlayerController(this.playerBody);
 
         PolygonShape BoundingBox = new PolygonShape();
-        BoundingBox.setAsBox(0.8f, 1.8f);
+        BoundingBox.setAsBox(2f, 1.8f);
         FixtureDef fixtureDef = new FixtureDef();//定义碰撞属性
         fixtureDef.shape = BoundingBox;
         fixtureDef.density = 1.0f;//密度
@@ -72,7 +80,7 @@ public class Player {
 
     public void render(SpriteBatch batch,float deltaTime) {
         attributeHandler.update(playerTextureHandler);
-        playerTextureHandler.render(batch,deltaTime);
+        playerTextureHandler.render(batch, deltaTime);
     }
     public void dispose() {
         if (playerBody != null) {

@@ -1,0 +1,124 @@
+Player-attack.png
+size: 237, 391
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+attack
+  rotate: false
+  xy: 0, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 45, 0
+  size: 42, 54
+  orig: 42, 54
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 87, 0
+  size: 150, 48
+  orig: 150, 48
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 0, 54
+  size: 84, 48
+  orig: 84, 48
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 84, 54
+  size: 84, 48
+  orig: 84, 48
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 0, 102
+  size: 81, 48
+  orig: 81, 48
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 81, 102
+  size: 132, 64
+  orig: 132, 64
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 0, 166
+  size: 66, 48
+  orig: 66, 48
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 66, 166
+  size: 63, 51
+  orig: 63, 51
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 129, 166
+  size: 60, 54
+  orig: 60, 54
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 0, 220
+  size: 57, 48
+  orig: 57, 48
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 57, 220
+  size: 141, 81
+  orig: 141, 81
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 0, 301
+  size: 69, 45
+  orig: 69, 45
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 69, 301
+  size: 69, 45
+  orig: 69, 45
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 138, 301
+  size: 84, 45
+  orig: 84, 45
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 0, 346
+  size: 87, 45
+  orig: 87, 45
+  offset: 0, 0
+  index: -1
+attack
+  rotate: false
+  xy: 87, 346
+  size: 84, 45
+  orig: 84, 45
+  offset: 0, 0
+  index: -1

@@ -1,4 +1,4 @@
-package io.github.SimpleGame.Character.Enemy;
+package io.github.SimpleGame.Character.Enemy.TRY;
 
 import java.util.LinkedList;
 
@@ -12,7 +12,7 @@ public abstract class Composite extends Behavior {
     @Override
     public void AddChild(Behavior child)
     {
-        children.add(child);
+        children.addLast(child);
     }
     //删除子节点
     public void RemoveChild(Behavior child){
@@ -22,4 +22,5 @@ public abstract class Composite extends Behavior {
     public void ClearChildren(){
         children.clear();
     }
+
 }

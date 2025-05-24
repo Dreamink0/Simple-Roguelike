@@ -1,4 +1,4 @@
-package io.github.SimpleGame.Character.Enemy;
+package io.github.SimpleGame.Character.Enemy.TRY;
 
 
 public class Parallel extends Composite{
@@ -28,8 +28,12 @@ public class Parallel extends Composite{
                 if (FailurePolicy == Policy.RequireOne) return Status.Failure;
             }
         }
-        if (SuccessPolicy == Policy.RequireAll && failureCount == size) return Status.Failure;
-        if (FailurePolicy == Policy.RequireAll && successCount == size) return Status.Success;
+        if (SuccessPolicy == Policy.RequireAll && successCount == size) {
+            return Status.Success;
+        }
+        if (FailurePolicy == Policy.RequireAll && failureCount == size) {
+            return Status.Failure;
+        }
         return Status.Running;
     }
     //结束函数，把所有子节点设为中断

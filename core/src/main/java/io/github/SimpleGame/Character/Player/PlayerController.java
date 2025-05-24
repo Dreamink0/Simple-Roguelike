@@ -14,35 +14,13 @@ public class PlayerController {
 
     private static final float MOVE_FORCE = 750f;
     private static float MAX_SPEED = 7f;
-    private static final float DAMPING = 0.5f; // 阻尼
-    private static final float BOX_SIZE = 0.8f; // 碰撞大小
-    private static final float ATTACK_DURATION = 0.4f; // 攻击动画持续时间
+    private static final float ATTACK_DURATION = 1.5f; //攻击动画持续时间
     private float attackTimer = 0f;
     private boolean isAttacking = false;
+    private boolean speedReducedDuringAttack = false;
     public PlayerController(Body body) {
         this.body = body;
-        setupBody();
     }
-
-    private void setupBody() {
-        body.setLinearDamping(DAMPING);
-        body.setFixedRotation(true);
-        body.setType(BodyDef.BodyType.DynamicBody);
-
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(BOX_SIZE, BOX_SIZE);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = 0.1f;
-        fixtureDef.friction = 0.0f;
-        fixtureDef.restitution = 0.0f;
-
-        body.createFixture(fixtureDef);
-
-        shape.dispose();
-    }
-
     public void update() {
         boolean leftPressed = Gdx.input.isKeyPressed(Input.Keys.A);
         boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.D);
@@ -61,8 +39,9 @@ public class PlayerController {
             body.applyForceToCenter(force, true);
 
             Vector2 velocity = body.getLinearVelocity();
-            if (velocity.len2() > MAX_SPEED * MAX_SPEED) {
-                velocity.nor().scl(MAX_SPEED);
+            float currentMaxSpeed = isAttacking ? MAX_SPEED / 2 : MAX_SPEED; //攻击时速度减半
+            if (velocity.len2() > currentMaxSpeed * currentMaxSpeed) {
+                velocity.nor().scl(currentMaxSpeed);
                 body.setLinearVelocity(velocity);
             }
         } else {
@@ -94,8 +73,8 @@ public class PlayerController {
             attackTimer -= Gdx.graphics.getDeltaTime();
             if (attackTimer <= 0) {
                 isAttacking = false;
+                MAX_SPEED = 7f; // 恢复原始速度
             }
-            MAX_SPEED=10;
         }
         return isAttacking;
     }
@@ -103,7 +82,7 @@ public class PlayerController {
         if (!isAttacking) {
             isAttacking = true;
             attackTimer = ATTACK_DURATION;
-            MAX_SPEED=0;
+            MAX_SPEED = MAX_SPEED / 2; // 将最大速度减半
         }
     }
     public Body getBody() {

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Pool;
 
+import io.github.SimpleGame.Character.Enemy.Monster1;
 import io.github.SimpleGame.Character.Player.Player;
 import static io.github.SimpleGame.Config.WORLD_HEIGHT;
 import static io.github.SimpleGame.Config.WORLD_WIDTH;
@@ -35,6 +36,7 @@ public class Main extends ApplicationAdapter {
     private Weapon item;
     private LightningMagic lightningMagic;
     GravityMagic gravityMagic;
+    Monster1 monster1;
     // 物理更新相关常量
     private static final float MAX_STEP_TIME = 0.25f;
     private static final float MIN_STEP_TIME = 1/60f;
@@ -77,6 +79,8 @@ public class Main extends ApplicationAdapter {
             lightningMagic = new LightningMagic();
             lightningMagic.magicCreate(worldManager.getWorld(), WORLD_WIDTH+10, WORLD_HEIGHT+6);
             gravityMagic = new GravityMagic();
+            monster1 = new Monster1(worldManager.getWorld(),player, WORLD_WIDTH, WORLD_HEIGHT);
+
         } catch (Exception e) {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
             throw new RuntimeException("Failed to initialize game", e);
@@ -130,14 +134,14 @@ public class Main extends ApplicationAdapter {
 
         batch.setProjectionMatrix(cameraManager.getCamera().combined);
         uiBatch.setProjectionMatrix(cameraManager.getUiCamera().combined);
-
+        item.render(batch,uiBatch,player);
+        lightningMagic.magicObtain(batch,uiBatch,player);
         batch.begin();
+        monster1.render(batch,player,worldManager.getWorld());
         player.filpCheck(player.getPlayerSprite(), player.getPlayerController(), batch).draw(batch);
         lightningMagic.magicRender(batch, player);
         gravityMagic.magicRender(batch, player);
         batch.end();
-        item.render(batch,uiBatch,player);
-        lightningMagic.magicObtain(batch,uiBatch,player);
         uiBatch.begin();
         player.render(uiBatch,deltaTime);
         uiBatch.end();

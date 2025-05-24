@@ -98,25 +98,26 @@ public class Weapon {
             attachToPlayer(player,player.getX(),player.getY());
             updatePosition(player,player.getX(), player.getY(), offsetX, offsetY);
             batch.begin();
+            if(!Gdx.input.isKeyPressed(Input.Keys.J)&& !player.getPlayerController().isAttacking()){
                 batch.draw(
                     textureRegion.getTexture(),
-                    (player.getX() - (float) textureRegion.getRegionWidth() /2 * scale)-1f,
-                    (player.getY() - (float) textureRegion.getRegionHeight() /2 * scale)-0.6f,
+                    (player.getX() - (float) textureRegion.getRegionWidth() /2 * scale)-0.1f,
+                    (player.getY() - (float) textureRegion.getRegionHeight() /2 * scale)-0.4f,
                     (float) textureRegion.getRegionWidth() /2 * scale,
                     (float) textureRegion.getRegionHeight() /2 * scale,
                     textureRegion.getRegionWidth() * scale,
                     textureRegion.getRegionHeight() * scale,
-                    0.07f, 0.07f,
-                    180,  // 旋转角度
+                    0.13f, 0.13f,
+                    0,  // 旋转角度
                     0, 0,  // 纹理坐标
                     textureRegion.getRegionWidth(),
                     textureRegion.getRegionHeight(),
                     player.getPlayerController().isFlipped,
                     true
                 );
+            }
             batch.end();
             UIbatch.begin();
-
             UIbatch.draw(textureRegion.getTexture(),
                 Config.WORLD_WIDTH/2+5f,Config.WORLD_WIDTH/2-9.5f,
                 textureRegion.getRegionWidth()/2*scale*0.1f,textureRegion.getRegionHeight()/2*scale*0.1f);
@@ -156,7 +157,7 @@ public class Weapon {
             PolygonShape shape = new PolygonShape();
             float scaledWidth = textureRegion.getRegionWidth() / PIXELS_PER_METER;
             float scaledHeight = textureRegion.getRegionHeight() / PIXELS_PER_METER;
-            shape.setAsBox(scaledWidth, scaledHeight);
+            shape.setAsBox(12*scaledWidth, 5*scaledHeight);
 
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;

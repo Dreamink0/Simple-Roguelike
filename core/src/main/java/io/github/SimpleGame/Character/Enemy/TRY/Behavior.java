@@ -1,4 +1,4 @@
-package io.github.SimpleGame.Character.Enemy;
+package io.github.SimpleGame.Character.Enemy.TRY;
 
 public abstract class Behavior {
     public enum Status{
@@ -34,8 +34,8 @@ public abstract class Behavior {
         return status;
     }
 
-    //添加子节点
-    public abstract void AddChild(Behavior child);
+    // 添加子节点
+    public void AddChild(Behavior child) {}
 
     //重置该节点
     public void Reset(){

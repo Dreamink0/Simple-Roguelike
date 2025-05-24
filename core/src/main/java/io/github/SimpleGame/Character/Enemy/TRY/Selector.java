@@ -1,4 +1,4 @@
-package io.github.SimpleGame.Character.Enemy;
+package io.github.SimpleGame.Character.Enemy.TRY;
 
 public class Selector extends Sequence{
     @Override
