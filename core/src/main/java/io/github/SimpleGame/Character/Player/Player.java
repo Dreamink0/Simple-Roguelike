@@ -36,7 +36,7 @@ public class Player {
         playerController = new PlayerController(this.playerBody);
 
         PolygonShape BoundingBox = new PolygonShape();
-        BoundingBox.setAsBox(2f, 1.8f);
+        BoundingBox.setAsBox(1.2f, 1.8f);
         FixtureDef fixtureDef = new FixtureDef();//定义碰撞属性
         fixtureDef.shape = BoundingBox;
         fixtureDef.density = 1.0f;//密度
@@ -81,6 +81,7 @@ public class Player {
     public void render(SpriteBatch batch,float deltaTime) {
         attributeHandler.update(playerTextureHandler);
         playerTextureHandler.render(batch, deltaTime);
+
     }
     public void dispose() {
         if (playerBody != null) {

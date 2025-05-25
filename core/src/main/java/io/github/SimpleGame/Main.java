@@ -37,6 +37,7 @@ public class Main extends ApplicationAdapter {
     private LightningMagic lightningMagic;
     GravityMagic gravityMagic;
     Monster1 monster1;
+    Monster1[] monster1s;
     // 物理更新相关常量
     private static final float MAX_STEP_TIME = 0.25f;
     private static final float MIN_STEP_TIME = 1/60f;
@@ -79,7 +80,11 @@ public class Main extends ApplicationAdapter {
             lightningMagic = new LightningMagic();
             lightningMagic.magicCreate(worldManager.getWorld(), WORLD_WIDTH+10, WORLD_HEIGHT+6);
             gravityMagic = new GravityMagic();
-            monster1 = new Monster1(worldManager.getWorld(),player, WORLD_WIDTH, WORLD_HEIGHT);
+            monster1 = new Monster1(worldManager.getWorld(),player, WORLD_WIDTH+10, WORLD_HEIGHT+5);
+            monster1s = new Monster1[5];
+            for (int i = 0; i < monster1s.length; i++) {
+                monster1s[i] = new Monster1(worldManager.getWorld(),player, WORLD_WIDTH+i, WORLD_HEIGHT+5);
+            }
 
         } catch (Exception e) {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
@@ -138,6 +143,9 @@ public class Main extends ApplicationAdapter {
         lightningMagic.magicObtain(batch,uiBatch,player);
         batch.begin();
         monster1.render(batch,player,worldManager.getWorld());
+        for (int i = 0; i < monster1s.length; i++) {
+            monster1s[i].render(batch,player,worldManager.getWorld());
+        }
         player.filpCheck(player.getPlayerSprite(), player.getPlayerController(), batch).draw(batch);
         lightningMagic.magicRender(batch, player);
         gravityMagic.magicRender(batch, player);

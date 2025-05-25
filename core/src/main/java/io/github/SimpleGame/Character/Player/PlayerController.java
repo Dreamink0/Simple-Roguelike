@@ -26,6 +26,8 @@ public class PlayerController {
         boolean rightPressed = Gdx.input.isKeyPressed(Input.Keys.D);
         boolean upPressed = Gdx.input.isKeyPressed(Input.Keys.W);
         boolean downPressed = Gdx.input.isKeyPressed(Input.Keys.S);
+        boolean shiftPressed = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) ||
+                               Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
         Vector2 moveDirection = new Vector2(0, 0);
 
         if (leftPressed) moveDirection.x = -1;
@@ -39,7 +41,10 @@ public class PlayerController {
             body.applyForceToCenter(force, true);
 
             Vector2 velocity = body.getLinearVelocity();
-            float currentMaxSpeed = isAttacking ? MAX_SPEED / 2 : MAX_SPEED; //攻击时速度减半
+            float speedMultiplier = shiftPressed ? 1.2f : 1.0f; // 按住shift速度增加50%
+            float currentMaxSpeed = isAttacking ? MAX_SPEED / 2 : MAX_SPEED;
+            currentMaxSpeed *= speedMultiplier; // 应用加速效果
+
             if (velocity.len2() > currentMaxSpeed * currentMaxSpeed) {
                 velocity.nor().scl(currentMaxSpeed);
                 body.setLinearVelocity(velocity);

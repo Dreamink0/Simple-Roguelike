@@ -1,214 +1,284 @@
-Player-Idle.png
-size: 440, 440
+Player-idle.png
+size: 1800, 54
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 idle
   rotate: false
-  xy: 10, 10
+  xy: 0, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 85, 10
+  xy: 45, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 160, 10
+  xy: 90, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 235, 10
+  xy: 135, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 310, 10
+  xy: 180, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 385, 10
+  xy: 225, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 10, 94
+  xy: 270, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 85, 94
+  xy: 315, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 160, 94
+  xy: 360, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 235, 94
+  xy: 405, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 310, 94
+  xy: 450, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 385, 94
+  xy: 495, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 10, 178
+  xy: 540, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 85, 178
+  xy: 585, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 160, 178
+  xy: 630, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 235, 178
+  xy: 675, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 310, 178
+  xy: 720, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 385, 178
+  xy: 765, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 10, 262
+  xy: 810, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 85, 262
+  xy: 855, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 160, 262
+  xy: 900, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 235, 262
+  xy: 945, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 310, 262
+  xy: 990, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 385, 262
+  xy: 1035, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 10, 346
+  xy: 1080, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 85, 346
+  xy: 1125, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 160, 346
+  xy: 1170, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 235, 346
+  xy: 1215, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 310, 346
+  xy: 1260, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0
   index: -1
 idle
   rotate: false
-  xy: 385, 346
+  xy: 1305, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+idle
+  rotate: false
+  xy: 1350, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+idle
+  rotate: false
+  xy: 1395, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+idle
+  rotate: false
+  xy: 1440, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+idle
+  rotate: false
+  xy: 1485, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+idle
+  rotate: false
+  xy: 1530, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+idle
+  rotate: false
+  xy: 1575, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+idle
+  rotate: false
+  xy: 1620, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+idle
+  rotate: false
+  xy: 1665, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+idle
+  rotate: false
+  xy: 1710, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+idle
+  rotate: false
+  xy: 1755, 0
   size: 45, 54
   orig: 45, 54
   offset: 0, 0

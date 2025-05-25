@@ -7,6 +7,5 @@ import io.github.SimpleGame.Character.Player.Player;
 
 public interface EnemyAnimationHandler {
     void load();
-    void render(SpriteBatch batch, Player player, World world);
     void dispose();
 }

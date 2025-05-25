@@ -41,6 +41,7 @@ public class AnimationTool {
     private String framename;
     private Animation<TextureRegion> animation;
     private TextureRegion textureRegion;
+    private float stateTime = 0f;
     public void create(String name, Texture texture, int rows, int cols,float frameDuration){
         this.frameDuration=frameDuration;
         this.framename=name;
@@ -76,29 +77,31 @@ public class AnimationTool {
         float stateTime = stateTimes.get(framename);
         this.textureRegion=animation.getKeyFrame(stateTime,loop);
     }
-    public void render(SpriteBatch batch,float x,float y,float scale,Boolean loop){
+    public void render(SpriteBatch batch, float x, float y, float scale, Boolean loop) {
         update();
         getKeyFrame(loop);
-        float width=textureRegion.getRegionWidth()*scale;
-        float height=textureRegion.getRegionHeight()*scale;
-        batch.draw(textureRegion,x,y,width,height);
+        float width = textureRegion.getRegionWidth() * scale;
+        float height = textureRegion.getRegionHeight() * scale;
+        // 使用中心点作为锚点进行绘制，避免图像偏移
+        batch.draw(textureRegion, x - width / 2, y - height / 2, width, height);
     }
-    public void render(SpriteBatch batch,float x,float y,float scale,Boolean loop,Boolean flip){
+    public void render(SpriteBatch batch, float x, float y, float scale, boolean loop, boolean flip){
         update();
         getKeyFrame(loop);
-        float width=textureRegion.getRegionWidth()*scale;
-        float height=textureRegion.getRegionHeight()*scale;
-        if(flip) {
-            width = -width; // 通过设置负的宽度实现x轴翻转
+        float width = textureRegion.getRegionWidth() * scale;
+        float height = textureRegion.getRegionHeight() * scale;
+        if(flip){
+            batch.draw(textureRegion, x + width / 2, y - height / 2, -width, height);
+        }else{
+            batch.draw(textureRegion, x - width / 2, y - height / 2, width, height);
         }
-        batch.draw(textureRegion,x,y,width,height);
     }
     public void render(SpriteBatch batch,float x,float y,float scale,Boolean loop,float rotationAngle){
         update();
         getKeyFrame(loop);
         float width=textureRegion.getRegionWidth()*scale;
         float height=textureRegion.getRegionHeight()*scale;
-        batch.draw(textureRegion, x, y, width/2, height/2, width, height, scale, scale, rotationAngle);
+        batch.draw(textureRegion, x - width / 2, y - height / 2, width/2, height/2, width, height, scale, scale, rotationAngle);
     }
     public void dispose(){
         for(String name:animations.keySet()){
@@ -130,5 +133,9 @@ public class AnimationTool {
     }
     public float getFrameDuration(){
         return frameDuration;
+    }
+
+    public void resetStateTime() {
+            this.stateTime = 0f;
     }
 }
