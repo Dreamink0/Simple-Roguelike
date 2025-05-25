@@ -4,6 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Config;
 import io.github.SimpleGame.Resource.ResourceManager;
@@ -28,7 +31,11 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
         Animation<TextureRegion> newAnimation;
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.J)) {playerController.startAttack(); isAttacking = true;}
-
+        if(!isAttacking){
+            setCollisionBoxSize(1.2f,1.8f,player);
+        }else{
+            setCollisionBoxSize(4f,3f,player);
+        }
         if (isAttacking) {newAnimation = playerAttackAnimation;
         } else {newAnimation = isMoving ? playerRunAnimation : playerIdleAnimation;}
 
@@ -41,7 +48,7 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
         if (isAttacking) {
             // 攻击动画时使用较小的尺寸
             playerSprite.setSize(
-                (2.1f * currentFrame.getRegionWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
+                (2 * currentFrame.getRegionWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
                 (2 * currentFrame.getRegionHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE
             );
         } else {
@@ -63,5 +70,25 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
         this.playerIdleAnimation = ResourceManager.getInstance().getPlayerIdleAnimation();
         this.playerRunAnimation = ResourceManager.getInstance().getPlayerRunAnimation();
         this.playerAttackAnimation = ResourceManager.getInstance().getPlayerAttackAnimation();
+    }
+
+    private void setCollisionBoxSize(float width, float height,Player player) {
+        if (player.playerBody == null) return;
+
+        for (Fixture fixture : player.playerBody.getFixtureList()) {
+            player.playerBody.destroyFixture(fixture);
+        }
+
+        PolygonShape newShape = new PolygonShape();
+        newShape.setAsBox(width, height);
+
+        FixtureDef newFixtureDef = new FixtureDef();
+        newFixtureDef.shape = newShape;
+        newFixtureDef.density = 1;
+        newFixtureDef.friction = 0.5f;
+        newFixtureDef.restitution = 2f;
+
+        player.playerBody.createFixture(newFixtureDef);
+        newShape.dispose();
     }
 }

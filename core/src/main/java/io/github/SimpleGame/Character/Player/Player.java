@@ -83,6 +83,7 @@ public class Player {
         playerTextureHandler.render(batch, deltaTime);
 
     }
+
     public void dispose() {
         if (playerBody != null) {
             playerBody.getWorld().destroyBody(playerBody);

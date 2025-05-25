@@ -31,7 +31,6 @@ public class Listener{
                     bodyB.getUserData() != null && bodyB.getUserData().equals("weapon")) ||
                     (bodyA.getUserData() != null && bodyA.getUserData().equals("weapon") &&
                         bodyB.getUserData() != null && bodyB.getUserData().equals("player"))) {
-                    System.out.println("The player collided with the weapon!"); // 调试信息
                     Flag_equip();
                 }
 

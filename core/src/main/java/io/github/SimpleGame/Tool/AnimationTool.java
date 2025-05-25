@@ -36,7 +36,7 @@ public class AnimationTool {
      *    - 当不再需要动画时调用以释放纹理资源
      */
     private Map<String, Animation<TextureRegion>> animations=new HashMap<>();
-    private Map<String, Float> stateTimes=new HashMap<>();
+    public Map<String, Float> stateTimes=new HashMap<>();
     private float frameDuration;
     private String framename;
     private Animation<TextureRegion> animation;

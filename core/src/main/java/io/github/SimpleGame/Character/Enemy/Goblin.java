@@ -1,32 +1,39 @@
 package io.github.SimpleGame.Character.Enemy;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Tool.AnimationTool;
-public class Monster1 extends Enemy{
+public class Goblin extends Enemy{
     private State currentState;
     private Player player;
     protected Body enemyBody;
-    private monster1AI AI;
+    private GoblinAI AI;
     float statetime;
-    public Monster1(){}
-    public Monster1(World world, Player player, float x, float y)
+    public Goblin(){}
+    public Goblin(World world, Player player, float x, float y)
     {
         this.player = player;
         this.currentState = State.PATROL;
-        this.AI = new monster1AI(world,player,x,y);
+        this.AI = new GoblinAI(world,player,x,y);
     }
     public void render(SpriteBatch batch,Player player,World world){
         float deltaTime =Math.min(Gdx.graphics.getDeltaTime(),0.25f);
         statetime+=deltaTime;
         AI.update(statetime,batch);
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            AI.HP -= 1;
+        }
+    }
+    public void dispose() {
+        AI.dispose();
     }
 }
-class monster1Animation extends Monster1 implements EnemyAnimationHandler{
+class GoblinAnimation extends Goblin implements EnemyAnimationHandler{
     private Texture PatrolTexture;
     private Texture ChaseTexture;
     private Texture AttackTexture;
@@ -34,7 +41,7 @@ class monster1Animation extends Monster1 implements EnemyAnimationHandler{
     private AnimationTool[] animationTools;
     protected float X;
     protected float Y;
-    public monster1Animation(float x,float y){
+    public GoblinAnimation(float x,float y){
         this.X=x;
         this.Y=y;
         animationTools  = new AnimationTool[4];
@@ -42,23 +49,34 @@ class monster1Animation extends Monster1 implements EnemyAnimationHandler{
     }
     @Override
     public void load() {
-        assetManager.load("Enemy/NightBorne-Normal-sheet.png", Texture.class);
-        assetManager.load("Enemy/NightBorne-Running-sheet.png",Texture.class);
-        assetManager.load("Enemy/NightBorne-Attack-sheet.png",Texture.class);
+        assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-idle.png", Texture.class);
+        assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-run.png",Texture.class);
+        assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-hit.png",Texture.class);
+        assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-death 1.png",Texture.class);
         assetManager.finishLoading();
-        PatrolTexture = assetManager.get("Enemy/NightBorne-Normal-sheet.png", Texture.class);
-        ChaseTexture = assetManager.get("Enemy/NightBorne-Running-sheet.png",Texture.class);
-        AttackTexture = assetManager.get("Enemy/NightBorne-Attack-sheet.png",Texture.class);
+        PatrolTexture = assetManager.get("Enemy/goblin/goblin scout - silhouette all animations-idle.png", Texture.class);
+        ChaseTexture = assetManager.get("Enemy/goblin/goblin scout - silhouette all animations-run.png",Texture.class);
+        AttackTexture = assetManager.get("Enemy/goblin/goblin scout - silhouette all animations-hit.png",Texture.class);
+        DieTexture = assetManager.get("Enemy/goblin/goblin scout - silhouette all animations-death 1.png",Texture.class);
         animationTools[0] = new AnimationTool();
-        animationTools[0].create("Patrol",PatrolTexture,1,9,0.15f);
+        animationTools[0].create("Patrol",PatrolTexture,1,8,0.15f);
         animationTools[1] = new AnimationTool();
-        animationTools[1].create("Chase",ChaseTexture,1,6,0.15f);
+        animationTools[1].create("Chase",ChaseTexture,1,8,0.15f);
         animationTools[2] = new AnimationTool();
-        animationTools[2].create("Attack",AttackTexture,1,12,0.05f);
+        animationTools[2].create("Attack",AttackTexture,1,3,0.05f);
+        animationTools[3] = new AnimationTool();
+        animationTools[3].create("Die",DieTexture,1,12,0.15f);
     }
     @Override
     public void dispose() {
-
+        for (AnimationTool animationTool : animationTools) {
+            animationTool.dispose();
+        }
+        animationTools = null;
+        assetManager.unload("Enemy/goblin/goblin scout - silhouette all animations-idle.png");
+        assetManager.unload("Enemy/goblin/goblin scout - silhouette all animations-run.png");
+        assetManager.unload("Enemy/goblin/goblin scout - silhouette all animations-hit.png");
+        assetManager.unload("Enemy/goblin/goblin scout - silhouette all animations-death 1.png");
     }
 
     public Texture getPatrolTexture() {
@@ -81,24 +99,25 @@ class monster1Animation extends Monster1 implements EnemyAnimationHandler{
         return animationTools;
     }
 }
-class monster1AI extends Monster1 implements EnemyStateHandler {
+class GoblinAI extends Goblin implements EnemyStateHandler {
     private double distance;
     private float X;
     private float Y;
     private World world;
     private Player player;
-    private float HP;
-    private float Damage;
-    private float Speed = 0.75f;
+    public float HP=5;
+    private float Damage=0.1f;
+    private float Speed = 10f;
     private float AttackRange;
-    private float AttackSpeed;
-    private SpriteBatch batch;
-    private monster1Animation animations;
+    private GoblinAnimation animations;
     private AnimationTool currentAnimation;
     private float stateTime = 0f;
-    private float originalWidth = 1.0f;
-    private float originalHeight = 1.0f;
+    private float originalWidth = 0.5f;
+    private float originalHeight = 0.5f;
     private boolean isAttackBoxExtended = false;
+    private boolean hasPlayedDeathAnimation = false;
+    private float deathAnimationTimer = 0f;
+    private final float DEATH_ANIMATION_DURATION = 1100f; // 根据死亡动画总时长调整
     public enum State {
         PATROL,
         CHASE,
@@ -108,13 +127,12 @@ class monster1AI extends Monster1 implements EnemyStateHandler {
 
     private State currentState = State.PATROL;
 
-    public monster1AI(World world, Player player, float x, float y) {
+    public GoblinAI(World world, Player player, float x, float y) {
         this.world = world;
         this.player = player;
         this.X = x;
         this.Y = y;
-        this.animations = new monster1Animation(x, y);
-        // 初始化碰撞体
+        this.animations = new GoblinAnimation(x, y);
         createBody();
     }
 
@@ -130,8 +148,8 @@ class monster1AI extends Monster1 implements EnemyStateHandler {
         shape.setAsBox(originalWidth, originalHeight);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 5;
-        fixtureDef.friction = 10;
+        fixtureDef.density = 10;
+        fixtureDef.friction = 20;
         fixtureDef.restitution = 0f;
         enemyBody.createFixture(fixtureDef);
         shape.dispose();
@@ -151,49 +169,80 @@ class monster1AI extends Monster1 implements EnemyStateHandler {
 
         FixtureDef newFixtureDef = new FixtureDef();
         newFixtureDef.shape = newShape;
-        newFixtureDef.density = 5;
-        newFixtureDef.friction = 10;
+        newFixtureDef.density = 10;
+        newFixtureDef.friction = 20;
         newFixtureDef.restitution = 0f;
 
         enemyBody.createFixture(newFixtureDef);
         newShape.dispose();
     }
+
     @Override
     public void update(float deltaTime, SpriteBatch batch) {
         stateTime += deltaTime;
 
-        if (enemyBody != null) {
-            X = enemyBody.getPosition().x;
-            Y = enemyBody.getPosition().y;
-        }
-        distance = calculateDistance(player);
-
-        if (distance < 5f) {
-            currentState = State.ATTACK;
-            attack(deltaTime);
-
-            if (!isAttackBoxExtended) {
-                setCollisionBoxSize(originalWidth * 3f, originalHeight * 1.5f);
-                isAttackBoxExtended = true;
+        if(HP > 0){
+            if (enemyBody != null) {
+                X = enemyBody.getPosition().x;
+                Y = enemyBody.getPosition().y;
             }
-        } else if (distance <= 20 && distance > 5f) {
-            currentState = State.CHASE;
-            chase(deltaTime);
+            distance = calculateDistance(player);
 
-            if (isAttackBoxExtended) {
-                setCollisionBoxSize(originalWidth, originalHeight);
-                isAttackBoxExtended = false;
+            if (distance < 3f) {
+                currentState = State.ATTACK;
+                attack(deltaTime);
+
+                if (!isAttackBoxExtended) {
+                    setCollisionBoxSize(originalWidth * 1.5f, originalHeight * 1.5f);
+                    isAttackBoxExtended = true;
+                }
+            } else if (distance <= 30 && distance > 3f) {
+                currentState = State.CHASE;
+                chase(deltaTime);
+
+                if (isAttackBoxExtended) {
+                    setCollisionBoxSize(originalWidth, originalHeight);
+                    isAttackBoxExtended = false;
+                }
+            } else {
+                currentState = State.PATROL;
+                patrol(deltaTime);
+
+                if (isAttackBoxExtended) {
+                    setCollisionBoxSize(originalWidth, originalHeight);
+                    isAttackBoxExtended = false;
+                }
             }
         } else {
-            currentState = State.PATROL;
-            patrol(deltaTime);
+            currentState = State.DIE;
+            // 如果是第一次进入死亡状态，重置计时器
+            if (!hasPlayedDeathAnimation) {
+                deathAnimationTimer = 0f;
+                if (animations != null && animations.getAnimationTools()[3] != null) {
+                    animations.getAnimationTools()[3].resetStateTime(); // 重置死亡动画时间
+                }
+           }
+            hasPlayedDeathAnimation = true;
+        }
 
-            if (isAttackBoxExtended) {
-                setCollisionBoxSize(originalWidth, originalHeight);
-                isAttackBoxExtended = false;
+        // 如果处于死亡状态且动画播放完毕，不再渲染
+        if (!(currentState == State.DIE && hasPlayedDeathAnimation && deathAnimationTimer >= DEATH_ANIMATION_DURATION)) {
+            render(batch, stateTime);
+        }
+
+        // 处理死亡动画计时
+        if (currentState == State.DIE && hasPlayedDeathAnimation) {
+            deathAnimationTimer += deltaTime;
+
+            // 动画播放结束后释放资源
+            if (deathAnimationTimer >= DEATH_ANIMATION_DURATION) {
+                dispose(); // 释放动画资源
+                if (enemyBody != null) {
+                    world.destroyBody(enemyBody);
+                    enemyBody = null;
+                }
             }
         }
-        render(batch, stateTime);
     }
 
     @Override
@@ -207,8 +256,8 @@ class monster1AI extends Monster1 implements EnemyStateHandler {
         float distance = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
         if (distance > 0) {
-            float forceX = (deltaX / distance) * Speed * 20;
-            float forceY = (deltaY / distance) * Speed * 20;
+            float forceX = (deltaX / distance) * Speed * 2f;
+            float forceY = (deltaY / distance) * Speed * 2f;
 
             enemyBody.applyForceToCenter(forceX, forceY, true);
         }
@@ -221,8 +270,8 @@ class monster1AI extends Monster1 implements EnemyStateHandler {
         float distance = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
         if (distance > 0.5f) {
-            float forceX = (deltaX / distance) * Speed * 30;
-            float forceY = (deltaY / distance) * Speed * 30;
+            float forceX = (deltaX / distance) * Speed * 3f;
+            float forceY = (deltaY / distance) * Speed * 2f;
 
             forceX += (float) (Math.random() - 0.5) * 0.2f;
             forceY += (float) (Math.random() - 0.5) * 0.2f;
@@ -240,10 +289,9 @@ class monster1AI extends Monster1 implements EnemyStateHandler {
     }
 
     @Override
-    public void die() {
+    public void die(Body enemyBody) {
         if (enemyBody != null) {
             world.destroyBody(enemyBody);
-            enemyBody = null;
         }
     }
 
@@ -293,17 +341,43 @@ class monster1AI extends Monster1 implements EnemyStateHandler {
             case ATTACK:
                 currentAnimation = animationTools[2];
                 break;
+            case DIE:
+                currentAnimation = animationTools[3];
+                break;
             default:
                 currentAnimation = animationTools[0];
         }
+
         if (currentAnimation != null) {
-            if (currentState == State.ATTACK) {
+            // 死亡动画单独处理
+            if (currentState == State.DIE) {
+                // 只有在死亡动画未完成时才渲染
+                if (deathAnimationTimer < DEATH_ANIMATION_DURATION) {
+                    animationTools[3].render(batch, X, Y, 0.1f, false, flip);
+                }
+            }
+            else if (currentState == State.ATTACK) {
                 animationTools[2].render(batch, X, Y, 0.1f, false, flip);
-            } else if (currentState == State.CHASE) {
+            }
+            else if (currentState == State.CHASE) {
                 animationTools[1].render(batch, X, Y, 0.1f, true, flip);
-            } else {
+            }
+            else {
                 currentAnimation.render(batch, X, Y, 0.1f, true, flip);
             }
         }
+    }
+    public void dispose() {
+        if (animations != null) {
+            animations.dispose();
+            animations = null;
+        }
+        if (enemyBody != null && world != null) {
+            world.destroyBody(enemyBody);
+            enemyBody = null;
+        }
+        currentAnimation = null;
+        player = null;
+        world = null;
     }
 }

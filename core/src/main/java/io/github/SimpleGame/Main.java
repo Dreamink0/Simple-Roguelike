@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Pool;
 
-import io.github.SimpleGame.Character.Enemy.Monster1;
+import io.github.SimpleGame.Character.Enemy.Goblin;
 import io.github.SimpleGame.Character.Player.Player;
 import static io.github.SimpleGame.Config.WORLD_HEIGHT;
 import static io.github.SimpleGame.Config.WORLD_WIDTH;
@@ -36,8 +36,7 @@ public class Main extends ApplicationAdapter {
     private Weapon item;
     private LightningMagic lightningMagic;
     GravityMagic gravityMagic;
-    Monster1 monster1;
-    Monster1[] monster1s;
+    Goblin[] monster1s;
     // 物理更新相关常量
     private static final float MAX_STEP_TIME = 0.25f;
     private static final float MIN_STEP_TIME = 1/60f;
@@ -80,10 +79,11 @@ public class Main extends ApplicationAdapter {
             lightningMagic = new LightningMagic();
             lightningMagic.magicCreate(worldManager.getWorld(), WORLD_WIDTH+10, WORLD_HEIGHT+6);
             gravityMagic = new GravityMagic();
-            monster1 = new Monster1(worldManager.getWorld(),player, WORLD_WIDTH+10, WORLD_HEIGHT+5);
-            monster1s = new Monster1[5];
+            monster1s = new Goblin[10];
             for (int i = 0; i < monster1s.length; i++) {
-                monster1s[i] = new Monster1(worldManager.getWorld(),player, WORLD_WIDTH+i, WORLD_HEIGHT+5);
+                float randomX = WORLD_WIDTH + 2 + (float) Math.random() * 20;
+                float randomY = WORLD_HEIGHT + 2 + (float) Math.random() * 15;
+                monster1s[i] = new Goblin(worldManager.getWorld(), player, randomX, randomY);
             }
 
         } catch (Exception e) {
@@ -100,8 +100,14 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), MAX_STEP_TIME);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+            long javaHeap = Gdx.app.getJavaHeap() / (1024 * 1024); // 转换为MB
+            long nativeHeap = Gdx.app.getNativeHeap() / (1024 * 1024); // 转换为MB
+            Gdx.app.log("Memory", "Free memory: " + javaHeap + " MB");
+            Gdx.app.log("Memory", "Native heap free: " + nativeHeap + " MB");
+            System.gc();
+        }
         stateTime += deltaTime;
-
         accumulator += deltaTime;
         int steps = 0;
         while (accumulator >= MIN_STEP_TIME && steps < MAX_STEPS) {
@@ -142,7 +148,6 @@ public class Main extends ApplicationAdapter {
         item.render(batch,uiBatch,player);
         lightningMagic.magicObtain(batch,uiBatch,player);
         batch.begin();
-        monster1.render(batch,player,worldManager.getWorld());
         for (int i = 0; i < monster1s.length; i++) {
             monster1s[i].render(batch,player,worldManager.getWorld());
         }
@@ -199,7 +204,10 @@ public class Main extends ApplicationAdapter {
         if (worldManager.getWorld() != null) worldManager.getWorld().dispose();
         if (resourceManager != null) resourceManager.dispose();
         if (worldManager.getDebugRenderer() != null) worldManager.getDebugRenderer().dispose();
-
+        for (int i = 0; i < monster1s.length; i++) {
+            monster1s[i].dispose();
+        }
+        monster1s = null;
         // 清理对象池
         batchPool.clear();
     }
