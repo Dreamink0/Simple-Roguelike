@@ -11,7 +11,7 @@ public class PlayerController {
 
     private static final float MOVE_FORCE = 750f;
     private static float MAX_SPEED = 7f;
-    private static final float ATTACK_DURATION = 2f; //攻击动画持续时间
+    private static final float ATTACK_DURATION = 1.5f; //攻击动画持续时间
     private float attackTimer = 0f;
     private boolean isAttacking = false;
     public PlayerController(Body body) {

@@ -17,6 +17,8 @@ public class Player {
     //状态//
     protected boolean isequipped = false;
     private World world;
+    public float attackCooldownTimer = 0f;
+    public final float attackCooldown = 0.5f;
 
     public Player() {}
     public Player(World world, float WORLD_WIDTH, float WORLD_HEIGHT) {
@@ -46,7 +48,7 @@ public class Player {
         this.playerTextureHandler.load();
     }
     //玩家动画更新//
-    public PlayerController setAction(PlayerController playerController, Player player, World world) {
+    public PlayerController setAction(PlayerController playerController, World world) {
         return actionHandler.handleAction(playerController, this, world);
     }
     //玩家是否翻转//

@@ -61,7 +61,7 @@ public class PlayerAttribute implements PlayerAttributeHandler{
     public void setDamage(float Damage) {this.Damage = Damage;}
 
     @Override
-    public float getDamage() {return 0;}
+    public float getDamage() {return Damage;}
 
     @Override
     public void setMaxHP(float maxHP) {

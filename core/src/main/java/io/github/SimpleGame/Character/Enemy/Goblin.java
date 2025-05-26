@@ -25,21 +25,27 @@ public class Goblin extends Enemy{
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
         statetime += deltaTime;
         AI.update(statetime, batch);
-        if (Listener.attack_Flag||(AI.calculateDistance(player)<4f||AI.calculateDistance(player)<=3)) {
-            if (AI.calculateDistance(player) <=4f && player.getPlayerController().isAttacking()) {
-                AI.HP -= 5f;
-                if (AI.HP <= 0) {
-                    AI.HP = 0;
+        if (Listener.attack_Flag||(AI.calculateDistance(player)<5f||AI.calculateDistance(player)<=3)) {
+            if (AI.calculateDistance(player) <=5f && player.getPlayerController().isAttacking()) {
+                if(player.attackCooldownTimer<=0){
+                    AI.HP -= player.getAttributeHandler().getDamage();
+                    if (AI.HP <= 0) {AI.HP = 0;}
+                    player.attackCooldownTimer = player.attackCooldown;
+                    System.out.println("HP:" + AI.HP);
                 }
-            } else if (AI.calculateDistance(player) <= 5f&&!player.getPlayerController().isAttacking()) {
-                player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - 0.05f);
+            } else if (AI.calculateDistance(player) <= 4f&&!player.getPlayerController().isAttacking()) {
+                if(AI.attackTimer<=0){
+                    player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - AI.Damage);
+                    AI.attackTimer = AI.attackCooldown;
+                }
             }
-            System.out.println("HP:" + AI.HP);
+            player.attackCooldownTimer -= deltaTime;
+            AI.attackTimer -= deltaTime;
         }
-        Listener.attack_Flag = false;
     }
     public void dispose() {
         AI.dispose();
+        AI = null;
     }
 }
 class GoblinAnimation extends Goblin implements EnemyAnimationHandler{
@@ -119,9 +125,9 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
     private float Y;
     private World world;
     private Player player;
-    public float HP=100;
-    private float Damage=0.1f;
-    private float Speed = 10f;
+    public float HP=20;
+    public float Damage=2f;
+    private float Speed = 20f;
     private float AttackRange;
     private GoblinAnimation animations;
     private AnimationTool currentAnimation;
@@ -130,9 +136,11 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
     private float originalHeight = 1f;
     private boolean isAttackBoxExtended = false;
     private boolean hasPlayedDeathAnimation = false;
-    private boolean canAttack = false;
     private float deathAnimationTimer = 0f;
     private final float DEATH_ANIMATION_DURATION = 1000f; // 根据死亡动画总时长调整
+    public boolean isAttacking = false;
+    public float attackTimer = 0f;
+    public float attackCooldown = 2f;  // 攻击冷却时间
     public enum State {
         PATROL,
         CHASE,
@@ -204,7 +212,7 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
             }
             distance = calculateDistance(player);
 
-            if (distance < 3f) {
+            if (distance < 4f) {
                 currentState = State.ATTACK;
                 attack(deltaTime);
 
@@ -212,7 +220,7 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
                     setCollisionBoxSize(originalWidth * 1.5f, originalHeight * 1.5f);
                     isAttackBoxExtended = true;
                 }
-            } else if (distance <= 30 && distance > 3f) {
+            } else if (distance <= 30 && distance > 4f) {
                 currentState = State.CHASE;
                 chase(deltaTime);
 
@@ -240,8 +248,8 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
            }
             hasPlayedDeathAnimation = true;
         }
-        if (Listener.attack_Flag||(calculateDistance(player)<=4||calculateDistance(player)<=3)) {
-            if (calculateDistance(player) <= 4 && player.getPlayerController().isAttacking()) {
+        if (Listener.attack_Flag||(calculateDistance(player)<=5)||(calculateDistance(player)<=4)) {
+            if (calculateDistance(player) <= 5 && player.getPlayerController().isAttacking()) {
                 currentState = State.HURT;
             }
         }
@@ -257,7 +265,6 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
 
             // 动画播放结束后释放资源
             if (deathAnimationTimer >= DEATH_ANIMATION_DURATION) {
-                dispose(); // 释放动画资源
                 if (enemyBody != null) {
                     world.destroyBody(enemyBody);
                     enemyBody = null;
@@ -268,7 +275,7 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
 
     @Override
     public void patrol(float deltaTime) {
-        float angle = (float) (Math.random() * Math.PI * 2);
+        float angle = (float) (Math.random() * Math.PI * 5);
         float targetX = (float) (Math.cos(angle) * 5 + player.getX());
         float targetY = (float) (Math.sin(angle) * 5 + player.getY());
 
@@ -277,8 +284,8 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
         float distance = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
         if (distance > 0) {
-            float forceX = (deltaX / distance) * Speed * 2f;
-            float forceY = (deltaY / distance) * Speed * 2f;
+            float forceX = (deltaX / distance) * Speed * 5f;
+            float forceY = (deltaY / distance) * Speed * 5f;
 
             enemyBody.applyForceToCenter(forceX, forceY, true);
         }
@@ -291,11 +298,11 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
         float distance = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
         if (distance > 0.5f) {
-            float forceX = (deltaX / distance) * Speed * 3f;
+            float forceX = (deltaX / distance) * Speed * 5f;
             float forceY = (deltaY / distance) * Speed * 2f;
 
-            forceX += (float) (Math.random() - 0.5) * 0.2f;
-            forceY += (float) (Math.random() - 0.5) * 0.2f;
+            forceX += (float) (Math.random() - 0.5) * 2f;
+            forceY += (float) (Math.random() - 0.5) * 5f;
             enemyBody.applyForceToCenter(forceX, forceY, true);
         }
     }
@@ -321,33 +328,6 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
         if (enemyBody == null) return Float.MAX_VALUE;
         return enemyBody.getPosition().dst(player.getX(), player.getY());
     }
-
-    public void setAttackRange(float range) {
-        this.AttackRange = range;
-    }
-
-    public boolean isAttacking = false;
-    private float attackTimer = 0f;
-    private float attackCooldown = 1.5f;  // 攻击冷却时间
-
-    public void updateAttack(float deltaTime) {
-        if (isAttacking) {
-            attackTimer += deltaTime;
-            if (attackTimer >= 0.5f) { //攻击动画一半时触发伤害
-                System.out.println("Player takes damage!");
-            }
-            if (attackTimer >= 1.0f) {//动画结束
-                isAttacking = false;
-                attackTimer = 0f;
-                //攻击结束后恢复碰撞箱大小
-                if (isAttackBoxExtended) {
-                    setCollisionBoxSize(originalWidth, originalHeight);
-                    isAttackBoxExtended = false;
-                }
-            }
-        }
-    }
-
     public void render(SpriteBatch batch, float stateTime) {
         AnimationTool[] animationTools = animations.getAnimationTools();
         boolean flip = player.getX() < X && currentAnimation != null;
@@ -399,7 +379,5 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
             enemyBody = null;
         }
         currentAnimation = null;
-        player = null;
-        world = null;
     }
 }

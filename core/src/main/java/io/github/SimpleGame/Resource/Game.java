@@ -61,7 +61,7 @@ public class Game{
         physicHandler.update(world,deltaTime);
         PlayerController controller = player.getPlayerController();
 
-        player.setAction(controller,player,world).update();
+        player.setAction(controller,world).update();
         cameraManager.getCamera(controller);
         mapManager.setView(cameraManager.getCamera());
         mapManager.render(batch);
@@ -84,6 +84,7 @@ public class Game{
     public void dispose(){
         if (mapManager != null) mapManager.dispose();
         if (player != null) player.dispose();
+        if (resourceManager != null) resourceManager.dispose();
         if (batch != null) {
             batch.dispose();
             batchPool.free(batch);
@@ -92,8 +93,6 @@ public class Game{
             UIbatch.dispose();
             batchPool.free(UIbatch);
         }
-        if (worldManager.getWorld() != null) worldManager.getWorld().dispose();
-        if (resourceManager != null) resourceManager.dispose();
         batchPool.clear();
     }
     public void TestKey(){
@@ -117,6 +116,7 @@ public class Game{
             System.out.println("HP:"+player.getAttributeHandler().getMaxHP());
             System.out.println("MP:"+player.getAttributeHandler().getMaxMP());
             System.out.println("DEF:"+player.getAttributeHandler().getMaxDEF());
+            System.out.println("Damage:"+player.getAttributeHandler().getDamage());
         }
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
             worldManager.getDebugRenderer().render(world, cameraManager.getCamera().combined);
