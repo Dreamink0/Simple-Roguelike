@@ -4,9 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 public class PlayerController {
     private final Body body;
@@ -14,10 +11,9 @@ public class PlayerController {
 
     private static final float MOVE_FORCE = 750f;
     private static float MAX_SPEED = 7f;
-    private static final float ATTACK_DURATION = 1.5f; //攻击动画持续时间
+    private static final float ATTACK_DURATION = 2f; //攻击动画持续时间
     private float attackTimer = 0f;
     private boolean isAttacking = false;
-    private boolean speedReducedDuringAttack = false;
     public PlayerController(Body body) {
         this.body = body;
     }

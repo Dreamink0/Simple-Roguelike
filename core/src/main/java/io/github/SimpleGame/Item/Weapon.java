@@ -61,34 +61,6 @@ public class Weapon {
         this.body.createFixture(fixtureDef).setUserData("weapon");
         shape.dispose();
     }
-    public Weapon(World world, TextureRegion textureRegion, float x, float y, float scale) {
-        this.world = world;
-        this.textureRegion = textureRegion;
-        this.scale = scale;
-
-        float scaledWidth = textureRegion.getRegionWidth()/PIXELS_PER_METER;
-        float scaledHeight = textureRegion.getRegionHeight()/PIXELS_PER_METER;
-
-        this.BoundingBox = new Rectangle(x-scaledWidth, y-scaledHeight, scaledWidth, scaledHeight);
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.KinematicBody;
-        bodyDef.position.set(
-            (x + 2*scaledWidth),
-            (y + 2*scaledHeight)
-        );
-        this.body = world.createBody(bodyDef);
-        this.body.setUserData("weapon");
-        PolygonShape shape = new PolygonShape();
-
-        shape.setAsBox(2*scaledWidth, 2*scaledHeight);
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.isSensor = true;
-        this.body.createFixture(fixtureDef).setUserData("weapon");
-        shape.dispose();
-    }
-    public Body getBody() {return body;}
-    public Rectangle getBoundingBox() {return BoundingBox;}
     public void render(SpriteBatch batch,SpriteBatch UIbatch,Player player) {
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)&&Listener.equip&&(Math.abs(player.getX())-getX())<=2&&(Math.abs(player.getY())-getY())<=2){
             player.setIsequipped(true);
@@ -156,7 +128,7 @@ public class Weapon {
             PolygonShape shape = new PolygonShape();
             float scaledWidth = textureRegion.getRegionWidth() / PIXELS_PER_METER;
             float scaledHeight = textureRegion.getRegionHeight() / PIXELS_PER_METER;
-            shape.setAsBox(12*scaledWidth, 5*scaledHeight);
+            shape.setAsBox(0*scaledWidth, 0*scaledHeight);
 
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;

@@ -34,7 +34,7 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
         if(!isAttacking){
             setCollisionBoxSize(1.2f,1.8f,player);
         }else{
-            setCollisionBoxSize(4f,3f,player);
+            setCollisionBoxSize(3f,2.5f,player);
         }
         if (isAttacking) {newAnimation = playerAttackAnimation;
         } else {newAnimation = isMoving ? playerRunAnimation : playerIdleAnimation;}
@@ -86,7 +86,7 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
         newFixtureDef.shape = newShape;
         newFixtureDef.density = 1;
         newFixtureDef.friction = 0.5f;
-        newFixtureDef.restitution = 2f;
+        newFixtureDef.restitution = 1.5f;
 
         player.playerBody.createFixture(newFixtureDef);
         newShape.dispose();

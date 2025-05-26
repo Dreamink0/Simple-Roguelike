@@ -1,7 +1,6 @@
 package io.github.SimpleGame.Character.Enemy;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.*;
@@ -26,17 +25,16 @@ public class Goblin extends Enemy{
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
         statetime += deltaTime;
         AI.update(statetime, batch);
-
-        if (Listener.attack_Flag||(AI.calculateDistance(player)<=5||AI.calculateDistance(player)<=3)) {
-            if (AI.calculateDistance(player) <= 5 && player.getPlayerController().isAttacking()) {
+        if (Listener.attack_Flag||(AI.calculateDistance(player)<4f||AI.calculateDistance(player)<=3)) {
+            if (AI.calculateDistance(player) <=4f && player.getPlayerController().isAttacking()) {
                 AI.HP -= 5f;
                 if (AI.HP <= 0) {
                     AI.HP = 0;
                 }
-                System.out.println("HP:" + AI.HP);
-            } else if (AI.calculateDistance(player) <= 3f && !player.getPlayerController().isAttacking()) {
-                player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - 0.02f);
+            } else if (AI.calculateDistance(player) <= 5f&&!player.getPlayerController().isAttacking()) {
+                player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - 0.05f);
             }
+            System.out.println("HP:" + AI.HP);
         }
         Listener.attack_Flag = false;
     }
@@ -47,6 +45,7 @@ public class Goblin extends Enemy{
 class GoblinAnimation extends Goblin implements EnemyAnimationHandler{
     private Texture PatrolTexture;
     private Texture ChaseTexture;
+    private Texture HurtTexture;
     private Texture AttackTexture;
     private Texture DieTexture;
     private AnimationTool[] animationTools;
@@ -55,7 +54,7 @@ class GoblinAnimation extends Goblin implements EnemyAnimationHandler{
     public GoblinAnimation(float x,float y){
         this.X=x;
         this.Y=y;
-        animationTools  = new AnimationTool[4];
+        animationTools  = new AnimationTool[5];
         load();
     }
     @Override
@@ -63,11 +62,13 @@ class GoblinAnimation extends Goblin implements EnemyAnimationHandler{
         assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-idle.png", Texture.class);
         assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-run.png",Texture.class);
         assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-hit.png",Texture.class);
+        assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-hurt.png",Texture.class);
         assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-death 1.png",Texture.class);
         assetManager.finishLoading();
         PatrolTexture = assetManager.get("Enemy/goblin/goblin scout - silhouette all animations-idle.png", Texture.class);
         ChaseTexture = assetManager.get("Enemy/goblin/goblin scout - silhouette all animations-run.png",Texture.class);
         AttackTexture = assetManager.get("Enemy/goblin/goblin scout - silhouette all animations-hit.png",Texture.class);
+        HurtTexture = assetManager.get("Enemy/goblin/goblin scout - silhouette all animations-hurt.png",Texture.class);
         DieTexture = assetManager.get("Enemy/goblin/goblin scout - silhouette all animations-death 1.png",Texture.class);
         animationTools[0] = new AnimationTool();
         animationTools[0].create("Patrol",PatrolTexture,1,8,0.15f);
@@ -77,6 +78,8 @@ class GoblinAnimation extends Goblin implements EnemyAnimationHandler{
         animationTools[2].create("Attack",AttackTexture,1,3,0.05f);
         animationTools[3] = new AnimationTool();
         animationTools[3].create("Die",DieTexture,1,12,0.15f);
+        animationTools[4] = new AnimationTool();
+        animationTools[4].create("Hurt",HurtTexture,1,3,1f);
     }
     @Override
     public void dispose() {
@@ -116,7 +119,7 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
     private float Y;
     private World world;
     private Player player;
-    public float HP=200;
+    public float HP=100;
     private float Damage=0.1f;
     private float Speed = 10f;
     private float AttackRange;
@@ -124,15 +127,16 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
     private AnimationTool currentAnimation;
     private float stateTime = 0f;
     private float originalWidth = 0.5f;
-    private float originalHeight = 0.5f;
+    private float originalHeight = 1f;
     private boolean isAttackBoxExtended = false;
     private boolean hasPlayedDeathAnimation = false;
     private boolean canAttack = false;
     private float deathAnimationTimer = 0f;
-    private final float DEATH_ANIMATION_DURATION = 1100f; // 根据死亡动画总时长调整
+    private final float DEATH_ANIMATION_DURATION = 1000f; // 根据死亡动画总时长调整
     public enum State {
         PATROL,
         CHASE,
+        HURT,
         ATTACK,
         DIE
     }
@@ -161,7 +165,7 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 10;
-        fixtureDef.friction = 20;
+        fixtureDef.friction = 200;
         fixtureDef.restitution = 0f;
         enemyBody.createFixture(fixtureDef);
         shape.dispose();
@@ -182,7 +186,7 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
         FixtureDef newFixtureDef = new FixtureDef();
         newFixtureDef.shape = newShape;
         newFixtureDef.density = 10;
-        newFixtureDef.friction = 20;
+        newFixtureDef.friction = 200;
         newFixtureDef.restitution = 0f;
 
         enemyBody.createFixture(newFixtureDef);
@@ -235,6 +239,11 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
                 }
            }
             hasPlayedDeathAnimation = true;
+        }
+        if (Listener.attack_Flag||(calculateDistance(player)<=4||calculateDistance(player)<=3)) {
+            if (calculateDistance(player) <= 4 && player.getPlayerController().isAttacking()) {
+                currentState = State.HURT;
+            }
         }
 
         // 如果处于死亡状态且动画播放完毕，不再渲染
@@ -342,7 +351,6 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
     public void render(SpriteBatch batch, float stateTime) {
         AnimationTool[] animationTools = animations.getAnimationTools();
         boolean flip = player.getX() < X && currentAnimation != null;
-
         switch (currentState) {
             case PATROL:
                 currentAnimation = animationTools[0];
@@ -356,10 +364,12 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
             case DIE:
                 currentAnimation = animationTools[3];
                 break;
+            case HURT:
+                currentAnimation = animationTools[4];
+                break;
             default:
                 currentAnimation = animationTools[0];
         }
-
         if (currentAnimation != null) {
             // 死亡动画单独处理
             if (currentState == State.DIE) {
