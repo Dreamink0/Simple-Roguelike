@@ -20,9 +20,9 @@ public abstract class Enemy {
     //目标
     protected Player player;
     //敌人检测范围
-    private float detectionRange;
-    private float attackRange;
-
+    protected float HP;
+    protected float Damage;
+    protected float Distance;
     public Enemy(World world,Player player,float x,float y){
         this.player = player;
         this.currentState = State.PATROL; //初始状态：巡逻
@@ -31,5 +31,17 @@ public abstract class Enemy {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public float getDamage() {
+        return Damage;
+    }
+
+    public float getHP() {
+        return HP;
+    }
+
+    public float getDistance() {
+        return Distance;
     }
 }

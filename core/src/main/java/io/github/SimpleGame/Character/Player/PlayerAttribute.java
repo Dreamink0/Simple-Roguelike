@@ -67,7 +67,7 @@ public class PlayerAttribute implements PlayerAttributeHandler{
     public void setMaxHP(float maxHP) {
 
     }
-
+    //带max都是玩家当前最大生命值;
     @Override
     public float getMaxHP() {
         return HP;

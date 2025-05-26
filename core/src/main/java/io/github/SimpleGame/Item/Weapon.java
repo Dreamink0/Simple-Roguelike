@@ -90,7 +90,6 @@ public class Weapon {
     public Body getBody() {return body;}
     public Rectangle getBoundingBox() {return BoundingBox;}
     public void render(SpriteBatch batch,SpriteBatch UIbatch,Player player) {
-        Listener.Bound(world,player);
         if(Gdx.input.isKeyJustPressed(Input.Keys.E)&&Listener.equip&&(Math.abs(player.getX())-getX())<=2&&(Math.abs(player.getY())-getY())<=2){
             player.setIsequipped(true);
         }

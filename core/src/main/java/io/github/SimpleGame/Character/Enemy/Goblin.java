@@ -4,10 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Tool.AnimationTool;
+import io.github.SimpleGame.Tool.Listener;
+
 public class Goblin extends Enemy{
     private State currentState;
     private Player player;
@@ -22,12 +23,22 @@ public class Goblin extends Enemy{
         this.AI = new GoblinAI(world,player,x,y);
     }
     public void render(SpriteBatch batch,Player player,World world){
-        float deltaTime =Math.min(Gdx.graphics.getDeltaTime(),0.25f);
-        statetime+=deltaTime;
-        AI.update(statetime,batch);
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-            AI.HP -= 1;
+        float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
+        statetime += deltaTime;
+        AI.update(statetime, batch);
+
+        if (Listener.attack_Flag||(AI.calculateDistance(player)<=5||AI.calculateDistance(player)<=3)) {
+            if (AI.calculateDistance(player) <= 5 && player.getPlayerController().isAttacking()) {
+                AI.HP -= 5f;
+                if (AI.HP <= 0) {
+                    AI.HP = 0;
+                }
+                System.out.println("HP:" + AI.HP);
+            } else if (AI.calculateDistance(player) <= 3f && !player.getPlayerController().isAttacking()) {
+                player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - 0.02f);
+            }
         }
+        Listener.attack_Flag = false;
     }
     public void dispose() {
         AI.dispose();
@@ -105,7 +116,7 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
     private float Y;
     private World world;
     private Player player;
-    public float HP=5;
+    public float HP=200;
     private float Damage=0.1f;
     private float Speed = 10f;
     private float AttackRange;
@@ -116,6 +127,7 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
     private float originalHeight = 0.5f;
     private boolean isAttackBoxExtended = false;
     private boolean hasPlayedDeathAnimation = false;
+    private boolean canAttack = false;
     private float deathAnimationTimer = 0f;
     private final float DEATH_ANIMATION_DURATION = 1100f; // 根据死亡动画总时长调整
     public enum State {
@@ -154,7 +166,7 @@ class GoblinAI extends Goblin implements EnemyStateHandler {
         enemyBody.createFixture(fixtureDef);
         shape.dispose();
 
-        enemyBody.setUserData("monster1");
+        enemyBody.setUserData("enemy");
     }
 
     private void setCollisionBoxSize(float width, float height) {

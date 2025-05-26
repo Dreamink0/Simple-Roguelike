@@ -20,6 +20,7 @@ import io.github.SimpleGame.Resource.MapGeneration;
 import io.github.SimpleGame.Resource.MapManager;
 import io.github.SimpleGame.Resource.ResourceManager;
 import io.github.SimpleGame.Resource.WorldManager;
+import io.github.SimpleGame.Tool.Listener;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
@@ -79,7 +80,7 @@ public class Main extends ApplicationAdapter {
             lightningMagic = new LightningMagic();
             lightningMagic.magicCreate(worldManager.getWorld(), WORLD_WIDTH+10, WORLD_HEIGHT+6);
             gravityMagic = new GravityMagic();
-            monster1s = new Goblin[10];
+            monster1s = new Goblin[20];
             for (int i = 0; i < monster1s.length; i++) {
                 float randomX = WORLD_WIDTH + 2 + (float) Math.random() * 20;
                 float randomY = WORLD_HEIGHT + 2 + (float) Math.random() * 15;
@@ -166,6 +167,7 @@ public class Main extends ApplicationAdapter {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             regenerateMap();
         }
+        Listener.Bound(worldManager.getWorld(),player);
     }
 
     private void regenerateMap() {

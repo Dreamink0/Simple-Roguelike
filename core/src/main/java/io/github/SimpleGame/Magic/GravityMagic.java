@@ -39,8 +39,8 @@ public class GravityMagic extends Magic{
             float b = (float) Math.abs(Math.sin(totalTime * Math.PI * 1.5 + 4 * Math.PI / 3));
             Color dynamicColor = new Color(r, g, b, 1);
             batch.setColor(dynamicColor);
-            animationTool.render(batch, player.getX()-4.8f, player.getY()-4f, 0.1f, true);
-            animationTool.render(batch, player.getX()-14.8f, player.getY()-11.5f, 0.3f, true,90);
+            animationTool.render(batch, player.getX(), player.getY(), 0.1f, true);
+            animationTool.render(batch, player.getX(), player.getY(), 0.3f, true,90);
             batch.setColor(Color.WHITE);
         }
     }

@@ -74,6 +74,10 @@ public class Player {
 
     public float getY() {return playerBody.getPosition().y;}
 
+    public World getWorld() {
+        return world;
+    }
+
     public boolean isIsequipped() {return isequipped;}
 
     public void setIsequipped(boolean isequipped) {this.isequipped = isequipped;}
