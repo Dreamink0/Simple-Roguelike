@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Config;
 import io.github.SimpleGame.Resource.ResourceManager;
+import io.github.SimpleGame.Resource.SoundManager;
 
 public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
     float stateTime=0f;
@@ -30,11 +31,17 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
         boolean isMoving = playerController.isMoving();
         Animation<TextureRegion> newAnimation;
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.J)) {playerController.startAttack(); isAttacking = true;}
+        if (Gdx.input.isKeyPressed(Input.Keys.J)) {
+            if (!isAttacking) {
+                playerController.startAttack();
+                SoundManager.playSound("playerHit");
+                isAttacking = true;
+            }
+        }
         if(!isAttacking){
             setCollisionBoxSize(1.2f,1.8f,player);
         }else{
-            setCollisionBoxSize(4f,2.5f,player);
+            setCollisionBoxSize(3.8f,1.8f,player);
         }
         if (isAttacking) {newAnimation = playerAttackAnimation;
         } else {newAnimation = isMoving ? playerRunAnimation : playerIdleAnimation;}

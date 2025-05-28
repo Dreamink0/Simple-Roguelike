@@ -1,6 +1,8 @@
 package io.github.SimpleGame.Resource;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
 import io.github.SimpleGame.Character.Player.PlayerController;
 import io.github.SimpleGame.Config;
 
@@ -8,8 +10,11 @@ import static io.github.SimpleGame.Config.WORLD_HEIGHT;
 import static io.github.SimpleGame.Config.WORLD_WIDTH;
 
 public class CameraManager {
-    private OrthographicCamera camera;
+    public OrthographicCamera camera;
     public OrthographicCamera uiCamera;
+    private float shakeIntensity=0f;
+    private float shakeTimer=0f;
+
     public CameraManager() {
         this.camera = new OrthographicCamera();
         camera.setToOrtho(false, Config.WORLD_WIDTH, Config.WORLD_HEIGHT);

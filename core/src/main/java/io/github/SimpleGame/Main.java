@@ -2,8 +2,10 @@ package io.github.SimpleGame;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import io.github.SimpleGame.Character.Enemy.Enemy;
 import io.github.SimpleGame.Character.Enemy.Goblin;
 import io.github.SimpleGame.Resource.Game;
+import io.github.SimpleGame.Resource.SoundManager;
 import io.github.SimpleGame.Tool.Listener;
 import static io.github.SimpleGame.Resource.Game.player;
 import static io.github.SimpleGame.Resource.Game.world;
@@ -22,10 +24,10 @@ public class Main extends ApplicationAdapter {
             Game.initialize();
             Game.Generation();
             Game.readPlayerData();
-            monster1s = new Goblin[10];
+            monster1s = new Goblin[200];
             for (int i = 0; i < monster1s.length; i++) {
-                float randomX = Config.WORLD_WIDTH + 2 + (float) Math.random() * 20;
-                float randomY = Config.WORLD_HEIGHT + 2 + (float) Math.random() * 15;
+                float randomX = Config.WORLD_WIDTH + 2 + (float) Math.random() * 30;
+                float randomY = Config.WORLD_HEIGHT + 2 + (float) Math.random() * 20;
                 monster1s[i] = new Goblin(world, player, randomX, randomY);
             }
         } catch (Exception e) {
@@ -38,7 +40,7 @@ public class Main extends ApplicationAdapter {
         Game.render();
         batch.begin();
         for (Goblin monster1 : monster1s) {
-            monster1.render(batch, player, world);
+            monster1.render(batch, player);
         }
         batch.end();
         Listener.Bound(world,player);
@@ -51,6 +53,7 @@ public class Main extends ApplicationAdapter {
         for (Goblin monster1 : monster1s) {
             monster1.dispose();
         }
+        SoundManager.dispose();
         monster1s = null;
     }
 }

@@ -168,7 +168,7 @@ public class ResourceManager {
         playerIdleAnimation = new Animation<>(0.15f, playerTextureAtlas.findRegions("idle"), Animation.PlayMode.LOOP);
         playerRunAnimation = new Animation<>(0.08f, playerTextureAtlas2.findRegions("run"), Animation.PlayMode.LOOP);
         playerSprite = new Sprite(playerTextureAtlas.findRegion("idle"));
-        playerAttackAnimation = new Animation<>(0.1f, playerAttackTextureAtlas.findRegions("attack"), Animation.PlayMode.LOOP);
+        playerAttackAnimation = new Animation<>(0.095f, playerAttackTextureAtlas.findRegions("attack"), Animation.PlayMode.LOOP);
         playerSprite.setSize(
             (2 * playerSprite.getWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
             (2 * playerSprite.getHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE

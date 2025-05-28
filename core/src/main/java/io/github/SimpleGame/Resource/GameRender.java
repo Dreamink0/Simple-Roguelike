@@ -6,6 +6,9 @@ import io.github.SimpleGame.Character.Enemy.Goblin;
 import io.github.SimpleGame.Item.Weapon;
 import io.github.SimpleGame.Magic.GravityMagic;
 import io.github.SimpleGame.Magic.LightningMagic;
+import io.github.SimpleGame.Tool.Listener;
+
+import java.util.ArrayList;
 
 import static io.github.SimpleGame.Config.WORLD_HEIGHT;
 import static io.github.SimpleGame.Config.WORLD_WIDTH;
@@ -16,7 +19,6 @@ public class GameRender implements GameRenderHandler{
     private Weapon item;
     private LightningMagic lightningMagic;
     private GravityMagic gravityMagic;
-    private Goblin[] monster1s;
 
     public GameRender() {
         item = new Weapon(Game.world, WORLD_WIDTH, WORLD_HEIGHT + 5, 1f);

@@ -2,15 +2,12 @@ package io.github.SimpleGame.Magic;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import io.github.SimpleGame.Character.Player.Player;
@@ -31,7 +28,6 @@ public class LightningMagic extends Magic {
 
     // 物理系统
     protected World world;
-    protected Rectangle iconBoundingBox;
     protected Body iconBody;
     protected Body attachedBody;
     protected boolean isAttached = false;
@@ -44,14 +40,13 @@ public class LightningMagic extends Magic {
     protected long magicStartTimeNano = 0;
     protected boolean active = false;
     public boolean flag=false;
-    float totalTime=0;
 
     // 运动参数
     protected float speedX = 2f;
     protected float speedY = 0f;
     protected float gravity = 0f;
     protected float startX, startY;
-    protected float currentX, currentY;
+    protected static float currentX, currentY;
     protected float x, y;
     private static final float COOLDOWN_DURATION = 10f;
     private long lastUsedTime = 0;
@@ -367,5 +362,11 @@ public class LightningMagic extends Magic {
         lightningAtlas.dispose();
         thunderAtlas.dispose();
         iconTexture.dispose();
+    }
+    public static float getCurrentX() {
+        return currentX;
+    }
+    public static float getCurrentY() {
+        return currentY;
     }
 }

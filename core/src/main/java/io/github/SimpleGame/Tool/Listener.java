@@ -3,17 +3,23 @@ package io.github.SimpleGame.Tool;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.physics.box2d.*;
+import io.github.SimpleGame.Character.Enemy.Enemy;
+import io.github.SimpleGame.Character.Enemy.Goblin;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Item.Weapon;
 import io.github.SimpleGame.Resource.WorldManager;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class Listener{
     public static boolean equip;
     public static boolean LightningMagic_Flag;
     public static boolean attack_Flag;
-    public static Body attack_Body;
-    public static Body attacked_Body;
-
+    public static boolean Flag_MagicDamage;
+    public static float magicCooldownTimer=0f;
+    public static float magicCooldown=1f;
     public static void Bound(World world, Player player){
         world.setContactListener(new ContactListener() {
             @Override
@@ -47,9 +53,15 @@ public class Listener{
                 if ((bodyA.getUserData() != null && bodyA.getUserData().equals("player") &&
                     bodyB.getUserData() != null && bodyB.getUserData().equals("enemy")) ||
                     (bodyA.getUserData() != null && bodyA.getUserData().equals("enemy") &&
-                        bodyB.getUserData() != null && bodyB.getUserData().equals("enemy"))) {
-                    //这个时候已经发生了碰撞，攻击造成伤害应该要是在这里发生
+                    bodyB.getUserData() != null && bodyB.getUserData().equals("player"))) {
                     Flag_attack();
+                }
+                if ((bodyA.getUserData() != null && bodyA.getUserData().equals("lightning_Magic") &&
+                     bodyB.getUserData() != null && bodyB.getUserData().equals("enemy")) ||
+                    (bodyA.getUserData() != null && bodyA.getUserData().equals("enemy") &&
+                     bodyB.getUserData() != null && bodyB.getUserData().equals("lightning_Magic"))) {
+                    Flag_MagicDamage();
+                    LightningMagic_Flag = false;
                 }
             }
             @Override
@@ -65,4 +77,5 @@ public class Listener{
     private static void Flag_equip() {equip=true;}
     private static void Flag_LightningMagic() {LightningMagic_Flag=true;}
     private static void  Flag_attack(){attack_Flag=true;};
+    private static void Flag_MagicDamage(){Flag_MagicDamage=true;}
 }

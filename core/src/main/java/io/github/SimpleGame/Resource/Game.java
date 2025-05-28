@@ -3,22 +3,25 @@ package io.github.SimpleGame.Resource;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Pool;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Character.Player.PlayerController;
 import io.github.SimpleGame.Config;
 
+import java.util.Random;
+
 import static io.github.SimpleGame.Config.WORLD_HEIGHT;
 import static io.github.SimpleGame.Config.WORLD_WIDTH;
 
 public class Game{
     //资源
-    private WorldManager worldManager;
-    private CameraManager cameraManager;
-    private ResourceManager resourceManager;
-    private MapManager mapManager;
-    private MapGeneration mapGeneration;
+    public static WorldManager worldManager;
+    public static CameraManager cameraManager;
+    public static ResourceManager resourceManager;
+    public static MapManager mapManager;
+    public static MapGeneration mapGeneration;
     public static World world;
     public static Player player;
     public static SpriteBatch batch;
@@ -70,14 +73,15 @@ public class Game{
         UIbatch.setProjectionMatrix(cameraManager.getUiCamera().combined);
 
         gameRenderHandler.render(batch,UIbatch);
-        TestKey();
 
+
+        TestKey();
     }
     //视野的放缩
     public void resize(int width, int height) {
         float aspectRatio = (float) width / height;
-        cameraManager.getCamera().viewportWidth = 2 * WORLD_WIDTH;
-        cameraManager.getCamera().viewportHeight = 2 * WORLD_WIDTH / aspectRatio;
+        cameraManager.getCamera().viewportWidth = 1.5f*WORLD_WIDTH;
+        cameraManager.getCamera().viewportHeight = 1.5f*WORLD_WIDTH / aspectRatio;
         cameraManager.getCamera().update();
     }
     //资源的释放

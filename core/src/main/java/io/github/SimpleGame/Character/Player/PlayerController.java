@@ -11,7 +11,7 @@ public class PlayerController {
 
     private static final float MOVE_FORCE = 750f;
     private static float MAX_SPEED = 7f;
-    private static final float ATTACK_DURATION = 1.5f; //攻击动画持续时间
+    private static final float ATTACK_DURATION = 0.5f; //攻击动画持续时间
     private float attackTimer = 0f;
     private boolean isAttacking = false;
     public PlayerController(Body body) {
@@ -37,7 +37,7 @@ public class PlayerController {
             body.applyForceToCenter(force, true);
 
             Vector2 velocity = body.getLinearVelocity();
-            float speedMultiplier = shiftPressed ? 1.2f : 1.0f; // 按住shift速度增加50%
+            float speedMultiplier = shiftPressed ? 1.5f : 1.0f; // 按住shift速度增加50%
             float currentMaxSpeed = isAttacking ? MAX_SPEED / 2 : MAX_SPEED;
             currentMaxSpeed *= speedMultiplier; // 应用加速效果
 

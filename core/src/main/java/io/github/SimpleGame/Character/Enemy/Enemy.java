@@ -19,6 +19,7 @@ public abstract class Enemy {
     protected State currentState;
     //目标
     protected Player player;
+    protected Body enemybody;
     //敌人检测范围
     protected float HP;
     protected float Damage;
@@ -43,5 +44,13 @@ public abstract class Enemy {
 
     public float getDistance() {
         return Distance;
+    }
+
+    public void setHP(float HP) {
+        this.HP = HP;
+    }
+
+    public Body  getEnemyBody() {
+        return enemybody;
     }
 }
