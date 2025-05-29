@@ -33,11 +33,13 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
 
         if (Gdx.input.isKeyPressed(Input.Keys.J)) {
             if (!isAttacking) {
-                playerController.startAttack();
                 SoundManager.playSound("playerHit");
+                playerController.startAttack();
                 isAttacking = true;
+//                player.attackCooldownTimer = 0.2f; // 设置攻击间隔为0.2秒
             }
         }
+//        player.attackCooldownTimer -= deltaTime;
         if(!isAttacking){
             setCollisionBoxSize(1.2f,1.8f,player);
         }else{

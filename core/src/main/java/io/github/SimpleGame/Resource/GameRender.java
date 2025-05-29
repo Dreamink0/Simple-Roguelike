@@ -2,7 +2,6 @@ package io.github.SimpleGame.Resource;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import io.github.SimpleGame.Character.Enemy.Goblin;
 import io.github.SimpleGame.Item.Weapon;
 import io.github.SimpleGame.Magic.GravityMagic;
 import io.github.SimpleGame.Magic.LightningMagic;

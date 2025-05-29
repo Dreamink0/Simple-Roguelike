@@ -77,6 +77,12 @@ public class AnimationTool {
         float stateTime = stateTimes.get(framename);
         this.textureRegion=animation.getKeyFrame(stateTime,loop);
     }
+    public TextureRegion getCurrentFrame() {
+        return animation.getKeyFrame(stateTime);
+    }
+    public boolean isAnimationFinished() {
+        return animation.isAnimationFinished(stateTime);
+    }
     public void render(SpriteBatch batch, float x, float y, float scale, Boolean loop) {
         update();
         getKeyFrame(loop);

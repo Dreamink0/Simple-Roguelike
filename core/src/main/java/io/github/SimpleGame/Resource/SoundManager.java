@@ -32,8 +32,10 @@ public class SoundManager {
         }
     }
     public static void dispose() {
-        for (Sound sound : playerHitSound) {
-            sound.dispose();
+        if(playerHitSound!=null) {
+            for (Sound sound : playerHitSound) {
+                sound.dispose();
+            }
         }
         assetManager.dispose();
         playerHitSound = null;

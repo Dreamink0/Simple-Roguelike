@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.physics.box2d.*;
 import io.github.SimpleGame.Character.Enemy.Enemy;
-import io.github.SimpleGame.Character.Enemy.Goblin;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Item.Weapon;
 import io.github.SimpleGame.Resource.WorldManager;
