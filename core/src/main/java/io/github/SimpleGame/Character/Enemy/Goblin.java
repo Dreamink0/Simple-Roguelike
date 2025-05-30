@@ -15,7 +15,7 @@ public class Goblin extends Enemy {
         animationTools = animation.getAnimationTools();
         enemyPhysic = new EnemyPhysic(x, y, 0.5f, 1);
         enemyBody = enemyPhysic.createBody(enemyPhysic.getEnemyBody());
-        attribute = new EnemyAttribute(10, 3, 4, 10, 1);
+        attribute = new EnemyAttribute(15, 3, 4, 10, 2);
         enemyState = new EnemyState(enemyBody, currentState, player, enemyPhysic, attribute);
     }
 

@@ -21,9 +21,11 @@ public class SoundManager {
     public static void playSound(String soundName) {
         loadSounds();
         if (soundName.equals("playerHit")) {
-//            int randomIndex = (int) (Math.random() * 25); // 使用 Math.random()
-            playerHitSound[12].play(1f); // 播放速度加快为1.5倍
-
+            playerHitSound[12].play(1f);
+        }
+        if(soundName.equals("enemyHit")){
+            playerHitSound[16].play(1f);
+            playerHitSound[24].play();
         }
     }
     public static void stopSound(){

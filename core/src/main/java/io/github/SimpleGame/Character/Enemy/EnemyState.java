@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import io.github.SimpleGame.Character.Player.Player;
+import io.github.SimpleGame.Resource.SoundManager;
 
 import static io.github.SimpleGame.Resource.Game.world;
 
@@ -19,7 +20,10 @@ public class EnemyState implements EnemyStateHandler{
     private boolean isAttackBoxExtended = false;
     public boolean isAttacking = false;
     public float attackTimer = 0f;
-    public float attackCooldown = 2f;  // 攻击冷却时间
+    public float attackCooldown = 1.5f;
+    public float hurtCooldown = 0.4f;
+    public float hurtTimer = 0f;
+
     public EnemyState(Body enemyBody, Enemy.State currentState,Player player,EnemyPhysic enemyPhysic,EnemyAttribute enemyAttribute) {
         this.enemyBody = enemyBody;
         this.currentState = currentState;
@@ -57,9 +61,14 @@ public class EnemyState implements EnemyStateHandler{
                 currentState = Enemy.State.IDLE;
                 idle(deltaTime);
             }
-            if(distance <= 5 && player.getPlayerController().isAttacking()){
+            if(distance <= 5&&player.getPlayerController().isAttacking()&&hurtTimer<=0){
                 currentState =  Enemy.State.HURT;
                 hurt(deltaTime);
+                hurtTimer = hurtCooldown;
+            }
+            hurtTimer -= deltaTime;
+            if(enemyAttribute.getHP()<=0){
+                currentState = Enemy.State.DIE;
             }
         }else{
             currentState = Enemy.State.DIE;
@@ -116,11 +125,15 @@ public class EnemyState implements EnemyStateHandler{
         if (enemyAttribute.getHP() <= 0) {
             return;
         }
-        if (player.getPlayerController().isAttacking()&&calculateDistance(player)<=5&&player.attackCooldownTimer<=0) {
-           enemyAttribute.setHP(enemyAttribute.getHP() - player.getAttributeHandler().getDamage());
-            player.attackCooldownTimer = player.attackCooldown;
+        float knockbackForce = (float) Math.pow(2f,15f); // 击退力度，可调整
+        float deltaX = enemyBody.getPosition().x - player.getX();
+        float deltaY = enemyBody.getPosition().y - player.getY();
+        if (player.getPlayerController().isAttacking() && calculateDistance(player) <= 5) {
+            enemyAttribute.setHP(enemyAttribute.getHP() - player.getAttributeHandler().getDamage());
+            System.out.println("HP:" + enemyAttribute.getHP());
+            Vector2 knockbackDirection = new Vector2(deltaX, deltaY).nor();
+            enemyBody.applyLinearImpulse(knockbackDirection.scl(knockbackForce), enemyBody.getWorldCenter(), true);
         }
-        player.attackCooldownTimer -= deltaTime;
     }
     @Override
     public void die(Body enemyBody) {

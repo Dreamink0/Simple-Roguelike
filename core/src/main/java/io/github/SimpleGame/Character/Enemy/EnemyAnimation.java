@@ -5,17 +5,20 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.SimpleGame.Character.Player.Player;
+import io.github.SimpleGame.Resource.SoundManager;
 import io.github.SimpleGame.Tool.AnimationTool;
 
 public class EnemyAnimation implements EnemyAnimationHandler{
     protected AssetManager assetManager=new AssetManager();
     private AnimationTool[] animationTools;
+    private AnimationTool[] effectsAnimations;
     private EnemyState enemyState;
     private Texture IdleTexture;
     private Texture RunTexture;
     private Texture HitTexture;
     private Texture HurtTexture;
     private Texture DeathTexture;
+    private Texture[] effectTexture;
     private float x;
     private float y;
     private boolean flip;
@@ -25,6 +28,17 @@ public class EnemyAnimation implements EnemyAnimationHandler{
 
     @Override
     public void load(String className) {
+        assetManager.load("Effects/Goblinblood.png",Texture.class);
+        assetManager.load("Effects/hitEffects.png",Texture.class);
+        assetManager.finishLoading();
+        effectTexture = new Texture[2];
+        effectTexture[0] = assetManager.get("Effects/hitEffects.png",Texture.class);
+        effectTexture[1] = assetManager.get("Effects/Goblinblood.png",Texture.class);
+        effectsAnimations  = new AnimationTool[2];
+        effectsAnimations[0] = new AnimationTool();
+        effectsAnimations[0].create("Hit",effectTexture[0],1,4,0.15f);
+        effectsAnimations[1] = new AnimationTool();
+        effectsAnimations[1].create("GobBlood",effectTexture[1],1,6,0.1f);
         if(className.equals("Goblin")){
             animationTools = new AnimationTool[5];
             assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-idle.png", Texture.class);
@@ -42,12 +56,71 @@ public class EnemyAnimation implements EnemyAnimationHandler{
             animationTools[0].create("Idle",IdleTexture,1,8,0.15f);
             animationTools[1].create("Run",RunTexture,1,8,0.15f);
             animationTools[2].create("Hit",HitTexture,1,3,0.05f);
-            animationTools[3].create("Hurt",HurtTexture,1,3,0.1f);
+            animationTools[3].create("Hurt",HurtTexture,1,3,1f);
             animationTools[4].create("Death",DeathTexture,1,12,0.15f);
         }
 
     }
-
+    public void render(SpriteBatch batch, EnemyState enemyState, Player player){
+        this.enemyState = enemyState;
+        float deltaTime = Math.min(Gdx.graphics.getDeltaTime(),5);
+        Enemy.State currentState = enemyState.currentState;
+        AnimationTool currentAnimation;
+        if(enemyState.getEnemyBody()!=null){
+            x = enemyState.getEnemyBody().getPosition().x;
+            y = enemyState.getEnemyBody().getPosition().y;
+            flip = player.getX() < x;
+        }
+        if(currentState == Enemy.State.DIE){
+            // 如果是第一次进入死亡状态，重置计时器
+            if (!hasPlayedDeathAnimation) {
+                deathAnimationTimer = 0f;
+                if (animationTools != null && animationTools[4] != null) {
+                    animationTools[4].resetStateTime(); // 重置死亡动画时间
+                }
+            }
+            hasPlayedDeathAnimation = true;
+        }
+        if (!(currentState == Enemy.State.DIE && deathAnimationTimer >= DEATH_ANIMATION_DURATION)) {
+            currentAnimation = switch (currentState) {
+                case CHASE -> animationTools[1];
+                case ATTACK -> animationTools[2];
+                case HURT -> animationTools[3];
+                case DIE -> animationTools[4];
+                default -> animationTools[0];
+            };
+            if (currentAnimation != null) {
+                // 死亡动画单独处理
+                if (currentState == Enemy.State.DIE) {
+                    // 只有在死亡动画未完成时才渲染
+                    if(flip){
+                        effectsAnimations[1].render(batch, x+3f, y-0.4f, 0.1f, true, !flip);
+                    }else{
+                        effectsAnimations[1].render(batch, x-3f, y-0.4f, 0.1f, true, !flip);
+                    }
+                    if (deathAnimationTimer < DEATH_ANIMATION_DURATION) {
+                        animationTools[4].render(batch, x, y, 0.1f, false, flip);
+                    }
+                }else if(currentState == Enemy.State.ATTACK){
+                    animationTools[2].render(batch, x, y, 0.1f, false, flip);
+                }else if(currentState == Enemy.State.CHASE){
+                    animationTools[1].render(batch, x, y, 0.1f, true, flip);
+                }else if(currentState == Enemy.State.HURT){
+                    effectsAnimations[0].render(batch, x, y, 0.15f, false, flip);
+                    animationTools[3].render(batch, x, y, 0.1f, true, flip);
+                    SoundManager.playSound("enemyHit");
+                }else{
+                    currentAnimation.render(batch, x, y, 0.1f, true, flip);
+                }
+            }
+        }
+        if (currentState == Enemy.State.DIE && hasPlayedDeathAnimation) {
+            deathAnimationTimer += deltaTime;
+            if(enemyState.getEnemyBody()!=null){
+                enemyState.freeBody();
+            }
+        }
+    }
     @Override
     public void dispose() {
         if(animationTools!=null){for (int i = 0; i < animationTools.length; i++) animationTools[i].dispose();}
@@ -61,61 +134,19 @@ public class EnemyAnimation implements EnemyAnimationHandler{
         HurtTexture = null;
         DeathTexture = null;
         assetManager = null;
+        if(effectsAnimations!=null){
+            for (int i = 0; i < effectsAnimations.length; i++) {
+                effectsAnimations[i].dispose();
+            }
+            effectsAnimations = null;
+        }
+        if(effectTexture!=null){
+            for (int i = 0; i < effectTexture.length; i++) {
+                effectTexture[i].dispose();
+            }
+            effectTexture = null;
+        }
     }
 
     public AnimationTool[] getAnimationTools() {return animationTools;}
-
-    public void render(SpriteBatch batch, EnemyState enemyState, Player player){
-        this.enemyState = enemyState;
-        float deltaTime = Math.min(Gdx.graphics.getDeltaTime(),5);
-        Enemy.State currentState = enemyState.currentState;
-        AnimationTool currentAnimation;
-        if(enemyState.getEnemyBody()!=null){
-            x = enemyState.getEnemyBody().getPosition().x;
-            y = enemyState.getEnemyBody().getPosition().y;
-            flip = player.getX() < x;
-        }
-       if(currentState == Enemy.State.DIE){
-           // 如果是第一次进入死亡状态，重置计时器
-           if (!hasPlayedDeathAnimation) {
-               deathAnimationTimer = 0f;
-               if (animationTools != null && animationTools[4] != null) {
-                   animationTools[4].resetStateTime(); // 重置死亡动画时间
-               }
-           }
-           hasPlayedDeathAnimation = true;
-       }
-        if (!(currentState == Enemy.State.DIE && deathAnimationTimer >= DEATH_ANIMATION_DURATION)) {
-            currentAnimation = switch (currentState) {
-                case CHASE -> animationTools[1];
-                case ATTACK -> animationTools[2];
-                case HURT -> animationTools[3];
-                case DIE -> animationTools[4];
-                default -> animationTools[0];
-            };
-            if (currentAnimation != null) {
-                // 死亡动画单独处理
-                if (currentState == Enemy.State.DIE) {
-                    // 只有在死亡动画未完成时才渲染
-                    if (deathAnimationTimer < DEATH_ANIMATION_DURATION) {
-                        animationTools[4].render(batch, x, y, 0.1f, false, flip);
-                    }
-                }else if(currentState == Enemy.State.ATTACK){
-                    animationTools[2].render(batch, x, y, 0.1f, false, flip);
-                }else if(currentState == Enemy.State.CHASE){
-                    animationTools[1].render(batch, x, y, 0.1f, true, flip);
-                }else if(currentState == Enemy.State.HURT){
-                    animationTools[3].render(batch, x, y, 0.1f, false, flip);
-                }else{
-                    currentAnimation.render(batch, x, y, 0.1f, true, flip);
-                }
-            }
-            if (currentState == Enemy.State.DIE && hasPlayedDeathAnimation) {
-                deathAnimationTimer += deltaTime;
-                if(enemyState.getEnemyBody()!=null){
-                    enemyState.freeBody();
-                }
-            }
-        }
-    }
 }

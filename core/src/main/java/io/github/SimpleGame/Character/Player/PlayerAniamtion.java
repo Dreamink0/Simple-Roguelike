@@ -20,6 +20,8 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
     private Animation<TextureRegion> playerAttackAnimation;
     private Animation<TextureRegion> currentAnimation;
     Boolean flag=false;//检查是否读取了动画
+    private float soundTimer=0f;
+    private float soundDuration = 0.5f;
     @Override
     public PlayerController handleAction(PlayerController playerController, Player player, World world) {
         if(flag==false)load();
@@ -33,17 +35,19 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
 
         if (Gdx.input.isKeyPressed(Input.Keys.J)) {
             if (!isAttacking) {
-                SoundManager.playSound("playerHit");
+                if(soundTimer<=0){
+                    SoundManager.playSound("playerHit");
+                    soundTimer=soundDuration;
+                }
                 playerController.startAttack();
                 isAttacking = true;
-//                player.attackCooldownTimer = 0.2f; // 设置攻击间隔为0.2秒
             }
         }
-//        player.attackCooldownTimer -= deltaTime;
+        soundTimer -= deltaTime;
         if(!isAttacking){
             setCollisionBoxSize(1.2f,1.8f,player);
         }else{
-            setCollisionBoxSize(3.8f,1.8f,player);
+            setCollisionBoxSize(3.8f,2f,player);
         }
         if (isAttacking) {newAnimation = playerAttackAnimation;
         } else {newAnimation = isMoving ? playerRunAnimation : playerIdleAnimation;}

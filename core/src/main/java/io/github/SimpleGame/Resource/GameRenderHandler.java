@@ -6,4 +6,5 @@ import com.badlogic.gdx.utils.Pool;
 
 public interface GameRenderHandler {
     void render(SpriteBatch batch,SpriteBatch UIbatch);
+    void dispose();
 }

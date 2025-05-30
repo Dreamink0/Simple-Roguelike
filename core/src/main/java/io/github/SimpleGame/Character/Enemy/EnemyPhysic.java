@@ -25,8 +25,8 @@ public class EnemyPhysic implements EnemyPhysicHandler{
         shape.setAsBox(originalWidth, originalHeight);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 10;
-        fixtureDef.friction = 200;
+        fixtureDef.density = 1;
+        fixtureDef.friction = 0;
         fixtureDef.restitution = 0f;
         enemyBody.createFixture(fixtureDef);
         shape.dispose();
@@ -49,8 +49,8 @@ public class EnemyPhysic implements EnemyPhysicHandler{
 
         FixtureDef newFixtureDef = new FixtureDef();
         newFixtureDef.shape = newShape;
-        newFixtureDef.density = 10;
-        newFixtureDef.friction = 200;
+        newFixtureDef.density = 1;
+        newFixtureDef.friction = 0;
         newFixtureDef.restitution = 0f;
 
         enemyBody.createFixture(newFixtureDef);

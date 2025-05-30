@@ -48,4 +48,8 @@ public class GameRender implements GameRenderHandler{
         player.render(UIbatch,deltaTime);
         UIbatch.end();
     }
+    public void dispose() {
+        lightningMagic.dispose();
+        gravityMagic.dispose();
+    }
 }

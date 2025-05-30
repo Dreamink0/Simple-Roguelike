@@ -89,6 +89,7 @@ public class Game{
         if (mapManager != null) mapManager.dispose();
         if (player != null) player.dispose();
         if (resourceManager != null) resourceManager.dispose();
+        gameRenderHandler.dispose();
         if (batch != null) {
             batch.dispose();
             batchPool.free(batch);
