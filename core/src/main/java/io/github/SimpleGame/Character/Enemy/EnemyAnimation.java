@@ -95,7 +95,6 @@ public class EnemyAnimation implements EnemyAnimationHandler{
                 }else if(currentState == Enemy.State.HURT){
                     effectsAnimations[0].render(batch, x, y, 0.15f, false, flip);
                     animationTools[3].render(batch, x, y, 0.1f, true, flip);
-                    SoundManager.playSound("enemyHit");
                 }else{
                     currentAnimation.render(batch, x, y, 0.1f, true, flip);
                 }
@@ -116,18 +115,6 @@ public class EnemyAnimation implements EnemyAnimationHandler{
         }
         animationTools = null;
         assetManager = null;
-        if(effectsAnimations!=null){
-            for (int i = 0; i < effectsAnimations.length; i++) {
-                effectsAnimations[i].dispose();
-            }
-            effectsAnimations = null;
-        }
-        if(effectTexture!=null){
-            for (int i = 0; i < effectTexture.length; i++) {
-                effectTexture[i].dispose();
-            }
-            effectTexture = null;
-        }
     }
 
     public AnimationTool[] getAnimationTools() {return animationTools;}

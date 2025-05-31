@@ -64,6 +64,7 @@ public class EnemyState implements EnemyStateHandler{
                 idle(deltaTime);
             }
             if(distance <=player.getAttributeHandler().getAttackrange()&&player.getPlayerController().isAttacking()&&hurtTimer<=0){
+                SoundManager.playSound("enemyHit");
                 currentState =  Enemy.State.HURT;
                 hurt(deltaTime);
                 hurtflag = true;

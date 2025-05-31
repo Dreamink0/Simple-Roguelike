@@ -19,6 +19,7 @@ public class Player {
     private World world;
     public float attackCooldownTimer = 0f;
     public final float attackCooldown = 0.25f;//影响帧伤，很强大
+    public static int count=1;
 
 
     public Player() {}

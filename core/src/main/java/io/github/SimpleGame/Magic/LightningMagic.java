@@ -180,7 +180,7 @@ public class LightningMagic extends Magic {
                 iconTexture.getWidth()*4/PIXELS_PER_METER, iconTexture.getHeight()*4/PIXELS_PER_METER);
             batch.end();
         }
-        if((Vector2.dst(player.getX(), player.getY(), x, y) <= 2f)&&!flag){
+        if((Vector2.dst(player.getX(), player.getY(), x, y) <= 2.5f)&&!flag){
             Tips.E( batch,player.getX(),player.getY());
         }
     }
