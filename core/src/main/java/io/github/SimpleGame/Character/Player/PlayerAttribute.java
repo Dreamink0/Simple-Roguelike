@@ -11,6 +11,7 @@ public class PlayerAttribute implements PlayerAttributeHandler{
     private float maxDEF;
     private float Damage;
     private PlayerTextureHandler textureHandler;
+    private float Attackrange=4.5f;
     public PlayerAttribute(float HP, float MP, float DEF, float Damage)
     {
         this.HP = HP;
@@ -64,6 +65,16 @@ public class PlayerAttribute implements PlayerAttributeHandler{
     public float getDamage() {return Damage;}
 
     @Override
+    public float getAttackrange() {
+        return Attackrange;
+    }
+
+    @Override
+    public void setAttackrange(float Aattackrange) {
+        this.Attackrange = Aattackrange;
+    }
+
+    @Override
     public void setMaxHP(float maxHP) {
 
     }
@@ -84,9 +95,8 @@ public class PlayerAttribute implements PlayerAttributeHandler{
     }
 
     @Override
-    public void setMaxDEF(float maxDEF) {
+    public void setMaxDEF(float maxDEF) {}
 
-    }
 
     @Override
     public float getMaxDEF() {

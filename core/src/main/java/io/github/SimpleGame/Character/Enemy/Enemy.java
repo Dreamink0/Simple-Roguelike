@@ -18,9 +18,7 @@ public abstract class Enemy {
     protected Player player;
     public Body enemyBody;
     protected float HP;
-    protected float Damage;
-    protected float Speed;
-    protected float Distance;
+    protected World world;
     //接口
     protected EnemyAttribute attribute;
     protected EnemyState enemyState;
@@ -29,13 +27,9 @@ public abstract class Enemy {
     public Enemy(World world,Player player,float x,float y){
         this.player = player;
         this.currentState = State.IDLE;
+        this.world = world;
         this.animation = new EnemyAnimation();
-        //其他逻辑实现自己写
     }
     public abstract void render(SpriteBatch batch, Player player);
     public abstract void dispose();
-    public float calculateDistance(Player player) {
-        if (enemyBody == null) return Float.MAX_VALUE;
-        return enemyBody.getPosition().dst(player.getX(), player.getY());
-    }
 }

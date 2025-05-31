@@ -37,7 +37,6 @@ public class ResourceManager {
     private Texture WeaponTexture;
     private Weapon weapon;
     private TextureAtlas playerTextureAtlas2;
-
     private ResourceManager() {
         assetManager = new AssetManager();
         // 注册TiledMap加载器
@@ -81,7 +80,6 @@ public class ResourceManager {
     public Sprite getPlayerSprite() {
         return playerSprite;
     }
-
     public MapManager getMapManager(World world) {
         if (mapManager == null) {
             mapManager = new MapManager(tiledMap, Config.PIXELS_PER_METER/512, world);
@@ -128,7 +126,6 @@ public class ResourceManager {
         for (String mapName : baseMapNames) {
             assetManager.load("Maps/Base/" + mapName + ".tmx", TiledMap.class);
         }
-
         assetManager.finishLoading();
     }
     public void Get(){
@@ -145,7 +142,6 @@ public class ResourceManager {
             "1000", "1001", "1010", "1011",
             "1100", "1101", "1110", "1111"
         };
-
         for (String mapName : baseMapNames) {
             baseMaps.put(mapName, assetManager.get("Maps/Base/" + mapName + ".tmx", TiledMap.class));
         }

@@ -1,8 +1,12 @@
 package io.github.SimpleGame.Character.Player;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -11,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Config;
 import io.github.SimpleGame.Resource.ResourceManager;
 import io.github.SimpleGame.Resource.SoundManager;
+import io.github.SimpleGame.Tool.AnimationTool;
 
 public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
     float stateTime=0f;
@@ -32,8 +37,7 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
         boolean isAttacking = playerController.isAttacking();
         boolean isMoving = playerController.isMoving();
         Animation<TextureRegion> newAnimation;
-
-        if (Gdx.input.isKeyPressed(Input.Keys.J)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.J)&&player.attackCooldownTimer<=0) {
             if (!isAttacking) {
                 if(soundTimer<=0){
                     SoundManager.playSound("playerHit");
@@ -41,8 +45,10 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
                 }
                 playerController.startAttack();
                 isAttacking = true;
+                player.attackCooldownTimer = player.attackCooldown;
             }
         }
+        player.attackCooldownTimer -= deltaTime;
         soundTimer -= deltaTime;
         if(!isAttacking){
             setCollisionBoxSize(1.2f,1.8f,player);

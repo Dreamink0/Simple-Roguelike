@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.utils.TimeUtils;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Resource.SoundManager;
 
@@ -17,13 +18,12 @@ public class EnemyState implements EnemyStateHandler{
     private float x,y=0;
     private EnemyPhysic enemyPhysic;
     private EnemyAttribute enemyAttribute;
-    private boolean isAttackBoxExtended = false;
-    public boolean isAttacking = false;
     public float attackTimer = 0f;
     public float attackCooldown = 1.5f;
-    public float hurtCooldown = 0.4f;
     public float hurtTimer = 0f;
-
+    public float hurtAnimationDuration = 0.45f;
+    public boolean hurtflag=false;
+    public long startTime = 0;
     public EnemyState(Body enemyBody, Enemy.State currentState,Player player,EnemyPhysic enemyPhysic,EnemyAttribute enemyAttribute) {
         this.enemyBody = enemyBody;
         this.currentState = currentState;
@@ -51,7 +51,9 @@ public class EnemyState implements EnemyStateHandler{
                     enemyPhysic.getOriginalHeight());
             }
             //活着逻辑
-            if (distance <= enemyAttribute.getAttackRange()) {
+            if (hurtflag && (TimeUtils.nanoTime() - startTime) / 1e9f < hurtAnimationDuration) {
+                currentState = Enemy.State.HURT;
+            } else if (distance <= enemyAttribute.getAttackRange()) {
                 currentState = Enemy.State.ATTACK;
                 attack(deltaTime);
             } else if (distance <= enemyAttribute.getChaseRange()) {
@@ -61,15 +63,13 @@ public class EnemyState implements EnemyStateHandler{
                 currentState = Enemy.State.IDLE;
                 idle(deltaTime);
             }
-            if(distance <= 5&&player.getPlayerController().isAttacking()&&hurtTimer<=0){
+            if(distance <=player.getAttributeHandler().getAttackrange()&&player.getPlayerController().isAttacking()&&hurtTimer<=0){
                 currentState =  Enemy.State.HURT;
                 hurt(deltaTime);
-                hurtTimer = hurtCooldown;
+                hurtflag = true;
+                startTime = TimeUtils.nanoTime();
             }
             hurtTimer -= deltaTime;
-            if(enemyAttribute.getHP()<=0){
-                currentState = Enemy.State.DIE;
-            }
         }else{
             currentState = Enemy.State.DIE;
         }
@@ -111,10 +111,10 @@ public class EnemyState implements EnemyStateHandler{
         }
         float distance = calculateDistance(player);
         float Damage = enemyAttribute.getDamage();
-        float Attakerange = enemyAttribute.getAttackRange();
+        float Attackrange = enemyAttribute.getAttackRange();
         boolean isAttacking = player.getPlayerController().isAttacking();
 
-        if ( distance <= Attakerange && !isAttacking && attackTimer <= 0) {
+        if ( distance <= Attackrange && !isAttacking && attackTimer <= 0) {
             player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - Damage);
             attackTimer = attackCooldown;
         }
@@ -123,12 +123,13 @@ public class EnemyState implements EnemyStateHandler{
     @Override
     public void hurt(float deltaTime) {
         if (enemyAttribute.getHP() <= 0) {
+            currentState = Enemy.State.DIE;
             return;
         }
-        float knockbackForce = (float) Math.pow(2f,15f); // 击退力度，可调整
+        float knockbackForce = (float) Math.pow(2f,4f); //击退力度，可调整
         float deltaX = enemyBody.getPosition().x - player.getX();
         float deltaY = enemyBody.getPosition().y - player.getY();
-        if (player.getPlayerController().isAttacking() && calculateDistance(player) <= 5) {
+        if (player.getPlayerController().isAttacking() && calculateDistance(player) <= player.getAttributeHandler().getAttackrange()) {
             enemyAttribute.setHP(enemyAttribute.getHP() - player.getAttributeHandler().getDamage());
             System.out.println("HP:" + enemyAttribute.getHP());
             Vector2 knockbackDirection = new Vector2(deltaX, deltaY).nor();

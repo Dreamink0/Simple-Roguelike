@@ -15,5 +15,8 @@ public interface PlayerAttributeHandler {
     float getMaxDEF();
     void setDamage(float Damage);
     float getDamage();
+    float getAttackrange();
+    void setAttackrange(float Aattackrange);
+
     void update(PlayerTextureHandler textureHandler);
 }

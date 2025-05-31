@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.SimpleGame.Character.Player.Player;
+import io.github.SimpleGame.Item.Tips;
 import io.github.SimpleGame.Resource.SoundManager;
 import io.github.SimpleGame.Tool.AnimationTool;
 
@@ -12,12 +13,6 @@ public class EnemyAnimation implements EnemyAnimationHandler{
     protected AssetManager assetManager=new AssetManager();
     private AnimationTool[] animationTools;
     private AnimationTool[] effectsAnimations;
-    private EnemyState enemyState;
-    private Texture IdleTexture;
-    private Texture RunTexture;
-    private Texture HitTexture;
-    private Texture HurtTexture;
-    private Texture DeathTexture;
     private Texture[] effectTexture;
     private float x;
     private float y;
@@ -28,41 +23,33 @@ public class EnemyAnimation implements EnemyAnimationHandler{
 
     @Override
     public void load(String className) {
-        assetManager.load("Effects/Goblinblood.png",Texture.class);
-        assetManager.load("Effects/hitEffects.png",Texture.class);
+        String[] effectPaths = {
+            "Effects/hitEffects.png",
+            "Effects/Goblinblood.png",
+        };
+        for (String path : effectPaths) {
+            assetManager.load(path, Texture.class);
+        }
         assetManager.finishLoading();
-        effectTexture = new Texture[2];
-        effectTexture[0] = assetManager.get("Effects/hitEffects.png",Texture.class);
-        effectTexture[1] = assetManager.get("Effects/Goblinblood.png",Texture.class);
-        effectsAnimations  = new AnimationTool[2];
-        effectsAnimations[0] = new AnimationTool();
-        effectsAnimations[0].create("Hit",effectTexture[0],1,4,0.15f);
-        effectsAnimations[1] = new AnimationTool();
-        effectsAnimations[1].create("GobBlood",effectTexture[1],1,6,0.1f);
-        if(className.equals("Goblin")){
+        effectTexture = new Texture[effectPaths.length + 1];
+        effectsAnimations = new AnimationTool[effectPaths.length + 1];
+        for (int i = 0; i < effectPaths.length; i++) {
+            effectTexture[i] = assetManager.get(effectPaths[i], Texture.class);
+            effectsAnimations[i] = new AnimationTool();
+            if (i == 0) {
+                effectsAnimations[i].create("Hit", effectTexture[i], 1, 4, 0.2f);
+            } else if (i == 1) {
+                effectsAnimations[i].create("GobBlood", effectTexture[i], 1, 6, 0.1f);
+            }
+        }
+         if(className.equals("Goblin")){
             animationTools = new AnimationTool[5];
-            assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-idle.png", Texture.class);
-            assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-run.png",Texture.class);
-            assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-hit.png",Texture.class);
-            assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-hurt.png",Texture.class);
-            assetManager.load("Enemy/goblin/goblin scout - silhouette all animations-death 1.png",Texture.class);
-            assetManager.finishLoading();
-            for (int i = 0; i < animationTools.length; i++) {animationTools[i]=new AnimationTool();}
-            IdleTexture = assetManager.get("Enemy/goblin/goblin scout - silhouette all animations-idle.png", Texture.class);
-            RunTexture = assetManager.get("Enemy/goblin/goblin scout - silhouette all animations-run.png", Texture.class);
-            HitTexture = assetManager.get("Enemy/goblin/goblin scout - silhouette all animations-hit.png", Texture.class);
-            HurtTexture = assetManager.get("Enemy/goblin/goblin scout - silhouette all animations-hurt.png", Texture.class);
-            DeathTexture = assetManager.get("Enemy/goblin/goblin scout - silhouette all animations-death 1.png", Texture.class);
-            animationTools[0].create("Idle",IdleTexture,1,8,0.15f);
-            animationTools[1].create("Run",RunTexture,1,8,0.15f);
-            animationTools[2].create("Hit",HitTexture,1,3,0.05f);
-            animationTools[3].create("Hurt",HurtTexture,1,3,1f);
-            animationTools[4].create("Death",DeathTexture,1,12,0.15f);
+            GoblinResource resource = new GoblinResource();
+            animationTools = resource.getAnimationTool();
         }
 
     }
     public void render(SpriteBatch batch, EnemyState enemyState, Player player){
-        this.enemyState = enemyState;
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(),5);
         Enemy.State currentState = enemyState.currentState;
         AnimationTool currentAnimation;
@@ -72,11 +59,11 @@ public class EnemyAnimation implements EnemyAnimationHandler{
             flip = player.getX() < x;
         }
         if(currentState == Enemy.State.DIE){
-            // 如果是第一次进入死亡状态，重置计时器
+            //如果是第一次进入死亡状态，重置计时器
             if (!hasPlayedDeathAnimation) {
                 deathAnimationTimer = 0f;
                 if (animationTools != null && animationTools[4] != null) {
-                    animationTools[4].resetStateTime(); // 重置死亡动画时间
+                    animationTools[4].resetStateTime(); //重置死亡动画时间
                 }
             }
             hasPlayedDeathAnimation = true;
@@ -128,11 +115,6 @@ public class EnemyAnimation implements EnemyAnimationHandler{
             assetManager.dispose(); // 非空判断避免 NPE
         }
         animationTools = null;
-        IdleTexture = null;
-        RunTexture = null;
-        HitTexture = null;
-        HurtTexture = null;
-        DeathTexture = null;
         assetManager = null;
         if(effectsAnimations!=null){
             for (int i = 0; i < effectsAnimations.length; i++) {

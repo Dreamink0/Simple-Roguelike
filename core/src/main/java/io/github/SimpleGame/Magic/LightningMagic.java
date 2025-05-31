@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Config;
+import io.github.SimpleGame.Item.Tips;
 import io.github.SimpleGame.Tool.Listener;
 
 import static com.badlogic.gdx.graphics.Color.WHITE;
@@ -91,8 +92,8 @@ public class LightningMagic extends Magic {
     @Override
     public void magicCreate(World world, float x, float y) {
         this.world = world;this.x = x;this.y = y;
-        float width = iconTexture.getWidth() / PIXELS_PER_METER;
-        float height = iconTexture.getHeight() / PIXELS_PER_METER;
+        float width = 1.2f*iconTexture.getWidth() / PIXELS_PER_METER;
+        float height = 1.2f*iconTexture.getHeight() / PIXELS_PER_METER;
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
         bodyDef.position.set(x + width, y + height);
@@ -117,8 +118,7 @@ public class LightningMagic extends Magic {
         updatePosition(player);
         if(Listener.LightningMagic_Flag
             &&(Gdx.input.isKeyJustPressed(Input.Keys.E))
-            &&((Math.abs(player.getX()-x)<=2f)
-            &&(Math.abs(player.getY()-y)<=2f))){
+            && (Vector2.dst(player.getX(), player.getY(), x, y) <= 2f)) {
             if (iconBody != null) {
                 world.destroyBody(iconBody);
                 iconBody = null;
@@ -179,6 +179,9 @@ public class LightningMagic extends Magic {
             batch.draw(iconTexture, x, y,
                 iconTexture.getWidth()*4/PIXELS_PER_METER, iconTexture.getHeight()*4/PIXELS_PER_METER);
             batch.end();
+        }
+        if((Vector2.dst(player.getX(), player.getY(), x, y) <= 2f)&&!flag){
+            Tips.E( batch,player.getX(),player.getY());
         }
     }
 
