@@ -3,6 +3,7 @@ package io.github.SimpleGame.Resource;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Pool;
@@ -51,7 +52,9 @@ public class Game{
     //生成地图，后续生成逻辑可能也在这里实现吧大概
     public void Generation(){
         mapGeneration = new MapGeneration();
-        mapManager = resourceManager.getMapManager(world);
+        // 使用动态生成的地图而不是静态地图
+        TiledMap generatedMap = mapGeneration.generateRandomMap();
+        mapManager = new MapManager(generatedMap, Config.PIXELS_PER_METER/512, world);
    }
    //生成地图完读取玩家信息
    public void readPlayerData(){
