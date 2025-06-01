@@ -1,33 +1,49 @@
 package io.github.SimpleGame.Magic;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Character.Player.Player;
+import io.github.SimpleGame.Config;
 
 import java.util.ArrayList;
 public abstract class Magic {
-    protected AssetManager assetManager=new AssetManager();;
+    //魔法属性
+    protected String label;
+    protected Player player;
+    protected World world;
+    protected MagicAnimation Animations;
+    protected MagicAttribute Attributes;
+    protected MagicHitbox Hitboxes;
+    protected MagicState Magicstate;
+    protected Boolean flag = false;
+    protected float x;
+    protected float y;
+    protected int count=0;
+    protected static final ArrayList<Magic> equippedMagic = new ArrayList<>();
+    protected static final float UI_SPACING = 1.5f; //武器之间的间距
+    protected static int index = -1;
+    protected Boolean isClosest = false;
+    protected Boolean Active = false;
     //必须实现的方法
-    public abstract void magicCreate(World world,float x,float y);
-    public abstract void magicObtain(SpriteBatch batch,SpriteBatch UIbatch,Player player);
-    public abstract void magicRender(SpriteBatch batch,Player player);
-}
-//魔法物品栏管理,后续实现
-class MagicManager{
-    private ArrayList<Magic> magicArrayList = new ArrayList<Magic>();
-    public void addMagic(Magic magic)
-    {
-        magicArrayList.add(magic);
+    public abstract void render(SpriteBatch batch,SpriteBatch UIbatch,Player player);
+    public Magic(World world,Player player,float x,float y){
+        this.world=world;
+        this.player=player;
+        this.x=x;
+        this.y=y;
+        Animations = new MagicAnimation();
     }
-    public void removeMagic(Magic magic)
-    {
-        magicArrayList.remove(magic);
+    public boolean distance(Player player){
+        float distance = (float) Math.sqrt(Math.pow(player.getX() - x, 2) + Math.pow(player.getY() - y, 2));
+        isClosest = distance <= 2 && Gdx.input.isKeyJustPressed(Input.Keys.E);
+        return isClosest;
     }
-    public void render(SpriteBatch batch,Player player)
-    {
-        for(Magic magic:magicArrayList)
-        {
-            magic.magicRender(batch,player);
-        }
+    public boolean dst(Player player){
+        return (Math.sqrt(Math.pow(player.getX() - x, 2) + Math.pow(player.getY() - y, 2)) <= 2);
+    }
+    public boolean isActive(Boolean flag){
+        return flag==false && Gdx.input.isKeyPressed(Input.Keys.F);
     }
 }

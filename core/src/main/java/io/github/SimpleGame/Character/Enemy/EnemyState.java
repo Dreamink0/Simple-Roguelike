@@ -131,10 +131,13 @@ public class EnemyState implements EnemyStateHandler{
         float deltaX = enemyBody.getPosition().x - player.getX();
         float deltaY = enemyBody.getPosition().y - player.getY();
         if (player.getPlayerController().isAttacking() && calculateDistance(player) <= player.getAttributeHandler().getAttackrange()) {
-            enemyAttribute.setHP(enemyAttribute.getHP() - player.getAttributeHandler().getDamage());
-            System.out.println("HP:" + enemyAttribute.getHP());
-            Vector2 knockbackDirection = new Vector2(deltaX, deltaY).nor();
-            enemyBody.applyLinearImpulse(knockbackDirection.scl(knockbackForce), enemyBody.getWorldCenter(), true);
+            if (hurtTimer <= 0) {
+                enemyAttribute.setHP(enemyAttribute.getHP() - player.getAttributeHandler().getDamage());
+                System.out.println("HP:" + enemyAttribute.getHP());
+                Vector2 knockbackDirection = new Vector2(deltaX, deltaY).nor();
+                enemyBody.applyLinearImpulse(knockbackDirection.scl(knockbackForce), enemyBody.getWorldCenter(), true);
+                hurtTimer = hurtAnimationDuration;
+            }
         }
     }
     @Override

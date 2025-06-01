@@ -41,7 +41,7 @@ public class AnimationTool {
     private String framename;
     private Animation<TextureRegion> animation;
     private TextureRegion textureRegion;
-    private float stateTime = 0f;
+    public float stateTime = 0f;
     public void create(String name, Texture texture, int rows, int cols,float frameDuration){
         this.frameDuration=frameDuration;
         this.framename=name;
@@ -62,6 +62,7 @@ public class AnimationTool {
     }
     public void update() {
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
+        stateTime+=deltaTime;
         if (stateTimes.containsKey(framename)) {
             stateTimes.put(framename, stateTimes.get(framename) + deltaTime);
         }
@@ -109,6 +110,13 @@ public class AnimationTool {
         float height=textureRegion.getRegionHeight()*scale;
         batch.draw(textureRegion, x - width / 2, y - height / 2, width/2, height/2, width, height, scale, scale, rotationAngle);
     }
+    public void render(SpriteBatch batch,float x,float y,float scaleX,float scaleY,Boolean loop){
+        update();
+        getKeyFrame(loop);
+        float width=textureRegion.getRegionWidth()*scaleX;
+        float height=textureRegion.getRegionHeight()*scaleY;
+        batch.draw(textureRegion, x - width / 2, y - height / 2, width, height);
+    }
     public void dispose(){
         for(String name:animations.keySet()){
             animations.get(name).getKeyFrames()[0].getTexture().dispose();
@@ -142,6 +150,6 @@ public class AnimationTool {
     }
 
     public void resetStateTime() {
-            this.stateTime = 0f;
+        this.stateTime = 0f;
     }
 }

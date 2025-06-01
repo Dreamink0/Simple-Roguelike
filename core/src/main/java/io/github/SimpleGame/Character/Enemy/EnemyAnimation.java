@@ -111,10 +111,8 @@ public class EnemyAnimation implements EnemyAnimationHandler{
     public void dispose() {
         if(animationTools!=null){for (int i = 0; i < animationTools.length; i++) animationTools[i].dispose();}
         if (assetManager != null) {
-            assetManager.dispose(); // 非空判断避免 NPE
+            assetManager.dispose();
         }
-        animationTools = null;
-        assetManager = null;
     }
 
     public AnimationTool[] getAnimationTools() {return animationTools;}

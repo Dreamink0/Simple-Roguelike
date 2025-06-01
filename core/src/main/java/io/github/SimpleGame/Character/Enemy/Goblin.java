@@ -6,15 +6,11 @@ import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Tool.AnimationTool;
 public class Goblin extends Enemy {
-    private AnimationTool[] animationTools;
-    private Body enemyBody;
-
     public Goblin(World world, Player player, float x, float y) {
         super(world, player, x, y);
         animation.load("Goblin");
-        animationTools = animation.getAnimationTools();
         enemyPhysic = new EnemyPhysic(x, y, 0.5f, 1);
-        enemyBody = enemyPhysic.createBody(enemyPhysic.getEnemyBody());
+        Body enemyBody = enemyPhysic.createBody(enemyPhysic.getEnemyBody());
         attribute = new EnemyAttribute(25, 3, 4, 10, 2);
         enemyState = new EnemyState(enemyBody, currentState, player, enemyPhysic, attribute);
     }
@@ -28,7 +24,5 @@ public class Goblin extends Enemy {
     @Override
     public void dispose() {
         animation.dispose();
-        enemyPhysic.dispose();
-        enemyState.dispose();
     }
 }

@@ -31,12 +31,12 @@ public class Main extends ApplicationAdapter {
             Game.initialize();
             Game.Generation();
             Game.readPlayerData();
-            Goblin =  new Goblin[150];
+            Goblin =  new Goblin[1];
             Random random = new Random();
             for (int i = 0; i < Goblin.length; i++) {
                 float randomX = random.nextFloat() * WORLD_WIDTH/2;
                 float randomY = random.nextFloat() * WORLD_HEIGHT/2;
-                Goblin[i] = new Goblin(world, player, randomX+25, randomY+25);
+                Goblin[i] = new Goblin(world, player, randomX+10, randomY+5);
             }
 
 
@@ -61,5 +61,8 @@ public class Main extends ApplicationAdapter {
     @Override
     public void dispose() {
         SoundManager.dispose();
+        for(Goblin goblin : Goblin){
+            goblin.dispose();
+        }
     }
 }

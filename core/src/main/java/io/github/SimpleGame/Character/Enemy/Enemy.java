@@ -9,15 +9,12 @@ import io.github.SimpleGame.Character.Player.Player;
 public abstract class Enemy {
     //在这个类里面处理的是所有敌人的材质，状态，属性，攻击，移动，
     //攻击范围，检测范围，坐标，接口，状态机，动画，
-    protected AssetManager assetManager=new AssetManager();;
     protected Enemy() {}
     //状态
     public enum State {IDLE, CHASE, ATTACK, HURT,DIE}
     protected State currentState;
     //属性
     protected Player player;
-    public Body enemyBody;
-    protected float HP;
     protected World world;
     //接口
     protected EnemyAttribute attribute;
