@@ -136,9 +136,12 @@ public class Game{
     }
     private void regenerateMap() {
         try {
+            // 销毁旧地图
             if (mapManager != null) {
                 mapManager.dispose();
             }
+            // 创建新地图
+            mapGeneration = new MapGeneration();
             mapManager = new MapManager(mapGeneration.generateRandomMap(), Config.PIXELS_PER_METER/512, worldManager.getWorld());
             player.getBody().setTransform(WORLD_WIDTH, WORLD_HEIGHT, 0);
             Gdx.app.debug("SimpleGame", "New map generated successfully");

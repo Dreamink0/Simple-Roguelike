@@ -6,7 +6,7 @@ public class Config {
     public static final float WORLD_HEIGHT = 15f;
     public static final float PIXELS_PER_METER = 64f;
     public static final float TIME_STEP = 1/60f;
-    public static final float PLAYER_SCALE = 2f;
+    public static final float PLAYER_SCALE = 1.75f;
 
     // 资源路径
     public static final String MAP_PATH = "Maps/TestMap.tmx";

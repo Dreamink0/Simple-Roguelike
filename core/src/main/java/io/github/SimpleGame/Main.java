@@ -34,8 +34,8 @@ public class Main extends ApplicationAdapter {
             Goblin =  new Goblin[50];
             Random random = new Random();
             for (int i = 0; i < Goblin.length; i++) {
-                float randomX = random.nextFloat() * WORLD_WIDTH/2+10;
-                float randomY = random.nextFloat() * WORLD_HEIGHT/2+15;
+                float randomX = random.nextFloat() * WORLD_WIDTH/2+5;
+                float randomY = random.nextFloat() * WORLD_HEIGHT/2+10;
                 Goblin[i] = new Goblin(world, player, randomX+10, randomY+10);
             }
 

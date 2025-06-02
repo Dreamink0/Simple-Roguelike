@@ -9,12 +9,19 @@ import com.badlogic.gdx.physics.box2d.*;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Config;
 import io.github.SimpleGame.Item.Tips;
+import io.github.SimpleGame.Resource.Game;
 import io.github.SimpleGame.Tool.AnimationTool;
 
 import static com.badlogic.gdx.math.MathUtils.cos;
 import static io.github.SimpleGame.Resource.Game.world;
 
 public class Thunder extends Magic{
+    private static final int MAX_EFFECT_BODIES = 5; // 最大效果刚体数
+    private static BodyPool effectBodyPool; // 刚体对象池
+
+    static {
+        effectBodyPool = new BodyPool(MAX_EFFECT_BODIES); // 初始化对象池
+    }
     public Thunder(World world, Player player, float x, float y) {
         super(world, player, x, y);
         this.x =x;
@@ -69,7 +76,7 @@ public class Thunder extends Magic{
                 StartX = 0f;
                 StartY = 0f;
                 if (EffectsBody != null) {
-                    world.destroyBody(EffectsBody);
+                    effectBodyPool.release(EffectsBody); // 将刚体放回对象池
                 }
             }
             ThunderAnimation.render(batch,StartX, StartY,isFlip,Animations,Hitboxes,Active);
@@ -96,6 +103,49 @@ public class Thunder extends Magic{
     }
     public void dispose() {
         Animations.dispose();
+    }
+
+    // 对象池类，用于管理Body对象
+    private static class BodyPool {
+        private final Body[] bodies;
+        private int count;
+
+        public BodyPool(int capacity) {
+            bodies = new Body[capacity];
+            count = 0;
+        }
+
+        public Body acquire(float x, float y, float width, float height) {
+            if (count > 0) {
+                return bodies[--count]; // 从池中取出一个刚体
+            }
+            // 如果池中没有可用刚体，则创建新的刚体
+            BodyDef bodyDef = new BodyDef();
+            bodyDef.type = BodyDef.BodyType.KinematicBody;
+            bodyDef.position.set(x, y);
+
+            Body body = Game.world.createBody(bodyDef);
+            PolygonShape shape = new PolygonShape();
+            shape.setAsBox(width, height);
+
+            FixtureDef fixtureDef = new FixtureDef();
+            fixtureDef.shape = shape;
+            fixtureDef.isSensor = true;
+
+            body.createFixture(fixtureDef).setUserData("Magic");
+            shape.dispose();
+
+            return body;
+        }
+
+        public void release(Body body) {
+            if (count < bodies.length) {
+                body.setActive(false); // 停用刚体
+                bodies[count++] = body; // 将刚体放回池中
+            } else {
+                Game.world.destroyBody(body); // 池已满，销毁刚体
+            }
+        }
     }
 }
 class ThunderAnimation{

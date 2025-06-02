@@ -71,4 +71,9 @@ public class MagicHitbox {
     public Body getEffectsBody() {
         return EffectsBody;
     }
+    public void destroyEffectBody(){
+        if(this.EffectsBody != null){
+            world.destroyBody(this.EffectsBody);
+        }
+    }
 }
