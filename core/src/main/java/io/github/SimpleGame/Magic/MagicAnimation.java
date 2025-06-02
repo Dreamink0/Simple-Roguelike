@@ -68,4 +68,32 @@ public class MagicAnimation {
             }
         }
     }
+    public void Effectrender(SpriteBatch batch, float x, float y, Boolean flip){
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        stateTime += Math.min(deltaTime, 0.25f);
+        batch.begin();
+        animations[0].render(batch,x,y, 0.1f, false,flip);
+        if(animations.length>1){
+            if(animations[0].isAnimationFinished()){
+                int flag=1;
+                if(flip){
+                    flag=-1;
+                }
+                animations[1].render(batch,x+2*flag,y, 0.1f, true,flip);
+            }
+        }
+        batch.end();
+    }
+    public void dispose(){
+         for(AnimationTool animation:animations){
+            animation.dispose();
+        }
+         for(Texture texture:iconTexture){
+            texture.dispose();
+        }
+          for(Texture texture:effcetTeture){
+            texture.dispose();
+        }
+          assetManager.dispose();
+    }
 }

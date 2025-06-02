@@ -16,8 +16,7 @@ public abstract class Magic {
     protected MagicAnimation Animations;
     protected MagicAttribute Attributes;
     protected MagicHitbox Hitboxes;
-    protected MagicState Magicstate;
-    protected Boolean flag = false;
+    protected MagicState magicState;
     protected float x;
     protected float y;
     protected int count=0;
@@ -26,6 +25,15 @@ public abstract class Magic {
     protected static int index = -1;
     protected Boolean isClosest = false;
     protected Boolean Active = false;
+    protected Boolean isObtain=false;
+    protected Boolean isFlip=false;
+    protected boolean isActivating = false; // 新增状态标志
+    protected Boolean flag = false;
+    protected float StartX;
+    protected float StartY;
+    protected long time;
+    protected float cooldownTimer=0;
+
     //必须实现的方法
     public abstract void render(SpriteBatch batch,SpriteBatch UIbatch,Player player);
     public Magic(World world,Player player,float x,float y){
@@ -43,7 +51,7 @@ public abstract class Magic {
     public boolean dst(Player player){
         return (Math.sqrt(Math.pow(player.getX() - x, 2) + Math.pow(player.getY() - y, 2)) <= 2);
     }
-    public boolean isActive(Boolean flag){
-        return flag==false && Gdx.input.isKeyPressed(Input.Keys.F);
+    public float getDamage(){
+         return Attributes.getDamage();
     }
 }

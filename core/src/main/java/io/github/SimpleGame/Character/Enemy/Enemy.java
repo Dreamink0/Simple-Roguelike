@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Character.Player.Player;
+import io.github.SimpleGame.Magic.Magic;
 
 public abstract class Enemy {
     //在这个类里面处理的是所有敌人的材质，状态，属性，攻击，移动，
@@ -29,4 +30,14 @@ public abstract class Enemy {
     }
     public abstract void render(SpriteBatch batch, Player player);
     public abstract void dispose();
+    public void setHP(Magic magic){
+        attribute.setHP(attribute.getHP()-magic.getDamage());
+    }
+    public float getHP(){
+        return attribute.getHP();
+    }
+
+    public EnemyState getEnemyState() {
+        return enemyState;
+    }
 }

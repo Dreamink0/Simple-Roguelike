@@ -17,9 +17,6 @@ public class GameRender implements GameRenderHandler{
     private Weapon item;
     private Weapon item2;
     private Thunder thunder;
-    private Thunder thunder2;
-    private Thunder thunder3;
-    private Thunder thunder4;
 
     public GameRender() {
         thunder = new Thunder(Game.world, player, WORLD_WIDTH+2,WORLD_HEIGHT+2);
@@ -41,5 +38,8 @@ public class GameRender implements GameRenderHandler{
         UIbatch.end();
     }
     public void dispose() {
+        item.dispose();
+        item2.dispose();
+        thunder.dispose();
     }
 }

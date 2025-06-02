@@ -79,9 +79,13 @@ public class AnimationTool {
         this.textureRegion=animation.getKeyFrame(stateTime,loop);
     }
     public TextureRegion getCurrentFrame() {
+        float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
+        stateTime+=deltaTime;
         return animation.getKeyFrame(stateTime);
     }
     public boolean isAnimationFinished() {
+        float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
+        stateTime+=deltaTime;
         return animation.isAnimationFinished(stateTime);
     }
     public void render(SpriteBatch batch, float x, float y, float scale, Boolean loop) {

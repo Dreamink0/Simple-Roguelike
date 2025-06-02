@@ -1,6 +1,7 @@
 package io.github.SimpleGame.Character.Enemy;
 
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 
 import static io.github.SimpleGame.Resource.Game.world;
 
@@ -78,9 +79,16 @@ public class EnemyPhysic implements EnemyPhysicHandler{
     }
 
     public void dispose() {
-        if (enemyBody != null) {
-            enemyBody.destroyFixture(enemyBody.getFixtureList().get(0));
-            world.destroyBody(enemyBody);
-        }
+            if (enemyBody != null) {
+                // 销毁所有 Fixture
+                Array<Fixture> fixtures = enemyBody.getFixtureList();
+                for (int i = fixtures.size - 1; i >= 0; i--) {
+                    enemyBody.destroyFixture(fixtures.get(i));
+                }
+                if(enemyBody != null){
+                     world.destroyBody(enemyBody);
+                     enemyBody = null;
+                }
+            }
     }
 }

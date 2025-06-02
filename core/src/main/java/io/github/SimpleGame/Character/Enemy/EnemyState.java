@@ -142,6 +142,10 @@ public class EnemyState implements EnemyStateHandler{
     }
     @Override
     public void die(Body enemyBody) {
+        if(enemyBody!=null){
+             world.destroyBody(enemyBody);
+             enemyPhysic.dispose();
+        }
     }
 
     @Override

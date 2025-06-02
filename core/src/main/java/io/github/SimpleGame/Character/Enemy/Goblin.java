@@ -11,6 +11,7 @@ public class Goblin extends Enemy {
         animation.load("Goblin");
         enemyPhysic = new EnemyPhysic(x, y, 0.5f, 1);
         Body enemyBody = enemyPhysic.createBody(enemyPhysic.getEnemyBody());
+        enemyBody.setUserData(this);
         attribute = new EnemyAttribute(25, 3, 4, 10, 2);
         enemyState = new EnemyState(enemyBody, currentState, player, enemyPhysic, attribute);
     }
@@ -23,6 +24,9 @@ public class Goblin extends Enemy {
 
     @Override
     public void dispose() {
-        animation.dispose();
+        if( animation != null){
+             animation.dispose();
+             animation = null;
+        }
     }
 }

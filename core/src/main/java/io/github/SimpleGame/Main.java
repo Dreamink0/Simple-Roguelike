@@ -31,12 +31,12 @@ public class Main extends ApplicationAdapter {
             Game.initialize();
             Game.Generation();
             Game.readPlayerData();
-            Goblin =  new Goblin[1];
+            Goblin =  new Goblin[50];
             Random random = new Random();
             for (int i = 0; i < Goblin.length; i++) {
-                float randomX = random.nextFloat() * WORLD_WIDTH/2;
-                float randomY = random.nextFloat() * WORLD_HEIGHT/2;
-                Goblin[i] = new Goblin(world, player, randomX+10, randomY+5);
+                float randomX = random.nextFloat() * WORLD_WIDTH/2+10;
+                float randomY = random.nextFloat() * WORLD_HEIGHT/2+15;
+                Goblin[i] = new Goblin(world, player, randomX+10, randomY+10);
             }
 
 
@@ -47,6 +47,7 @@ public class Main extends ApplicationAdapter {
     }
     @Override
     public void render() {
+        System.gc();
         Game.render();
         batch.begin();
         for (Goblin goblin : Goblin) {
@@ -64,5 +65,6 @@ public class Main extends ApplicationAdapter {
         for(Goblin goblin : Goblin){
             goblin.dispose();
         }
+        Game.dispose();
     }
 }
