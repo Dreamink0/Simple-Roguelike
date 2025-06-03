@@ -11,6 +11,8 @@ public abstract class Enemy {
     //在这个类里面处理的是所有敌人的材质，状态，属性，攻击，移动，
     //攻击范围，检测范围，坐标，接口，状态机，动画，
     protected Enemy() {}
+
+
     //状态
     public enum State {IDLE, CHASE, ATTACK, HURT,DIE}
     protected State currentState;

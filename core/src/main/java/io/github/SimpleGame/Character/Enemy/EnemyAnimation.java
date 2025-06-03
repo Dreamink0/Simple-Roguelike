@@ -11,18 +11,20 @@ import io.github.SimpleGame.Tool.AnimationTool;
 
 public class EnemyAnimation implements EnemyAnimationHandler{
     protected AssetManager assetManager=new AssetManager();
-    private AnimationTool[] animationTools;
-    private AnimationTool[] effectsAnimations;
-    private Texture[] effectTexture;
-    private float x;
-    private float y;
-    private boolean flip;
+    protected AnimationTool[] animationTools;
+    protected AnimationTool[] effectsAnimations;
+    protected Texture[] effectTexture;
+    protected float x;
+    protected float y;
+    protected boolean flip;
     public boolean hasPlayedDeathAnimation = false;
     public float deathAnimationTimer = 0f;
-    public final float DEATH_ANIMATION_DURATION =1f; // 根据死亡动画总时长调整
+    public float DEATH_ANIMATION_DURATION =1f; // 根据死亡动画总时长调整
+    protected String className;
 
     @Override
     public void load(String className) {
+        this.className = className;
         String[] effectPaths = {
             "Effects/hitEffects.png",
             "Effects/Goblinblood.png",
@@ -46,7 +48,20 @@ public class EnemyAnimation implements EnemyAnimationHandler{
             animationTools = new AnimationTool[5];
             GoblinResource resource = new GoblinResource();
             animationTools = resource.getAnimationTool();
+            DEATH_ANIMATION_DURATION = 1f;
         }
+         if (className.equals("Flyingeye")){
+             animationTools = new AnimationTool[5];
+             FlyingeyeResource resource = new FlyingeyeResource();
+            animationTools = resource.getAnimationTool();
+            DEATH_ANIMATION_DURATION = 0.38f;
+         }
+         if(className.equals("Skeleton")){
+             animationTools = new AnimationTool[5];
+             SkeletonResource resource = new SkeletonResource();
+             animationTools = resource.getAnimationTool();
+             DEATH_ANIMATION_DURATION = 1f;
+         }
 
     }
     public void render(SpriteBatch batch, EnemyState enemyState, Player player){
@@ -80,10 +95,14 @@ public class EnemyAnimation implements EnemyAnimationHandler{
                 // 死亡动画单独处理
                 if (currentState == Enemy.State.DIE) {
                     // 只有在死亡动画未完成时才渲染
-                    if(flip){
-                        effectsAnimations[1].render(batch, x+3f, y-0.4f, 0.1f, true, !flip);
+                    if(className.equals("Goblin")){
+                        if(flip){
+                            effectsAnimations[1].render(batch, x+3f, y-0.4f, 0.1f, true, false);
+                        }else{
+                            effectsAnimations[1].render(batch, x-3f, y-0.4f, 0.1f, true, true);
+                        }
                     }else{
-                        effectsAnimations[1].render(batch, x-3f, y-0.4f, 0.1f, true, !flip);
+                        effectsAnimations[0].render(batch, x, y, 0.1f, true, flip);
                     }
                     if (deathAnimationTimer < DEATH_ANIMATION_DURATION) {
                         animationTools[4].render(batch, x, y, 0.1f, false, flip);

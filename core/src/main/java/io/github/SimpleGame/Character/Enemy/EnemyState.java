@@ -43,8 +43,8 @@ public class EnemyState implements EnemyStateHandler{
             }
             if (currentState==Enemy.State.ATTACK) {
                 enemyPhysic.setCollisionBoxSize(
-                    enemyPhysic.getOriginalWidth() * 2f,
-                    enemyPhysic.getOriginalHeight() * 1.5f);
+                    enemyPhysic.getOriginalWidth() * 1.2f,
+                    enemyPhysic.getOriginalHeight() * 1.2f);
             }else{
                 enemyPhysic.setCollisionBoxSize(
                     enemyPhysic.getOriginalWidth(),
@@ -77,7 +77,15 @@ public class EnemyState implements EnemyStateHandler{
     }
 
     @Override
-    public void idle(float deltaTime) {}
+    public void idle(float deltaTime) {
+        if(enemyAttribute.getHP() <= 0){
+            currentState = Enemy.State.DIE;
+            return;
+        }
+        if (enemyBody != null) {
+            enemyBody.setLinearVelocity(0, 0);
+        }
+    }
 
     @Override
     public void chase(float deltaTime) {
@@ -130,7 +138,7 @@ public class EnemyState implements EnemyStateHandler{
         float knockbackForce = (float) Math.pow(2f,4f); //击退力度，可调整
         float deltaX = enemyBody.getPosition().x - player.getX();
         float deltaY = enemyBody.getPosition().y - player.getY();
-        if (player.getPlayerController().isAttacking() && calculateDistance(player) <= player.getAttributeHandler().getAttackrange()) {
+        if (player.getPlayerController().isAttacking() && calculateDistance(player) <= player.getAttributeHandler().getAttackrange()+1) {
             if (hurtTimer <= 0) {
                 enemyAttribute.setHP(enemyAttribute.getHP() - player.getAttributeHandler().getDamage());
                 System.out.println("HP:" + enemyAttribute.getHP());

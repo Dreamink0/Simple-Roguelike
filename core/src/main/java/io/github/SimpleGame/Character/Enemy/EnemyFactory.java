@@ -17,6 +17,8 @@ public class EnemyFactory {
     //注册所有EnemyCreator,手动创建;
     static {
         ENEMY_CREATORS.add((Goblin::new));
+        ENEMY_CREATORS.add((Flyingeye::new));
+        ENEMY_CREATORS.add((Skeleton::new));
     }
     public static Enemy createRandomEnemy(World world, Player player, float x, float y) {
         if (ENEMY_CREATORS.isEmpty()) {

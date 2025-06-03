@@ -17,7 +17,7 @@ import static io.github.SimpleGame.Resource.Game.world;
 
 public class Thunder extends Magic{
     private static final int MAX_EFFECT_BODIES = 5; // 最大效果刚体数
-    private static BodyPool effectBodyPool; // 刚体对象池
+    private static final BodyPool effectBodyPool; // 刚体对象池
 
     static {
         effectBodyPool = new BodyPool(MAX_EFFECT_BODIES); // 初始化对象池

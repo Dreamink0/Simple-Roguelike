@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Array;
 import static io.github.SimpleGame.Resource.Game.world;
 
 public class EnemyPhysic implements EnemyPhysicHandler{
-    private float x, y,  originalWidth, originalHeight;
+    protected float x, y,  originalWidth, originalHeight;
     public Body enemyBody;
     public EnemyPhysic(float x, float y, float originalWidth, float originalHeight){
         this.x = x; this.y = y;

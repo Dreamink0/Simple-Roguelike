@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import io.github.SimpleGame.Config;
 import io.github.SimpleGame.Tool.AnimationTool;
 
-public class LightningTexture extends MagicAnimation{
+public class ThunderTexture extends MagicAnimation{
     private static final String[] ICON={
         "Magic/Lightning/ICON2.png",
         "Magic/Lightning/ICON.png"

@@ -53,7 +53,7 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
         if(!isAttacking){
             setCollisionBoxSize(1.2f,1.8f,player);
         }else{
-            setCollisionBoxSize(3.8f,2f,player);
+            setCollisionBoxSize(3.5f,1.7f,player);
         }
         if (isAttacking) {newAnimation = playerAttackAnimation;
         } else {newAnimation = isMoving ? playerRunAnimation : playerIdleAnimation;}

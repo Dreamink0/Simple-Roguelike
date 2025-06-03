@@ -4,18 +4,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Character.Player.Player;
-import io.github.SimpleGame.Tool.AnimationTool;
-public class Goblin extends Enemy {
-    public Goblin(World world, Player player, float x, float y) {
+
+public class Flyingeye extends Enemy{
+    public Flyingeye(World world, Player player, float x, float y) {
         super(world, player, x, y);
-        animation.load("Goblin");
-        enemyPhysic = new EnemyPhysic(x, y, 0.5f, 1);
+        animation.load("Flyingeye");
+        enemyPhysic = new EnemyPhysic(x, y, 0.8f, 1f);
         Body enemyBody = enemyPhysic.createBody(enemyPhysic.getEnemyBody());
         enemyBody.setUserData(this);
-        attribute = new EnemyAttribute(15, 3, 4, 10, 2);
+        attribute = new EnemyAttribute(10, 2, 4, 15, 5);
         enemyState = new EnemyState(enemyBody, currentState, player, enemyPhysic, attribute);
+        enemyState.hurtAnimationDuration = 1;
     }
-
     @Override
     public void render(SpriteBatch batch, Player player) {
         animation.render(batch,enemyState,player);
@@ -24,9 +24,8 @@ public class Goblin extends Enemy {
 
     @Override
     public void dispose() {
-        if( animation != null){
-             animation.dispose();
-             animation = null;
+        if(animation != null){
+            animation.dispose();
         }
     }
 }

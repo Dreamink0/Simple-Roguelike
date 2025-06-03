@@ -26,9 +26,9 @@ public class MagicAnimation {
     private float stateTime = 0f;
     public void loadAssets(String className){
         if(className.equals("LightningMagic")){
-            animations = LightningTexture.getAnimation();
-            iconTexture = LightningTexture.getICONTexture();
-            effcetTeture = LightningTexture.getEffectTexture();
+            animations = ThunderTexture.getAnimation();
+            iconTexture = ThunderTexture.getICONTexture();
+            effcetTeture = ThunderTexture.getEffectTexture();
         }
     }
 

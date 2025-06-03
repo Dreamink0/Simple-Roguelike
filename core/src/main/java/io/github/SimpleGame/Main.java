@@ -2,26 +2,19 @@ package io.github.SimpleGame;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import io.github.SimpleGame.Character.Enemy.Goblin;
+import io.github.SimpleGame.Character.Enemy.EnemyGenerate;
 import io.github.SimpleGame.Resource.Game;
-import io.github.SimpleGame.Resource.ResourceManager;
 import io.github.SimpleGame.Resource.SoundManager;
-import io.github.SimpleGame.Tool.AnimationTool;
 import io.github.SimpleGame.Tool.Listener;
-
-import java.util.Random;
 
 import static io.github.SimpleGame.Config.WORLD_HEIGHT;
 import static io.github.SimpleGame.Config.WORLD_WIDTH;
-import static io.github.SimpleGame.Resource.Game.player;
-import static io.github.SimpleGame.Resource.Game.world;
-import static io.github.SimpleGame.Resource.Game.batch;
+import static io.github.SimpleGame.Resource.Game.*;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
     private Game Game;
-    private Goblin[] Goblin;
-    private AnimationTool animationTools=new AnimationTool();
+    private EnemyGenerate[] enemyGenerate;
     @Override
     public void create() {
         try {
@@ -31,15 +24,11 @@ public class Main extends ApplicationAdapter {
             Game.initialize();
             Game.Generation();
             Game.readPlayerData();
-            Goblin =  new Goblin[50];
-            Random random = new Random();
-            for (int i = 0; i < Goblin.length; i++) {
-                float randomX = random.nextFloat() * WORLD_WIDTH/2+5;
-                float randomY = random.nextFloat() * WORLD_HEIGHT/2+10;
-                Goblin[i] = new Goblin(world, player, randomX+10, randomY+10);
+            enemyGenerate = new EnemyGenerate[10];
+            for(int i = 0; i < 10; i++){
+                enemyGenerate[i] = new EnemyGenerate();
+                enemyGenerate[i].addEnemy(world, player, WORLD_WIDTH/2+5*i, WORLD_HEIGHT);
             }
-
-
         } catch (Exception e) {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
             throw new RuntimeException("Failed to initialize game", e);
@@ -50,20 +39,21 @@ public class Main extends ApplicationAdapter {
         System.gc();
         Game.render();
         batch.begin();
-        for (Goblin goblin : Goblin) {
-            goblin.render(batch, player);
+        for(int i = 0; i < 10; i++){
+            enemyGenerate[i].render(batch, player);
         }
-
         batch.end();
-        Listener.Bound(world,player);
+        Listener.Bound(world, player);
     }
     @Override
-    public void resize(int width, int height) {Game.resize(width, height);}
+    public void resize(int width, int height) {
+        Game.resize(width, height);
+    }
     @Override
     public void dispose() {
         SoundManager.dispose();
-        for(Goblin goblin : Goblin){
-            goblin.dispose();
+        for(int i = 0; i < 10; i++){
+            enemyGenerate[i].dispose();
         }
         Game.dispose();
     }
