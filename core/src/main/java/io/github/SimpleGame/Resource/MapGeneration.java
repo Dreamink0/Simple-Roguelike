@@ -308,8 +308,6 @@ public class MapGeneration {
                     boolean currentHasUp = currentRoom.charAt(DOOR_UP) == '1';
                     boolean nextHasDown = layout[x][y + 1].charAt(DOOR_DOWN) == '1';
                     if (currentHasUp != nextHasDown) {
-                        System.err.printf("连接不一致: (%d,%d) 上门=%s, (%d,%d) 下门=%s%n",
-                            x, y, currentHasUp, x, y + 1, nextHasDown);
                         return false;
                     }
                 }
@@ -318,8 +316,6 @@ public class MapGeneration {
                     boolean currentHasRight = currentRoom.charAt(DOOR_RIGHT) == '1';
                     boolean nextHasLeft = layout[x + 1][y].charAt(DOOR_LEFT) == '1';
                     if (currentHasRight != nextHasLeft) {
-                        System.err.printf("连接不一致: (%d,%d) 右门=%s, (%d,%d) 左门=%s%n",
-                            x, y, currentHasRight, x + 1, y, nextHasLeft);
                         return false;
                     }
                 }
@@ -329,7 +325,7 @@ public class MapGeneration {
     }
 
     private void printRoomLayout(String[][] layout) {
-        System.out.println("生成的房间布局:");
+        System.out.println("Rooms:");
         for (int y = DUNGEON_SIZE - 1; y >= 0; y--) {
             for (int x = 0; x < DUNGEON_SIZE; x++) {
                 String room = layout[x][y];
@@ -388,7 +384,7 @@ public class MapGeneration {
     }
 
     private void ensureBoundaryRoomsClosedWithFix(String[][] layout) {
-        System.out.println("开始确保边界房间封闭并修复连接...");
+        System.out.println("Fixup Room Layout");
         for (int x = 0; x < DUNGEON_SIZE; x++) {
             for (int y = 0; y < DUNGEON_SIZE; y++) {
                 if (layout[x][y] != null) {
@@ -418,14 +414,14 @@ public class MapGeneration {
 
                     if (modified) {
                         layout[x][y] = new String(roomChars);
-                        System.out.printf("边界房间 (%d,%d): %s -> %s%n", x, y, originalRoom, layout[x][y]);
+                        System.out.printf("Side (%d,%d): %s -> %s%n", x, y, originalRoom, layout[x][y]);
 
                         fixAdjacentRoomConnections(layout, x, y);
                     }
                 }
             }
         }
-        System.out.println("边界房间封闭完成。");
+        System.out.println("Completed.");
     }
 
     private void fixAdjacentRoomConnections(String[][] layout, int x, int y) {

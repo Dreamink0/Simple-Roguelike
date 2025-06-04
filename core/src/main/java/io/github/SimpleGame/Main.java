@@ -36,7 +36,6 @@ public class Main extends ApplicationAdapter {
     }
     @Override
     public void render() {
-        System.gc();
         Game.render();
         batch.begin();
         for(int i = 0; i < enemyGenerate.length; i++){
