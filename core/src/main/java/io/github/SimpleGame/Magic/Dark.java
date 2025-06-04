@@ -3,27 +3,21 @@ package io.github.SimpleGame.Magic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Item.Tips;
-import io.github.SimpleGame.Resource.Game;
 import io.github.SimpleGame.Tool.AnimationTool;
 
-import static com.badlogic.gdx.math.MathUtils.cos;
-
-// 雷电魔法类，继承自Magic
-public class Thunder extends Magic {
+public class Dark extends Magic {
     // 最大效果刚体数
     private static final int MAX_EFFECT_BODIES = 15;
     // 刚体对象池
     public static final BodyPool effectBodyPool;
-
     // 静态初始化块，初始化对象池
     static {
         effectBodyPool = new BodyPool(MAX_EFFECT_BODIES);
     }
-
     /**
      * 构造雷电魔法实例
      *
@@ -32,20 +26,19 @@ public class Thunder extends Magic {
      * @param x      魔法初始x坐标
      * @param y      魔法初始y坐标
      */
-    public Thunder(World world, Player player, float x, float y) {
+    public Dark(World world, Player player, float x, float y) {
         super(world, player, x, y);
         this.x = x;
         this.y = y;
-        Animations.loadAssets("LightningMagic");
+        Animations.loadAssets("DarkMagic");
         Hitboxes = new MagicHitbox(world, player, Animations);
         Hitboxes.createIconBody(x, y);
-        Attributes = new MagicAttribute(3, 2, 10, 5.5f, 30);
+        Attributes = new MagicAttribute(3, 2, 1, 1.8f, 5);
         magicState = new MagicState(Attributes, Animations, Hitboxes);
-        label = "Lightning";
+        label = "Dark";
     }
-
     /**
-     * 渲染雷电魔法
+     * 渲染魔法
      *
      * @param batch   渲染批次
      * @param UIbatch UI渲染批次
@@ -89,7 +82,7 @@ public class Thunder extends Magic {
                 isActivating = false;
 
                 // 创建效果体并加入对象池管理
-                Body effectBody = effectBodyPool.acquire(StartX, StartY, 4f, 4f);
+                Body effectBody = effectBodyPool.acquire(StartX, StartY, 2f, 2f);
                 Hitboxes.createEffectWithBody(effectBody);
             }
 
@@ -106,7 +99,7 @@ public class Thunder extends Magic {
                 }
             }
 
-            ThunderAnimation.render(batch, StartX, StartY, isFlip, Animations, Hitboxes, Active);
+            DarkAnimation.render(batch, StartX, StartY, isFlip, Animations, Hitboxes, Active);
         }
 
         // 如果技能处于非激活状态且冷却结束重置状态
@@ -146,11 +139,9 @@ public class Thunder extends Magic {
             effectBodyPool.releaseAll();
         }
     }
-
-    // 雷电魔法动画类
-    static class ThunderAnimation {
+    // 黑暗魔法动画类
+    static class DarkAnimation {
         private static float stateTime = 0f;
-
         /**
          * 渲染雷电魔法动画
          *
@@ -167,14 +158,20 @@ public class Thunder extends Magic {
             float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
             stateTime += deltaTime;
             batch.begin();
-            for (int i = 0; i <= 360; i += 35) {
-                float offsetX = cos((float) i + stateTime * 2) * (1 + stateTime / 2);
-                float offsetY = MathUtils.sin((float) i + stateTime * 2) * (1 + stateTime / 2);
-
-                animations[1].render(batch, x + offsetX, y + offsetY, 0.1f, false, flip);
+            int flag = 1;
+            if (flip) {
+                flag = -1;
             }
+            float CurrentX = x + 10 * stateTime * flag;
+            animations[0].render(batch, CurrentX, y, 0.1f, false, flip);
             batch.end();
 
+            // 更新碰撞箱位置
+            if (Hitboxes != null && Hitboxes.getEffectsBody() != null) {
+                Body effectsBody = Hitboxes.getEffectsBody();
+                // 更新效果体的位置，保持与渲染坐标同步
+                effectsBody.setTransform(CurrentX, y, effectsBody.getAngle());
+            }
             if (!Active) {
                 stateTime = 0f;
             }

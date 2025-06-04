@@ -8,8 +8,8 @@ public class MagicHitbox {
     private MagicAnimation magicAnimation;
     private World world;
     private Player player;
-    private Body magicIconBody;
-    private Body EffectsBody;
+    public Body magicIconBody;
+    public Body EffectsBody;
 
     //先得创建可以拾取的魔法图标
     //一个是可拾取的魔法图标，一个是施法魔法后的效果
@@ -41,39 +41,70 @@ public class MagicHitbox {
             world.destroyBody(this.magicIconBody);
         }
     }
-    public void createEffectBody(float x, float y,float width,float height) {
-        //清除上一帧的碰撞体
+
+    public void destroyEffectBody() {
         if (this.EffectsBody != null && !this.EffectsBody.getWorld().isLocked()) {
             world.destroyBody(this.EffectsBody);
             this.EffectsBody = null;
         }
+    }
 
-        if (this.EffectsBody == null) {
-            BodyDef bodyDef = new BodyDef();
-            bodyDef.type = BodyDef.BodyType.KinematicBody;
-            bodyDef.position.set(x,y);
-
-            EffectsBody = world.createBody(bodyDef);
-            EffectsBody.setUserData("Magic");
-
-            PolygonShape shape = new PolygonShape();
-            shape.setAsBox(width, height);
-
-            FixtureDef fixtureDef = new FixtureDef();
-            fixtureDef.shape = shape;
-            fixtureDef.isSensor = true;
-
-            EffectsBody.createFixture(fixtureDef).setUserData("Magic");
-            shape.dispose();
+    public void createEffectWithBody(Body effectBody) {
+        if (effectBody != null) {
+            this.EffectsBody = effectBody;
         }
     }
 
     public Body getEffectsBody() {
         return EffectsBody;
     }
-    public void destroyEffectBody(){
-        if(this.EffectsBody != null){
-            world.destroyBody(this.EffectsBody);
+
+    public void setEffectsBody(Body effectsBody) {
+        EffectsBody = effectsBody;
+    }
+
+    public void clearEffectBody() {
+        this.EffectsBody = null;
+    }
+
+    public void createEffectBody(float currentX, float y, float v, int i) {
+        if (EffectsBody != null) {
+            return; // 已经存在效果体，直接返回
         }
+
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.position.set(currentX, y);
+
+        EffectsBody = world.createBody(bodyDef);
+        EffectsBody.setUserData("MagicEffect");
+
+        CircleShape shape = new CircleShape();
+        shape.setRadius(v / Config.PIXELS_PER_METER);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.isSensor = true;
+
+        // 初始化默认的碰撞过滤器
+        Filter filter = new Filter();
+
+        // 根据不同魔法类型设置不同的碰撞属性
+        if (i == 0) { // 雷电魔法
+            filter.categoryBits = (short) 0x0002; // BIT_MAGIC_LIGHTNING
+            filter.maskBits = (short) 0x0004; // BIT_ENEMY
+        } else if (i == 1) { // 暗影魔法
+            filter.categoryBits = (short) 0x0008; // BIT_MAGIC_SHADOW
+            filter.maskBits = (short) 0x0004; // BIT_ENEMY
+        } else {
+            // 默认魔法
+            filter.categoryBits = (short) 0x0001; // BIT_MAGIC
+            filter.maskBits = (short) 0x0004; // BIT_ENEMY
+        }
+
+        Fixture fixture = EffectsBody.createFixture(fixtureDef);
+        fixture.setFilterData(filter);  // 使用 setFilterData 方法代替直接赋值
+        fixture.setUserData(this);  // 修复：先保存Fixture引用再设置userData
+        shape.dispose();
     }
 }

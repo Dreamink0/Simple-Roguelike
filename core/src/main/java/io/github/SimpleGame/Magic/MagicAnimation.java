@@ -30,6 +30,11 @@ public class MagicAnimation {
             iconTexture = ThunderTexture.getICONTexture();
             effcetTeture = ThunderTexture.getEffectTexture();
         }
+        if(className.equals("DarkMagic")){
+            animations = DarkTexture.getAnimation();
+            iconTexture = DarkTexture.getICONTexture();
+            effcetTeture = DarkTexture.getEffectTexture();
+        }
     }
 
     public Texture[] getIconTexture() {

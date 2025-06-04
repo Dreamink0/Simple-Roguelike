@@ -8,6 +8,7 @@ import io.github.SimpleGame.Character.Enemy.Enemy;
 import io.github.SimpleGame.Character.Enemy.EnemyState;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Item.Weapon;
+import io.github.SimpleGame.Magic.Dark;
 import io.github.SimpleGame.Magic.Magic;
 import io.github.SimpleGame.Magic.Thunder;
 import io.github.SimpleGame.Resource.SoundManager;
@@ -25,6 +26,8 @@ public class Listener{
     public static boolean attack_Flag;
     public static float lightningTimer=0;
     public static float lightningCooldown=0.15f;
+    public static float DarkTimer=0;
+    public static float DarkCooldown=0.5f;
     public static void Bound(World world, Player player){
         world.setContactListener(new ContactListener() {
             final float Time = (float) Math.min(Gdx.graphics.getDeltaTime(),0.25);
@@ -92,6 +95,21 @@ public class Listener{
                             lightningTimer =  lightningCooldown;
                         }
                         lightningTimer -= Time;
+                    }
+                    if(magic instanceof Dark){
+                        if (enemy != null) {
+                            enemy.getEnemyState().currentState = HURT;
+                        }
+                        if(enemy.getEnemyState().currentState==HURT){
+                            SoundManager.playSound("enemyHit");
+                        }
+                        if(DarkTimer<0){
+                            if (enemy != null) {
+                                enemy.setHP(magic);
+                            }
+                            DarkTimer = DarkCooldown;
+                        }
+                        DarkTimer -= Time;
                     }
                 }
             }

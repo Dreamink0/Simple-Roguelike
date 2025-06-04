@@ -24,8 +24,8 @@ public class Main extends ApplicationAdapter {
             Game.initialize();
             Game.Generation();
             Game.readPlayerData();
-            enemyGenerate = new EnemyGenerate[10];
-            for(int i = 0; i < 10; i++){
+            enemyGenerate = new EnemyGenerate[4];
+            for(int i = 0; i < enemyGenerate.length; i++){
                 enemyGenerate[i] = new EnemyGenerate();
                 enemyGenerate[i].addEnemy(world, player, WORLD_WIDTH/2+5*i, WORLD_HEIGHT);
             }
@@ -39,7 +39,7 @@ public class Main extends ApplicationAdapter {
         System.gc();
         Game.render();
         batch.begin();
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < enemyGenerate.length; i++){
             enemyGenerate[i].render(batch, player);
         }
         batch.end();
@@ -52,7 +52,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void dispose() {
         SoundManager.dispose();
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < enemyGenerate.length; i++){
             enemyGenerate[i].dispose();
         }
         Game.dispose();
