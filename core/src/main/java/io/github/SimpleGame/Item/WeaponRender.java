@@ -18,7 +18,7 @@ public class WeaponRender {
     private boolean isEquip = false;
     private int count=0;
     private static final ArrayList<WeaponRender> equippedWeapons = new ArrayList<>();
-    private static final float UI_SPACING = 1.5f; //武器之间的间距
+    public static final float UI_SPACING = 1.5f; //武器之间的间距
 
     public WeaponRender(WeaponHitBox weaponHitBox){
         this.weaponHitBox = weaponHitBox;
@@ -91,7 +91,7 @@ public class WeaponRender {
         int index = getWeaponIndex(this);
 
         // 根据武器索引设置不同的持握位置和角度，增加立体感
-        float rotationAngle = (index == 1) ? 150 : 30; // 主手武器稍微倾斜
+        float rotationAngle = (index == 1) ? 180 : 30; // 主手武器稍微倾斜
 
         // 获取玩家移动方向以调整武器位置
         boolean isMoving = player.getPlayerController().isMoving();
@@ -99,7 +99,7 @@ public class WeaponRender {
 
         // 基础偏移量
         float offsetX = isFlipped ? -0.3f : 0.3f; // 根据翻转状态调整水平位置
-        float offsetY = -0.2f;
+        float offsetY = isFlipped ? -0.2f  : 0.2f;
 
         // 如果玩家在移动，添加动态偏移模拟立体感
         if (isMoving) {
@@ -120,8 +120,8 @@ public class WeaponRender {
             0, 0,
             texture.getWidth(),
             texture.getHeight(),
-            isFlipped,
-            true
+            !isFlipped,
+            false
         );
         batch.end();
     }
@@ -143,7 +143,7 @@ public class WeaponRender {
             0, 0,
             texture.getWidth(),
             texture.getHeight(),
-            false,
+            true,
             true
         );
         batch.end();
@@ -153,19 +153,20 @@ public class WeaponRender {
         int index = getWeaponIndex(this);
         if (index >= 0) {
             float uiX = Config.WORLD_WIDTH / 2 + 5f - (index * UI_SPACING);
-            float uiY = Config.WORLD_HEIGHT / 2 - 7f;
-
+            float uiY = Config.WORLD_HEIGHT / 2 - 7.3f;
             UIbatch.begin();
             UIbatch.draw(
                 texture,
                 uiX, uiY,
-                (float) texture.getWidth() / 2 * scale * 0.075f,
-                (float) texture.getHeight() / 2 * scale * 0.075f
+                (float) texture.getWidth() / 2 * scale * 0.07f,
+                (float) texture.getHeight() / 2 * scale * 0.07f
             );
             UIbatch.end();
         }
     }
-
+    public boolean isEquip() {
+        return isEquip;
+    }
     public void dispose(){
         texture.dispose();
         weaponHitBox.dispose();

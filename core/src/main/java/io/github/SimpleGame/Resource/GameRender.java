@@ -2,6 +2,7 @@ package io.github.SimpleGame.Resource;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import io.github.SimpleGame.GUI.UI;
 import io.github.SimpleGame.Item.Weapon;
 import io.github.SimpleGame.Magic.Dark;
 import io.github.SimpleGame.Magic.Thunder;
@@ -25,11 +26,13 @@ public class GameRender implements GameRenderHandler{
         thunder = new Thunder(Game.world, player, WORLD_WIDTH+10,WORLD_HEIGHT+2);
         item = new Weapon(Game.world, WORLD_WIDTH, WORLD_HEIGHT+5, 1f);
         item2 = new Weapon(Game.world, WORLD_WIDTH+10, WORLD_HEIGHT+10, 1f);
+        UI.create();
     }
     @Override
     public void render(SpriteBatch batch,SpriteBatch UIbatch) {
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(),5);
         //在这里渲染各种东东
+        UI.render(UIbatch);
         dark.render(batch, UIbatch, player);
         thunder.render(batch, UIbatch, player);
         item2.render(batch, UIbatch, player);

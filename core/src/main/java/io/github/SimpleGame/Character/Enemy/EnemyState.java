@@ -124,7 +124,11 @@ public class EnemyState implements EnemyStateHandler{
         boolean isAttacking = player.getPlayerController().isAttacking();
 
         if ( distance <= Attackrange && !isAttacking && attackTimer <= 0) {
-            player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - Damage);
+            if(player.getAttributeHandler().getDEF()>1){
+                player.getAttributeHandler().setDEF(player.getAttributeHandler().getMaxDEF()-Damage);
+            }else{
+                player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP()-Damage);
+            }
             attackTimer = attackCooldown;
         }
         attackTimer -= deltaTime;

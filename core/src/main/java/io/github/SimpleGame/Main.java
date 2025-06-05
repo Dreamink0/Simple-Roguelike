@@ -3,6 +3,7 @@ package io.github.SimpleGame;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import io.github.SimpleGame.Character.Enemy.EnemyGenerate;
+import io.github.SimpleGame.GUI.UI;
 import io.github.SimpleGame.Resource.Game;
 import io.github.SimpleGame.Resource.SoundManager;
 import io.github.SimpleGame.Tool.Listener;

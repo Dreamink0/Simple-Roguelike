@@ -125,7 +125,6 @@ public class Dark extends Magic {
             }
         }
     }
-
     /**
      * 释放资源
      */
