@@ -37,6 +37,10 @@ public class ResourceManager {
     private Texture WeaponTexture;
     private Weapon weapon;
     private TextureAtlas playerTextureAtlas2;
+    //Shader
+    private ShaderManager shaderManager;
+    //Effect
+    private EffectManager effectManager;
     private ResourceManager() {
         assetManager = new AssetManager();
         // 注册TiledMap加载器
@@ -53,6 +57,10 @@ public class ResourceManager {
             Load();
             Get();
             Set();
+            // 初始化ShaderManager和EffectManager
+            shaderManager = ShaderManager.getInstance();
+            effectManager = EffectManager.getInstance();
+            effectManager.initialize(shaderManager);
         } catch (Exception e) {
             Gdx.app.error("ResourceManager", "Error loading resources: " + e.getMessage());
             throw new RuntimeException("Failed to load game resources", e);
@@ -91,6 +99,10 @@ public class ResourceManager {
         if (mapManager != null) {
             mapManager.dispose();
             mapManager = null;
+        }
+        if (shaderManager != null) {
+            shaderManager.dispose();
+            shaderManager = null;
         }
         if (assetManager != null) {
             assetManager.dispose();
@@ -173,5 +185,19 @@ public class ResourceManager {
 
     public TiledMap getBaseMap(String mapName) {
         return baseMaps.get(mapName);
+    }
+
+    /**
+     * 获取ShaderManager实例
+     */
+    public ShaderManager getShaderManager() {
+        return shaderManager;
+    }
+
+    /**
+     * 获取EffectManager实例
+     */
+    public EffectManager getEffectManager() {
+        return effectManager;
     }
 }

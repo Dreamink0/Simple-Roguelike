@@ -3,15 +3,11 @@ package io.github.SimpleGame.Resource;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Pool;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Character.Player.PlayerController;
 import io.github.SimpleGame.Config;
-
-import java.util.Random;
 
 import static io.github.SimpleGame.Config.WORLD_HEIGHT;
 import static io.github.SimpleGame.Config.WORLD_WIDTH;
@@ -27,6 +23,8 @@ public class Game{
     public static Player player;
     public static SpriteBatch batch;
     public static SpriteBatch UIbatch;
+    //效果管理
+    public static EffectManager effectManager;
     //接口
     private PhysicHandler physicHandler;
     private GameRenderHandler gameRenderHandler;
@@ -48,13 +46,15 @@ public class Game{
         world =  worldManager.getWorld();
         physicHandler = new GameTimeUpdates();
         gameRenderHandler = new GameRender();
+
+        // 初始化效果管理器
+        effectManager = EffectManager.getInstance();
+        effectManager.initialize(resourceManager.getShaderManager());
     }
     //生成地图，后续生成逻辑可能也在这里实现吧大概
     public void Generation(){
         mapGeneration = new MapGeneration();
-        // 使用动态生成的地图而不是静态地图
-        TiledMap generatedMap = mapGeneration.generateRandomMap();
-        mapManager = new MapManager(generatedMap, Config.PIXELS_PER_METER/512, world);
+        mapManager = resourceManager.getMapManager(world);
    }
    //生成地图完读取玩家信息
    public void readPlayerData(){
@@ -70,6 +70,12 @@ public class Game{
         player.setAction(controller,world).update();
         cameraManager.getCamera(controller);
         mapManager.setView(cameraManager.getCamera());
+
+        // 更新效果
+        effectManager.update(deltaTime);
+
+        // 应用效果到渲染
+        effectManager.applyEffect(batch);
         mapManager.render(batch);
 
         batch.setProjectionMatrix(cameraManager.getCamera().combined);
@@ -77,6 +83,8 @@ public class Game{
 
         gameRenderHandler.render(batch,UIbatch);
 
+        // 移除效果
+        effectManager.removeEffect(batch);
 
         TestKey();
     }
@@ -92,6 +100,8 @@ public class Game{
         if (mapManager != null) mapManager.dispose();
         if (player != null) player.dispose();
         if (resourceManager != null) resourceManager.dispose();
+        // 释放效果管理器资源
+        if (effectManager != null) effectManager.dispose();
         gameRenderHandler.dispose();
         if (batch != null) {
             batch.dispose();
@@ -112,8 +122,8 @@ public class Game{
             Gdx.app.log("Memory", "Native heap free: " + nativeHeap + " MB");
             System.gc();
         }
-        //模拟掉血:
-        if(Gdx.input.isKeyJustPressed(Input.Keys.P)){
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.G)){
             player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - 10f);
             player.getAttributeHandler().setMP(player.getAttributeHandler().getMaxMP() - 20f);
             player.getAttributeHandler().setDEF(player.getAttributeHandler().getMaxDEF() - 10f);
@@ -133,15 +143,43 @@ public class Game{
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
             regenerateMap();
         }
+
+        // 死亡效果 (灰度)
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Y)) {
+            effectManager.toggleEffect(EffectManager.EffectType.DEATH);
+            if (effectManager.isEffectActive(EffectManager.EffectType.DEATH)) {
+                Gdx.app.log("Game", "Y: Death effect ON - Screen turned grayscale");
+            } else {
+                Gdx.app.log("Game", "Y: Death effect OFF - Screen returned to color");
+            }
+        }
+
+//        // 受伤效果
+//        if (Gdx.input.isKeyJustPressed(Input.Keys.U)) {
+//            effectManager.toggleEffect(EffectManager.EffectType.HURT);
+//            if (effectManager.isEffectActive(EffectManager.EffectType.HURT)) {
+//                Gdx.app.log("Game", "U: Hurt effect ON - Red overlay applied");
+//            } else {
+//                Gdx.app.log("Game", "U: Hurt effect OFF - Red overlay removed");
+//            }
+//        }
+
+        // 清除所有效果
+        if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
+            effectManager.clearAllEffects();
+            Gdx.app.log("Game", "L: All effects cleared");
+        }
+
+        // 显示效果状态信息
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SEMICOLON)) {
+            Gdx.app.log("Game", "Effect Status:\n" + effectManager.getStatusInfo());
+        }
     }
     private void regenerateMap() {
         try {
-            // 销毁旧地图
             if (mapManager != null) {
                 mapManager.dispose();
             }
-            // 创建新地图
-            mapGeneration = new MapGeneration();
             mapManager = new MapManager(mapGeneration.generateRandomMap(), Config.PIXELS_PER_METER/512, worldManager.getWorld());
             player.getBody().setTransform(WORLD_WIDTH, WORLD_HEIGHT, 0);
             Gdx.app.debug("SimpleGame", "New map generated successfully");
