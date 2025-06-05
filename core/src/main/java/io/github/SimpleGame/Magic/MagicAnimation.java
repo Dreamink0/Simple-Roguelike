@@ -61,14 +61,14 @@ public class MagicAnimation {
             batch.end();
         }else{
             if(renderIndex >= 0){
-                float radius = 0.5f;
-                float startAngle = 180f;
-                float angleInDegrees = startAngle + renderIndex * 60f;
-                float angleInRadians = (float) Math.toRadians(angleInDegrees);
-                float uiX = Config.WORLD_WIDTH / 2+8f + radius * (float) cos(angleInRadians);
-                float uiY = Config.WORLD_HEIGHT / 2-6f + radius * (float)Math.sin(angleInRadians);
+                float spacing = 1.15f; // 图标之间的水平间距
+                float startX = Config.WORLD_WIDTH / 2 + 7f; // 起始X位置
+                float startY = Config.WORLD_HEIGHT / 2 - 6.7f; // 固定Y位置
+
+                float uiX = startX + renderIndex * spacing*0.003f;
+                float uiY = startY-0.2f;
                 batch.begin();
-                batch.draw(currentICON, uiX - width, uiY - height, width*2, height*2);
+                batch.draw(currentICON, uiX-width/2, uiY-height/2, width*2, height*2);
                 batch.end();
             }
         }

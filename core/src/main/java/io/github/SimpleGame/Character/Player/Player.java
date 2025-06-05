@@ -18,7 +18,7 @@ public class Player {
     protected boolean isequipped = false;
     private World world;
     public float attackCooldownTimer = 0f;
-    public final float attackCooldown = 0.25f;//影响帧伤，很强大
+    public float attackCooldown = 0.25f;//影响帧伤，很强大
 
 
     public Player() {}
@@ -95,4 +95,5 @@ public class Player {
         playerSprite = null;
         actionHandler = null;
     }
+
 }

@@ -23,7 +23,6 @@ public class Thunder extends Magic {
     static {
         effectBodyPool = new BodyPool(MAX_EFFECT_BODIES);
     }
-
     /**
      * 构造雷电魔法实例
      *
@@ -43,7 +42,6 @@ public class Thunder extends Magic {
         magicState = new MagicState(Attributes, Animations, Hitboxes);
         label = "Lightning";
     }
-
     /**
      * 渲染雷电魔法
      *
@@ -132,7 +130,6 @@ public class Thunder extends Magic {
             }
         }
     }
-
     /**
      * 释放资源
      */
@@ -146,11 +143,9 @@ public class Thunder extends Magic {
             effectBodyPool.releaseAll();
         }
     }
-
     // 雷电魔法动画类
     static class ThunderAnimation {
         private static float stateTime = 0f;
-
         /**
          * 渲染雷电魔法动画
          *

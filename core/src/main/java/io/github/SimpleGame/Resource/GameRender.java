@@ -26,23 +26,23 @@ public class GameRender implements GameRenderHandler{
     @Override
     public void render(SpriteBatch batch,SpriteBatch UIbatch) {
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(),5);
-        
+
         // 应用效果到所有渲染批次
         EffectManager effectManager = EffectManager.getInstance();
-        
+
         //在这里渲染各种东东
         effectManager.applyEffect(batch);
         dark.render(batch, UIbatch, player);
         thunder.render(batch, UIbatch, player);
         item2.render(batch, UIbatch, player);
-        
+
         batch.begin();
         player.filpCheck(player.getPlayerSprite(), player.getPlayerController(), batch).draw(batch);
         batch.end();
-        
+
         item.render(batch, UIbatch, player);
         effectManager.removeEffect(batch);
-        
+
         // UI渲染也应用效果
         effectManager.applyEffect(UIbatch);
         UIbatch.begin();
