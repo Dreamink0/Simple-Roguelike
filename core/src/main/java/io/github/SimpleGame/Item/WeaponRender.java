@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Config;
 
@@ -121,7 +120,7 @@ public class WeaponRender {
             texture.getWidth(),
             texture.getHeight(),
             !isFlipped,
-            false
+            !isFlipped
         );
         batch.end();
     }
@@ -134,8 +133,8 @@ public class WeaponRender {
             texture,
             weaponX - (texture.getWidth() * scale / 2),
             weaponY - (texture.getHeight() * scale / 2),
-            texture.getWidth() / 2 * scale,
-            texture.getHeight() / 2 * scale,
+            (float) texture.getWidth() / 2 * scale,
+            (float) texture.getHeight() / 2 * scale,
             texture.getWidth() * scale,
             texture.getHeight() * scale,
             0.08f, 0.08f,

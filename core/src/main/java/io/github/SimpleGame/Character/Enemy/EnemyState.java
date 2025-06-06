@@ -21,7 +21,7 @@ public class EnemyState implements EnemyStateHandler{
     public float attackTimer = 0f;
     public float attackCooldown = 1.5f;
     public float hurtTimer = 0f;
-    public float hurtAnimationDuration = 0.45f;
+    public float hurtAnimationDuration = 0.25f;
     public boolean hurtflag=false;
     public long startTime = 0;
     public EnemyState(Body enemyBody, Enemy.State currentState,Player player,EnemyPhysic enemyPhysic,EnemyAttribute enemyAttribute) {
@@ -123,13 +123,11 @@ public class EnemyState implements EnemyStateHandler{
         float Attackrange = enemyAttribute.getAttackRange();
         boolean isAttacking = player.getPlayerController().isAttacking();
 
-        if ( distance <= Attackrange && !isAttacking && attackTimer <= 0) {
-            if(player.getAttributeHandler().getDEF()>1){
-                player.getAttributeHandler().setDEF(player.getAttributeHandler().getMaxDEF()-Damage);
-            }else{
-                player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP()-Damage);
+        if (distance <= Attackrange && !isAttacking && attackTimer <= 0) {
+            if (stateTime % attackCooldown >= attackCooldown/4) {
+                player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - Damage);
+                attackTimer = attackCooldown;
             }
-            attackTimer = attackCooldown;
         }
         attackTimer -= deltaTime;
     }
@@ -155,6 +153,8 @@ public class EnemyState implements EnemyStateHandler{
     @Override
     public void die(Body enemyBody) {
         if(enemyBody!=null){
+            x=enemyBody.getPosition().x;
+            y=enemyBody.getPosition().y;
              world.destroyBody(enemyBody);
              enemyPhysic.dispose();
         }
@@ -185,5 +185,13 @@ public class EnemyState implements EnemyStateHandler{
         enemyAttribute=null;
         enemyPhysic=null;
         currentState=null;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public float getX() {
+        return x;
     }
 }

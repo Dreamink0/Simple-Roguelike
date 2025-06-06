@@ -36,7 +36,7 @@ public class UI {
         batch.begin();
         TextureRegion region = new TextureRegion(Bottomtexture2);
         batch.draw(region,
-            Config.WORLD_WIDTH/2+3f, Config.WORLD_HEIGHT/2-13.7f,
+            Config.WORLD_WIDTH/2+3f, Config.WORLD_HEIGHT/2-15f,
             0, 0,
             Config.WORLD_WIDTH/2, Config.WORLD_HEIGHT/2,
             1f, 1f, 5.0f);

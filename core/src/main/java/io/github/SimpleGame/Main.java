@@ -25,10 +25,10 @@ public class Main extends ApplicationAdapter {
             Game.initialize();
             Game.Generation();
             Game.readPlayerData();
-            enemyGenerate = new EnemyGenerate[4];
+            enemyGenerate = new EnemyGenerate[15];
             for(int i = 0; i < enemyGenerate.length; i++){
                 enemyGenerate[i] = new EnemyGenerate();
-                enemyGenerate[i].addEnemy(world, player, WORLD_WIDTH/2+5*i, WORLD_HEIGHT);
+                enemyGenerate[i].addEnemy(world, player, WORLD_WIDTH/2+i*2, WORLD_HEIGHT+i);
             }
         } catch (Exception e) {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());

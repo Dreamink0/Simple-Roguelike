@@ -2,13 +2,10 @@ package io.github.SimpleGame.Character.Enemy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Tool.AnimationTool;
-
-import static io.github.SimpleGame.Resource.Game.player;
-import static io.github.SimpleGame.Resource.Game.world;
 
 public class Skeleton extends Enemy{
     private SkeletonAnimation SKanimation;
@@ -21,6 +18,7 @@ public class Skeleton extends Enemy{
         enemyBody.setUserData(this);
         attribute = new EnemyAttribute(25, 5, 4, 15, 0.5f);
         enemyState = new EnemyState(enemyBody, currentState, player, enemyPhysic, attribute);
+        enemyState.hurtAnimationDuration=0.1f;
     }
     @Override
     public void render(SpriteBatch batch, Player player) {
@@ -75,7 +73,7 @@ class SkeletonAnimation extends EnemyAnimation{
             if (currentAnimation != null) {
                 // 死亡动画单独处理
                 if (currentState == Enemy.State.DIE) {
-                    effectsAnimations[0].render(batch, x, y, 0.15f, true, flip);
+                    effects.render(batch,enemyState,player);
                     if (deathAnimationTimer < DEATH_ANIMATION_DURATION) {
                         float offsetX = flip ? -0.5f : 0.5f;
                         animationTools[4].render(batch, x + offsetX, y, 0.15f, false, flip);
@@ -88,7 +86,7 @@ class SkeletonAnimation extends EnemyAnimation{
                     animationTools[1].render(batch, x + offsetX, y, 0.15f, true, flip);
                 } else if (currentState == Enemy.State.HURT) {
                     float offsetX = flip ? -1f : 1f;
-                    effectsAnimations[0].render(batch, x, y, 0.15f, false, flip);
+                    effects.render(batch,enemyState,player);
                     animationTools[3].render(batch, x + offsetX, y, 0.15f, true, flip);
                 } else {
                     float offsetX = flip ? -1f : 1f;

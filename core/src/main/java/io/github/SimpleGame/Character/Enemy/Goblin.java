@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Character.Player.Player;
-import io.github.SimpleGame.Tool.AnimationTool;
 public class Goblin extends Enemy {
     public Goblin(World world, Player player, float x, float y) {
         super(world, player, x, y);

@@ -122,7 +122,7 @@ public class PlayerAttribute implements PlayerAttributeHandler{
             wasTextureRequested = true;
         }
         if (getDEF() < 1.0f) {
-            DEF += 0.01f * Gdx.graphics.getDeltaTime()*200; // 按一定速率恢复DEF
+            DEF += 0.01f * Gdx.graphics.getDeltaTime()*100; // 按一定速率恢复DEF
             if (DEF > maxDEF) DEF = maxDEF;
             setDEF(DEF);
             wasTextureRequested = true;

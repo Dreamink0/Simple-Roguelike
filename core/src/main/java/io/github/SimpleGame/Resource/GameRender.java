@@ -20,8 +20,8 @@ public class GameRender implements GameRenderHandler{
     public GameRender() {
         dark = new Dark(Game.world, player, WORLD_WIDTH+15,WORLD_HEIGHT+5);
         thunder = new Thunder(Game.world, player, WORLD_WIDTH+10,WORLD_HEIGHT+2);
-        item = new Weapon(Game.world, WORLD_WIDTH, WORLD_HEIGHT+5, 1f);
-        item2 = new Weapon(Game.world, WORLD_WIDTH+10, WORLD_HEIGHT+10, 1f);
+        item = new Weapon(Game.world, WORLD_WIDTH+10, WORLD_HEIGHT, 1f);
+        item2 = new Weapon(Game.world, WORLD_WIDTH-2, WORLD_HEIGHT, 1f);
     }
     @Override
     public void render(SpriteBatch batch,SpriteBatch UIbatch) {

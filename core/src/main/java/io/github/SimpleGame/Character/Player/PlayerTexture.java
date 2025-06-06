@@ -45,7 +45,7 @@ public class PlayerTexture implements PlayerTextureHandler{
     @Override
     public void render(SpriteBatch batch, float deltaTime) {
         float uiScale=0.1f;
-        batch.draw(DEFtexture, Config.WORLD_WIDTH/2-11f, Config.WORLD_HEIGHT/2-7.5f, DEFtexture.getWidth()*uiScale*1.2f,DEFtexture.getHeight() * uiScale);
+//        batch.draw(DEFtexture, Config.WORLD_WIDTH/2-11f, Config.WORLD_HEIGHT/2-7.5f, DEFtexture.getWidth()*uiScale*1.2f,DEFtexture.getHeight() * uiScale);
         batch.draw(HPtexture, Config.WORLD_WIDTH/2-11f, Config.WORLD_HEIGHT/2-7f, HPtexture.getWidth() * uiScale*1.5f, HPtexture.getHeight() * uiScale);
         batch.draw(MPtexture, Config.WORLD_WIDTH/2-11f, Config.WORLD_HEIGHT/2-7.3f, MPtexture.getWidth() * uiScale*1.2f, MPtexture.getHeight() * uiScale*0.7f);
     }
@@ -67,7 +67,6 @@ public class PlayerTexture implements PlayerTextureHandler{
         if (percent >= 0.9){flag=5;}
         return flag;
     }
-
     public Texture getHPtexture() {return HPtexture;}
 
     public Texture getMPtexture() {return MPtexture;}

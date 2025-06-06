@@ -42,7 +42,7 @@ public class Player {
 
         playerBody.createFixture(fixtureDef);
         BoundingBox.dispose();
-        this.actionHandler = new PlayerAniamtion();
+        this.actionHandler = new PlayerAnimation();
         this.flipChecker = new PlayerPlayerFilpCheck();
         this.attributeHandler = new PlayerAttribute(20,50,20,5);
         this.playerTextureHandler = new PlayerTexture(attributeHandler);
@@ -82,6 +82,9 @@ public class Player {
     public void render(SpriteBatch batch,float deltaTime) {
         attributeHandler.update(playerTextureHandler);
         playerTextureHandler.render(batch, deltaTime);
+    }
+    public PlayerAnimation getActionHandler() {
+        return (PlayerAnimation) actionHandler;
     }
 
     public void dispose() {

@@ -1,6 +1,5 @@
 package io.github.SimpleGame.Item;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.SimpleGame.Tool.AnimationTool;

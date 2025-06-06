@@ -1,12 +1,8 @@
 package io.github.SimpleGame.Character.Player;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -15,9 +11,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Config;
 import io.github.SimpleGame.Resource.ResourceManager;
 import io.github.SimpleGame.Resource.SoundManager;
-import io.github.SimpleGame.Tool.AnimationTool;
 
-public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
+public class PlayerAnimation extends Player implements PlayerAnimationHandler {
     float stateTime=0f;
     private float accumulator = 0f;
     private Animation<TextureRegion> playerIdleAnimation;
@@ -26,7 +21,7 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
     private Animation<TextureRegion> currentAnimation;
     Boolean flag=false;//检查是否读取了动画
     private float soundTimer=0f;
-    private float soundDuration = 0.5f;
+
     @Override
     public PlayerController handleAction(PlayerController playerController, Player player, World world) {
         if(flag==false)load();
@@ -41,7 +36,7 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
             if (!isAttacking) {
                 if(soundTimer<=0){
                     SoundManager.playSound("playerHit");
-                    soundTimer=soundDuration;
+                    soundTimer= 0.5f;
                 }
                 playerController.startAttack();
                 isAttacking = true;
@@ -67,7 +62,7 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
         if (isAttacking) {
             // 攻击动画时使用较小的尺寸
             playerSprite.setSize(
-                (2 * currentFrame.getRegionWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
+                (2.1f * currentFrame.getRegionWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
                 (2 * currentFrame.getRegionHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE
             );
         } else {
@@ -109,5 +104,37 @@ public class PlayerAniamtion extends Player implements PlayerAnimationHandler {
 
         player.playerBody.createFixture(newFixtureDef);
         newShape.dispose();
+    }
+
+    public Animation<TextureRegion> getPlayerIdleAnimation() {
+        return playerIdleAnimation;
+    }
+
+    public void setPlayerIdleAnimation(Animation<TextureRegion> playerIdleAnimation) {
+        this.playerIdleAnimation = playerIdleAnimation;
+    }
+
+    public Animation<TextureRegion> getPlayerRunAnimation() {
+        return playerRunAnimation;
+    }
+
+    public void setPlayerRunAnimation(Animation<TextureRegion> playerRunAnimation) {
+        this.playerRunAnimation = playerRunAnimation;
+    }
+
+    public Animation<TextureRegion> getPlayerAttackAnimation() {
+        return playerAttackAnimation;
+    }
+
+    public void setPlayerAttackAnimation(Animation<TextureRegion> playerAttackAnimation) {
+        this.playerAttackAnimation = playerAttackAnimation;
+    }
+
+    public Animation<TextureRegion> getCurrentAnimation() {
+        return currentAnimation;
+    }
+
+    public void setCurrentAnimation(Animation<TextureRegion> currentAnimation) {
+        this.currentAnimation = currentAnimation;
     }
 }

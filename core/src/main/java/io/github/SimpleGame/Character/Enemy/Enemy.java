@@ -1,8 +1,6 @@
 package io.github.SimpleGame.Character.Enemy;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Magic.Magic;
