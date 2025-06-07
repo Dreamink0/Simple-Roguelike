@@ -178,6 +178,98 @@ public class EffectManager {
     }
 
     /**
+     * 对单个物体应用效果并渲染
+     * @param batch 渲染批次
+     * @param effectType 要应用的效果类型
+     * @param renderAction 渲染单个物体的回调函数
+     */
+    public void applyEffectToObject(SpriteBatch batch, EffectType effectType, Runnable renderAction) {
+        BaseEffect effect = effects.get(effectType);
+        if (effect != null && effect.hasEffect()) {
+            // 应用效果
+            effect.apply(batch);
+
+            // 执行渲染操作
+            renderAction.run();
+
+            // 移除效果
+            removeEffect(batch);
+        } else {
+            // 没有效果时直接渲染
+            renderAction.run();
+        }
+    }
+
+    /**
+     * 对单个物体应用指定强度的效果并渲染
+     * @param batch 渲染批次
+     * @param effectType 要应用的效果类型
+     * @param strength 效果强度 (0.0-1.0)
+     * @param renderAction 渲染单个物体的回调函数
+     */
+    public void applyEffectToObject(SpriteBatch batch, EffectType effectType, float strength, Runnable renderAction) {
+        BaseEffect effect = effects.get(effectType);
+        if (effect != null && strength > 0.0f) {
+            // 临时设置效果强度
+            float originalStrength = effect.getStrength();
+            boolean wasActive = effect.isActive();
+
+            // 立即激活效果
+            effect.instantActivate(strength);
+
+            // 应用效果并渲染
+            effect.apply(batch);
+            renderAction.run();
+            removeEffect(batch);
+
+            // 恢复原始状态
+            if (wasActive) {
+                effect.instantActivate(originalStrength);
+            } else {
+                effect.instantDeactivate();
+            }
+        } else {
+            // 没有效果时直接渲染
+            renderAction.run();
+        }
+    }
+
+    /**
+     * 对单个物体应用多个效果并渲染（按优先级选择最高优先级的效果）
+     * @param batch 渲染批次
+     * @param effectTypes 要应用的效果类型数组
+     * @param renderAction 渲染单个物体的回调函数
+     */
+    public void applyEffects(SpriteBatch batch, EffectType[] effectTypes, Runnable renderAction) {
+        BaseEffect highestEffect = null;
+        int highestPriority = -1;
+
+        // 找到最高优先级的激活效果
+        for (EffectType effectType : effectTypes) {
+            BaseEffect effect = effects.get(effectType);
+            if (effect != null &&
+                effect.hasEffect()) {
+                int priority = effectPriorities.getOrDefault(effectType, 0);
+                if (priority > highestPriority) {
+                    highestPriority = priority;
+                    highestEffect = effect;
+                }
+            }
+        }
+
+        if (highestEffect != null) {
+            // 应用最高优先级效果
+            highestEffect.apply(batch);
+            renderAction.run();
+            removeEffect(batch);
+        } else {
+            // 没有效果时直接渲染
+            renderAction.run();
+        }
+    }
+
+
+    /**
      * 获取最高优先级的激活效果
      */
     private BaseEffect getHighestPriorityActiveEffect() {
