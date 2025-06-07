@@ -44,7 +44,7 @@ public class Player {
         BoundingBox.dispose();
         this.actionHandler = new PlayerAnimation();
         this.flipChecker = new PlayerPlayerFilpCheck();
-        this.attributeHandler = new PlayerAttribute(20,50,20,5);
+        this.attributeHandler = new PlayerAttribute(20,50,5);
         this.playerTextureHandler = new PlayerTexture(attributeHandler);
         this.playerTextureHandler.load();
     }

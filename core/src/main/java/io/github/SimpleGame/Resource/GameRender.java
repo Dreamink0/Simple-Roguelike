@@ -34,12 +34,11 @@ public class GameRender implements GameRenderHandler{
         effectManager.applyEffect(batch);
         dark.render(batch, UIbatch, player);
         thunder.render(batch, UIbatch, player);
-        item2.render(batch, UIbatch, player);
 
         batch.begin();
         player.filpCheck(player.getPlayerSprite(), player.getPlayerController(), batch).draw(batch);
         batch.end();
-
+        item2.render(batch, UIbatch, player);
         item.render(batch, UIbatch, player);
         effectManager.removeEffect(batch);
 

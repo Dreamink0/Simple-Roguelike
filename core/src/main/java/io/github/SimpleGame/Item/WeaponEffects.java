@@ -30,18 +30,17 @@ public class WeaponEffects {
                 animationTools[0].render(batch,player.getX(),player.getY(),0.1f,true);
             }
             if(WeaponID==23){
-                batch.setColor(255,255,6,0.5f);
-                animationTools[0].render(batch,player.getX(),player.getY(),0.15f,false);
+                batch.setColor(155,255,255,1f);
+                animationTools[0].render(batch,player.getX(),player.getY(),0.15f,true);
                 if(animationTools[0].isAnimationFinished()){
-                    animationTools[1].render(batch,player.getX(),player.getY(),0.15f,false);
+                    animationTools[1].render(batch,player.getX(),player.getY(),0.15f,true);
                    if(animationTools[1].isAnimationFinished()){
-                       animationTools[2].render(batch,player.getX(),player.getY(),0.15f,false);
+                       animationTools[2].render(batch,player.getX(),player.getY(),0.15f,true);
                    }
                 }else if(animationTools[2].isAnimationFinished()){
                     animationTools[0].resetStateTime();
                     animationTools[1].resetStateTime();
                     animationTools[2].resetStateTime();
-                    batch.setColor(1,1,1,1);
                 }
 
             }

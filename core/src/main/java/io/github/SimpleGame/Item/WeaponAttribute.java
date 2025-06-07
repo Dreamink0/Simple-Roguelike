@@ -11,6 +11,9 @@ public class WeaponAttribute {
     private float hp;
     private float mp;
     private float def;
+    private static float playerDamage;
+    private static float playerRange;
+    private static float playerAttackSpeed;
     private static WeaponEffects effect;
     public WeaponAttribute(){}
 
@@ -20,7 +23,7 @@ public class WeaponAttribute {
         this.attackSpeed = attackSpeed;
     }
 
-    public static WeaponAttribute readData(int ID, int WeaponID, Player player){
+    public WeaponAttribute readData(int ID, int WeaponID, Player player){
         WeaponAttribute Attribute = new WeaponAttribute();
         if (ID == 0) {
             if (WeaponID == 0) Attribute= new WeaponAttribute(3, 1, 0f);
@@ -28,15 +31,26 @@ public class WeaponAttribute {
             if (WeaponID == 2) Attribute= new WeaponAttribute(3, 1, 0f);
             if (WeaponID == 23) Attribute= new WeaponAttribute(5, 2, 0f);
         }
+        this.damage = Attribute.getDamage();
+        this.range = Attribute.getRange();
+        this.attackSpeed = Attribute.getAttackSpeed();
         return Attribute;
     }
     public void setData(Player player){
-        float Damage = player.getAttributeHandler().getDamage();
-        float Range = player.getAttributeHandler().getAttackrange();
-        float Speed =  player.attackCooldown;
-        player.getAttributeHandler().setDamage(Damage+getDamage());
-        player.getAttributeHandler().setAttackrange(Range+getRange());
-        player.attackCooldown = Speed+getAttackSpeed();
+        playerDamage = player.getAttributeHandler().getDamage();
+        playerRange = player.getAttributeHandler().getAttackrange();
+        playerAttackSpeed = player.attackCooldown;
+        player.getAttributeHandler().setDamage(playerDamage+getDamage());
+        player.getAttributeHandler().setAttackrange(playerRange+getRange());
+        player.attackCooldown = playerAttackSpeed+getAttackSpeed();
+    }
+    public void resetData(Player player){
+        final float damage = playerDamage;
+        final float range = playerRange;
+        final float attackSpeed = playerAttackSpeed;
+        player.getAttributeHandler().setDamage(damage);
+        player.getAttributeHandler().setAttackrange(range);
+        player.attackCooldown = attackSpeed;
     }
     public float getDamage() {
         return damage;

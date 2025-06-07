@@ -10,67 +10,164 @@ import io.github.SimpleGame.Config;
 import java.util.ArrayList;
 
 public class WeaponRender {
-    private WeaponHitBox weaponHitBox;
-    private Texture texture;
-    private float scale;
+    private final WeaponHitBox weaponHitBox;
+    private final Texture texture;
+    private final float scale;
     private boolean isClosest = false;
     private boolean isEquip = false;
-    private int count=0;
-    private static final ArrayList<WeaponRender> equippedWeapons = new ArrayList<>();
+    private static int count = 0;
+    private final ArrayList<WeaponRender> equippedWeapons; // 改为非静态成员
     public static final float UI_SPACING = 1.5f; //武器之间的间距
 
-    public WeaponRender(WeaponHitBox weaponHitBox){
+    // 新增攻击动画相关字段
+    private boolean isAttacking = false;
+    private float attackProgress = 0f;
+    private static final float ATTACK_DURATION = 0.3f; // 攻击动画持续时间
+
+    // 使用构造参数传入列表，实现统一管理
+    public WeaponRender(WeaponHitBox weaponHitBox, ArrayList<WeaponRender> globalEquippedWeapons){
         this.weaponHitBox = weaponHitBox;
-        this.texture =  weaponHitBox.getTexture();
+        this.texture = weaponHitBox.getTexture();
         this.scale = weaponHitBox.getScale();
+        this.equippedWeapons = globalEquippedWeapons;
     }
 
-    public static void addEquippedWeapon(WeaponRender weapon) {
-        if (!equippedWeapons.contains(weapon)) {
-            equippedWeapons.add(weapon);
+    public void addEquippedWeapon() {
+        if (!equippedWeapons.contains(this)) {
+            equippedWeapons.add(this);
         }
     }
 
-    public static void removeEquippedWeapon(WeaponRender weapon) {
-        equippedWeapons.remove(weapon);
+    public void removeEquippedWeapon() {
+        equippedWeapons.remove(this);
     }
 
-    public static int getWeaponIndex(WeaponRender weapon) {
-        return equippedWeapons.indexOf(weapon);
+    public int getWeaponIndex() {
+        return equippedWeapons.indexOf(this);
     }
+
     public void render(SpriteBatch batch, SpriteBatch UIbatch, Player player){
-        if(distance(player)){
+        if(distance(player)&&count<1){
             player.setIsequipped(true);
-            addEquippedWeapon(this);
+            addEquippedWeapon();
         }
 
-        if(player.isIsequipped()&&isNotAttack(player)&&count>=1){
-            drawtoPlayer(batch,player);
+        if(player.isIsequipped() && isNotAttack(player)&& isEquip){
+            drawtoPlayer(batch, player);
         }
 
-        if(player.isIsequipped()&&isClosest){
+        if(isClosest&&count<1){
+            player.setIsequipped(true);
             weaponHitBox.attachToPlayer(player);
-            weaponHitBox.updatePosition(player,player.getX(), player.getY());
+            weaponHitBox.updatePosition(player, player.getX(), player.getY());
             ++count;
             isEquip = true;
+            addEquippedWeapon();
         }
 
-        if(count>=1){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.Q) && !equippedWeapons.isEmpty()){
+            WeaponRender weaponToDrop = equippedWeapons.get(0); // 丢弃第一个武器
+            weaponToDrop.removeEquippedWeapon();
+            weaponToDrop.weaponHitBox.detachFromPlayer(player);
+            --count;
+            weaponToDrop.isEquip = false;
+
+            if(equippedWeapons.isEmpty()) {
+                player.setIsequipped(false);
+            }
+        }
+
+        // 检测攻击输入并设置攻击状态
+        if (Gdx.input.isKeyPressed(Input.Keys.J) && player.getPlayerController() != null &&
+            player.attackCooldownTimer <= 0 && !isAttacking) {
+            isAttacking = true;
+            attackProgress = 0f;
+            player.attackCooldownTimer = player.attackCooldown;
+        }
+
+        for (WeaponRender weapon : equippedWeapons) {
+            if (weapon.isEquip()) {
+                if (weapon.isAttacking) {
+                    weapon.animateAttack(batch, player);
+                } else {
+                    weapon.drawtoPlayer(batch, player);
+                }
+            } else {
+                weapon.draw(batch);
+            }
+        }
+
+        if (count >= 1) {
             Uidraw(UIbatch);
         }
 
-        if(!isEquip){
+        if (!isEquip) {
             draw(batch);
         }
 
-        if(dst(player)){
+        if (dst(player)) {
             Tips.E(batch, player.getX(), player.getY());
         }
     }
 
-    public float getX(){return weaponHitBox.getX();}
-    public float getY(){return weaponHitBox.getY();}
+    // 更新攻击动画进度
+    public void animateAttack(SpriteBatch batch, Player player) {
+        attackProgress += Gdx.graphics.getDeltaTime();
+        if (attackProgress >= ATTACK_DURATION) {
+            isAttacking = false;
+            if (player.getPlayerController() != null) {
+                player.attackCooldownTimer = 0;
+            }
+        }
 
+        batch.begin();
+        int index = getWeaponIndex();
+
+        boolean isFlipped = player.getPlayerController().isFlipped;
+
+        // 计算挥砍动画的角度（从上到下的1/3圆弧）
+        float baseAngle = isFlipped ? 0 : 180;
+        float attackAngle = 0;
+
+        if (attackProgress < ATTACK_DURATION) {
+            // 使用缓动函数让动画更自然
+            float t = attackProgress / ATTACK_DURATION;
+            attackAngle = (float) (baseAngle - 120 * (Math.sin(Math.PI * t)));
+        } else {
+            attackAngle = baseAngle;
+        }
+
+        // 添加基于角色移动的摆动效果
+        boolean isMoving = player.getPlayerController().isMoving();
+        float offsetX = isFlipped ? -0.3f : 0.3f;
+        float offsetY = isFlipped ? -0.2f : 0.2f;
+
+        if (isMoving) {
+            float walkOffset = (float) Math.sin(System.currentTimeMillis() * 0.005) * 0.05f;
+            offsetY += walkOffset;
+        }
+
+        // 绘制武器
+        batch.draw(
+            texture,
+            (player.getX() - (float) texture.getWidth() / 2 * scale) + offsetX,
+            (player.getY() - (float) texture.getHeight() / 2 * scale) + offsetY - 0.5f,
+            (float) texture.getWidth() / 2 * scale,
+            (float) texture.getHeight() / 2 * scale,
+            texture.getWidth() * scale,
+            texture.getHeight() * scale,
+            0.05f, 0.05f,
+            attackAngle, // 使用计算出的动画角度代替固定角度
+            0, 0,
+            texture.getWidth(),
+            texture.getHeight(),
+            !isFlipped,
+            !isFlipped
+        );
+        batch.end();
+    }
+    public float getX(){ return weaponHitBox.getX(); }
+    public float getY(){ return weaponHitBox.getY(); }
     public boolean distance(Player player){
         float distance = (float) Math.sqrt(Math.pow(player.getX() - getX(), 2) + Math.pow(player.getY() - getY(), 2));
         isClosest = distance <= 2 && Gdx.input.isKeyJustPressed(Input.Keys.E);
@@ -82,25 +179,18 @@ public class WeaponRender {
     }
 
     public boolean isNotAttack(Player player){
-        return !Gdx.input.isKeyPressed(Input.Keys.J)&&!player.getPlayerController().isAttacking();
+        return !Gdx.input.isKeyPressed(Input.Keys.J) && !player.getPlayerController().isAttacking();
     }
 
     public void drawtoPlayer(SpriteBatch batch, Player player) {
         batch.begin();
-        int index = getWeaponIndex(this);
-
-        // 根据武器索引设置不同的持握位置和角度，增加立体感
-        float rotationAngle = (index == 1) ? 180 : 30; // 主手武器稍微倾斜
-
-        // 获取玩家移动方向以调整武器位置
+        int index = getWeaponIndex();
         boolean isMoving = player.getPlayerController().isMoving();
         boolean isFlipped = player.getPlayerController().isFlipped;
 
-        // 基础偏移量
-        float offsetX = isFlipped ? -0.3f : 0.3f; // 根据翻转状态调整水平位置
-        float offsetY = isFlipped ? -0.2f  : 0.2f;
+        float offsetX = isFlipped ? -0.3f : 0.3f;
+        float offsetY = isFlipped ? -0.2f : 0.2f;
 
-        // 如果玩家在移动，添加动态偏移模拟立体感
         if (isMoving) {
             float walkOffset = (float) Math.sin(System.currentTimeMillis() * 0.005) * 0.05f;
             offsetY += walkOffset;
@@ -109,18 +199,18 @@ public class WeaponRender {
         batch.draw(
             texture,
             (player.getX() - (float) texture.getWidth() / 2 * scale) + offsetX,
-            (player.getY() - (float) texture.getHeight() / 2 * scale) + offsetY-0.5f,
+            (player.getY() - (float) texture.getHeight() / 2 * scale) + offsetY - 0.5f,
             (float) texture.getWidth() / 2 * scale,
             (float) texture.getHeight() / 2 * scale,
             texture.getWidth() * scale,
             texture.getHeight() * scale,
             0.05f, 0.05f,
-            rotationAngle,
+            0,
             0, 0,
             texture.getWidth(),
             texture.getHeight(),
             !isFlipped,
-            !isFlipped
+            isFlipped
         );
         batch.end();
     }
@@ -149,25 +239,27 @@ public class WeaponRender {
     }
 
     public void Uidraw(SpriteBatch UIbatch){
-        int index = getWeaponIndex(this);
+        int index = getWeaponIndex();
         if (index >= 0) {
             float uiX = Config.WORLD_WIDTH / 2 + 5f - (index * UI_SPACING);
-            float uiY = Config.WORLD_HEIGHT / 2 - 7.3f;
+            float uiY = Config.WORLD_HEIGHT / 2 - 9f;
             UIbatch.begin();
             UIbatch.draw(
                 texture,
                 uiX, uiY,
-                (float) texture.getWidth() / 2 * scale * 0.07f,
-                (float) texture.getHeight() / 2 * scale * 0.07f
+                (float) texture.getWidth() / 2 * scale * 0.1f,
+                (float) texture.getHeight() / 2 * scale * 0.1f
             );
             UIbatch.end();
         }
     }
+
     public boolean isEquip() {
         return isEquip;
     }
+
     public void dispose(){
-        texture.dispose();
+        // 纹理由资源管理器统一释放，避免重复释放
         weaponHitBox.dispose();
         equippedWeapons.clear();
     }

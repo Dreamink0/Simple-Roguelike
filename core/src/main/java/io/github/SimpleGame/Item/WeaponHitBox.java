@@ -86,6 +86,15 @@ public class WeaponHitBox {
             }
         }
     }
+    public void detachFromPlayer(Player player){
+        if(isAttached){
+            world.destroyBody(attachedBody);
+            attachedBody = null;
+            isAttached = false;
+            create(player.getX(),player.getY(),scale);
+            player.setIsequipped(false);
+        }
+    }
     public float getX() {return body.getPosition().x;}
     public float getY() {return body.getPosition().y;}
     public Texture getTexture(){return texture;}

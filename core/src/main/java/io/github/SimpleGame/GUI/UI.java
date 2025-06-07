@@ -8,7 +8,6 @@ import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Config;
 
 import static io.github.SimpleGame.Item.WeaponRender.UI_SPACING;
-import static io.github.SimpleGame.Item.WeaponRender.getWeaponIndex;
 
 public class UI {
     private static final AssetManager assetManager =new AssetManager();

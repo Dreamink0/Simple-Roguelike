@@ -26,10 +26,10 @@ public class Main extends ApplicationAdapter {
             Game.Generation();
             Game.readPlayerData();
             enemyGenerate = new EnemyGenerate[15];
-            for(int i = 0; i < enemyGenerate.length; i++){
-                enemyGenerate[i] = new EnemyGenerate();
-                enemyGenerate[i].addEnemy(world, player, WORLD_WIDTH/2+i*2, WORLD_HEIGHT+i);
-            }
+//            for(int i = 0; i < enemyGenerate.length; i++){
+//                enemyGenerate[i] = new EnemyGenerate();
+//                enemyGenerate[i].addEnemy(world, player, WORLD_WIDTH/2+i*2, WORLD_HEIGHT+i);
+//            }
         } catch (Exception e) {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
             throw new RuntimeException("Failed to initialize game", e);
@@ -39,9 +39,9 @@ public class Main extends ApplicationAdapter {
     public void render() {
         Game.render();
         batch.begin();
-        for(int i = 0; i < enemyGenerate.length; i++){
-            enemyGenerate[i].render(batch, player);
-        }
+//        for(int i = 0; i < enemyGenerate.length; i++){
+//            enemyGenerate[i].render(batch, player);
+//        }
         batch.end();
         Listener.Bound(world, player);
     }
@@ -52,9 +52,9 @@ public class Main extends ApplicationAdapter {
     @Override
     public void dispose() {
         SoundManager.dispose();
-        for(int i = 0; i < enemyGenerate.length; i++){
-            enemyGenerate[i].dispose();
-        }
+//        for(int i = 0; i < enemyGenerate.length; i++){
+//            enemyGenerate[i].dispose();
+//        }
         Game.dispose();
     }
 }

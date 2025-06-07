@@ -1,0 +1,131 @@
+Player-dead.png
+size: 810, 54
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+dead
+  rotate: false
+  xy: 0, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 45, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 90, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 135, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 180, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 225, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 270, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 315, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 360, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 405, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 450, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 495, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 540, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 585, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 630, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 675, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 720, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+dead
+  rotate: false
+  xy: 765, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1

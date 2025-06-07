@@ -139,7 +139,7 @@ public class EffectManager {
                 effect.instantDeactivate();
             }
         }
-        Gdx.app.log("EffectManager", "All effects cleared");
+//        Gdx.app.log("EffectManager", "All effects cleared");
     }
 
     /**

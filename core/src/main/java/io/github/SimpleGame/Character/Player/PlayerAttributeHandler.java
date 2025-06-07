@@ -9,10 +9,6 @@ public interface PlayerAttributeHandler {
     float getMP();
     void setMaxMP(float maxMP);
     float getMaxMP();
-    void setDEF(float MP);
-    float getDEF();
-    void setMaxDEF(float maxDEF);
-    float getMaxDEF();
     void setDamage(float Damage);
     float getDamage();
     float getAttackrange();
