@@ -76,7 +76,7 @@ class SkeletonAnimation extends EnemyAnimation{
                     effects.render(batch,enemyState,player);
                     if (deathAnimationTimer < DEATH_ANIMATION_DURATION) {
                         float offsetX = flip ? -0.5f : 0.5f;
-                        animationTools[4].render(batch, x + offsetX, y, 0.15f, false, flip);
+                        animationTools[4].render(batch, x + offsetX, y, 0.15f, true, flip);
                     }
                 } else if (currentState == Enemy.State.ATTACK) {
                     float offsetX = flip ? -1f : 1f;

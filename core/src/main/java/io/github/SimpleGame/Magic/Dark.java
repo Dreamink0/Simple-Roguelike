@@ -162,7 +162,7 @@ public class Dark extends Magic {
                 flag = -1;
             }
             float CurrentX = x + 10 * stateTime * flag;
-            animations[0].render(batch, CurrentX, y, 0.1f, false, flip);
+            animations[0].render(batch, CurrentX, y, 0.1f, true, flip);
             batch.end();
 
             // 更新碰撞箱位置

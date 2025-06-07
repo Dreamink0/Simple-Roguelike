@@ -42,14 +42,9 @@ public class PlayerTexture implements PlayerTextureHandler{
     @Override
     public void render(SpriteBatch batch, float deltaTime) {
         float uiScale=0.1f;
-        batch.draw(HPtexture, Config.WORLD_WIDTH/2-11f, Config.WORLD_HEIGHT/2-7f, HPtexture.getWidth() * uiScale*1.5f, HPtexture.getHeight() * uiScale);
-        batch.draw(MPtexture, Config.WORLD_WIDTH/2-11f, Config.WORLD_HEIGHT/2-7.3f, MPtexture.getWidth() * uiScale*1.2f, MPtexture.getHeight() * uiScale*0.7f);
-        if(attributeHandler.getHP()<=0){
-            Texture Dead = new Texture("Sprites/BasePlayer/DIED-sheet.png");
-            AnimationTool animationTool = new AnimationTool();
-            animationTool.create("Dead", Dead, 1, 5, 0.1f);
-            animationTool.render(batch, Config.WORLD_WIDTH/2, Config.WORLD_HEIGHT/2, 0.07f, false);
-        }
+        batch.setColor(1, 1, 1, 0.95f);
+        batch.draw(HPtexture, Config.WORLD_WIDTH/2-12f, Config.WORLD_HEIGHT/2+7.5f, HPtexture.getWidth() * uiScale*1.5f, HPtexture.getHeight() * uiScale*1.5f);
+        batch.draw(MPtexture, Config.WORLD_WIDTH/2-12f, Config.WORLD_HEIGHT/2+7f, MPtexture.getWidth() * uiScale*1f, MPtexture.getHeight() * uiScale*1f);
     }
 
     @Override

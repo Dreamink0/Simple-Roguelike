@@ -3,7 +3,6 @@ package io.github.SimpleGame;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import io.github.SimpleGame.Character.Enemy.EnemyGenerate;
-import io.github.SimpleGame.GUI.UI;
 import io.github.SimpleGame.Resource.Game;
 import io.github.SimpleGame.Resource.SoundManager;
 import io.github.SimpleGame.Tool.Listener;
@@ -39,8 +38,8 @@ public class Main extends ApplicationAdapter {
     public void render() {
         Game.render();
         batch.begin();
-        for(int i = 0; i < enemyGenerate.length; i++){
-            enemyGenerate[i].render(batch, player);
+        for (EnemyGenerate generate : enemyGenerate) {
+            generate.render(batch, player);
         }
         batch.end();
         Listener.Bound(world, player);

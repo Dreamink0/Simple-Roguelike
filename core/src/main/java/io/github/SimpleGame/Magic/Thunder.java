@@ -166,7 +166,7 @@ public class Thunder extends Magic {
                 float offsetX = cos((float) i + stateTime * 2) * (1 + stateTime / 2);
                 float offsetY = MathUtils.sin((float) i + stateTime * 2) * (1 + stateTime / 2);
 
-                animations[1].render(batch, x + offsetX, y + offsetY, 0.1f, false, flip);
+                animations[1].render(batch, x + offsetX, y + offsetY, 0.1f, true, flip);
             }
             batch.end();
 

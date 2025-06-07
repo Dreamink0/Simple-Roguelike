@@ -2,6 +2,7 @@ package io.github.SimpleGame.Character.Player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,8 +16,7 @@ import io.github.SimpleGame.Resource.ResourceManager;
 import io.github.SimpleGame.Resource.SoundManager;
 import io.github.SimpleGame.Tool.AnimationTool;
 
-import static io.github.SimpleGame.Resource.Game.UIbatch;
-import static io.github.SimpleGame.Resource.Game.batch;
+import static io.github.SimpleGame.Resource.Game.*;
 
 public class PlayerAnimation extends Player implements PlayerAnimationHandler {
     float stateTime=0f;
@@ -30,6 +30,7 @@ public class PlayerAnimation extends Player implements PlayerAnimationHandler {
     Boolean flag=false;//检查是否读取了动画
     private float soundTimer=0f;
     private int deadcount = 1;
+    private boolean wasDead = false;
 
     @Override
     public PlayerController handleAction(PlayerController playerController, Player player, World world) {
@@ -74,8 +75,15 @@ public class PlayerAnimation extends Player implements PlayerAnimationHandler {
             setCollisionBoxSize(3.5f, 1.7f, player);
         }
 
+        if (isDead && !wasDead) {
+            SoundManager.playSound("dead");
+            wasDead = true;
+        } else if (!isDead) {
+            wasDead = false;
+        }
+
         if (isDead) {
-            // 设置死亡动画
+            //设置死亡动画
             newAnimation = playerDeadAnimation;
         } else if (isAttacking) {
             newAnimation = playerAttackAnimation;
@@ -117,7 +125,6 @@ public class PlayerAnimation extends Player implements PlayerAnimationHandler {
             world.step(Config.TIME_STEP, 6, 2);
             accumulator -= Config.TIME_STEP;
         }
-
         return playerController;
     }
     public void load(){

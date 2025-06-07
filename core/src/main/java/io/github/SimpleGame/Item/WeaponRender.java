@@ -122,11 +122,8 @@ public class WeaponRender {
 
         batch.begin();
         int index = getWeaponIndex();
-
         boolean isFlipped = player.getPlayerController().isFlipped;
-
-        // 计算挥砍动画的角度（从上到下的1/3圆弧）
-        float baseAngle = isFlipped ? 0 : 180;
+        float baseAngle = isFlipped ? 90 : 180;
         float attackAngle = 0;
 
         if (attackProgress < ATTACK_DURATION) {
@@ -139,8 +136,8 @@ public class WeaponRender {
 
         // 添加基于角色移动的摆动效果
         boolean isMoving = player.getPlayerController().isMoving();
-        float offsetX = isFlipped ? -0.3f : 0.3f;
-        float offsetY = isFlipped ? -0.2f : 0.2f;
+        float offsetX = isFlipped ? -1.45f : 1.45f;
+        float offsetY = 0.2f;
 
         if (isMoving) {
             float walkOffset = (float) Math.sin(System.currentTimeMillis() * 0.005) * 0.05f;
@@ -188,8 +185,8 @@ public class WeaponRender {
         boolean isMoving = player.getPlayerController().isMoving();
         boolean isFlipped = player.getPlayerController().isFlipped;
 
-        float offsetX = isFlipped ? -0.3f : 0.3f;
-        float offsetY = isFlipped ? -0.2f : 0.2f;
+        float offsetX = isFlipped ? -1.45f :1.45f;
+        float offsetY = 0.2f;
 
         if (isMoving) {
             float walkOffset = (float) Math.sin(System.currentTimeMillis() * 0.005) * 0.05f;
@@ -210,7 +207,7 @@ public class WeaponRender {
             texture.getWidth(),
             texture.getHeight(),
             !isFlipped,
-            isFlipped
+            false
         );
         batch.end();
     }

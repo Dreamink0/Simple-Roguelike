@@ -87,7 +87,7 @@ public class EnemyAnimation implements EnemyAnimationHandler{
                     }
                 } else if (currentState == Enemy.State.ATTACK) {
                     animationTools[2].resetStateTime();
-                    animationTools[2].render(batch, x, y, 0.1f, false, flip);
+                    animationTools[2].render(batch, x, y, 0.1f, true, flip);
                 } else if (currentState == Enemy.State.CHASE) {
                     animationTools[1].resetStateTime();
                     animationTools[1].render(batch, x, y, 0.1f, true, flip);
