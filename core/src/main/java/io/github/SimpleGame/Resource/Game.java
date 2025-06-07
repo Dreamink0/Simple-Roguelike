@@ -126,14 +126,12 @@ public class Game{
         if(Gdx.input.isKeyJustPressed(Input.Keys.G)){
             player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - 10f);
             player.getAttributeHandler().setMP(player.getAttributeHandler().getMaxMP() - 20f);
-            player.getAttributeHandler().setDEF(player.getAttributeHandler().getMaxDEF() - 10f);
             player.getPlayerTextureHandler().get();
         }
         //获得血量信息:
         if (Gdx.input.isKeyJustPressed(Input.Keys.H)){
             System.out.println("HP:"+player.getAttributeHandler().getMaxHP());
             System.out.println("MP:"+player.getAttributeHandler().getMaxMP());
-            System.out.println("DEF:"+player.getAttributeHandler().getMaxDEF());
             System.out.println("Damage:"+player.getAttributeHandler().getDamage());
         }
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
