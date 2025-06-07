@@ -56,7 +56,7 @@ public class AnimationTool {
             }
         }
         this.animation= new Animation<>(frameDuration, frames);
-//        animation.setPlayMode(Animation.PlayMode.LOOP);
+        animation.setPlayMode(Animation.PlayMode.LOOP);
         animations.put(name,animation);
         stateTimes.put(name,0f);
     }
