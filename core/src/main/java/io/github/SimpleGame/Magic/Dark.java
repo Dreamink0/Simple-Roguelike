@@ -59,9 +59,24 @@ public class Dark extends Magic {
             index = equippedMagic.indexOf(this);
             Animations.render(UIbatch, x, y, flag, index);
         }
-
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P) && isObtain) {
+            float dropX = player.getX();
+            float dropY = player.getY();
+            flag = false;
+            this.x = dropX;
+            this.y = dropY;
+            isObtain = false;
+            equippedMagic.remove(this);
+            Active = false;
+            isActivating = false;
+            Body effectsBody = Hitboxes.getEffectsBody();
+            if (effectsBody != null) {
+                effectBodyPool.release(effectsBody); // 使用对象池安全释放资源
+                Hitboxes.clearEffectBody(); // 清除引用
+            }
+        }
         // 获得后释放魔法的判定
-        if (isObtain && Gdx.input.isKeyJustPressed(Input.Keys.F) && (player.getAttributeHandler().getMaxMP() - Attributes.getMPcost() >= 0)) {
+        if (isObtain && isKey(index) && (player.getAttributeHandler().getMaxMP() - Attributes.getMPcost() >= 0)) {
             if (!Active && cooldownTimer <= 0) {
                 Active = true;
                 isActivating = true;

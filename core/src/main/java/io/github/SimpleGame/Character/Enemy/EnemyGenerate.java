@@ -22,5 +22,6 @@ public class EnemyGenerate {
         for (Enemy enemy : enemies) {
             enemy.dispose();
         }
+        enemies.clear();
     }
 }

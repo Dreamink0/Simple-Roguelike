@@ -14,17 +14,23 @@ public class DarkTexture {
     public static Texture[] getICONTexture(){
         Texture[] textures=new Texture[ICON.length];
         for (int i = 0; i < ICON.length; i++) {textures[i]=new Texture(ICON[i]);}
+        for(int i = 0; i < ICON.length; i++){
+            textures[i].setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        }
         return textures;
     }
     public static Texture[] getEffectTexture(){
         Texture[] textures=new Texture[getEffectCount()];
         for (int i = 0; i < getEffectCount(); i++) {textures[i]=new Texture(effectPaths[i]);}
+        for(int i = 0; i < getEffectCount(); i++){
+            textures[i].setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        }
         return textures;
     }
     public static AnimationTool[] getAnimation(){
         AnimationTool[] animations=new AnimationTool[getEffectCount()];
         for (int i = 0; i < animations.length; i++) {animations[i]=new AnimationTool();}
-        animations[0].create("Dark",new Texture(effectPaths[0]),2,10,0.1f);
+        animations[0].create("Dark",new Texture(effectPaths[0]),1,16,0.1f);
         return animations;
     }
     public static String[] getICON() {

@@ -6,25 +6,25 @@ import io.github.SimpleGame.Magic.BodyPool;
 import io.github.SimpleGame.Tool.AnimationTool;
 
 public class WeaponEffectsTextureManager {
-    protected static final AssetManager assetsManager = new AssetManager();
     protected AnimationTool[] animation;
     private static final String[] prePath={
         "Effects/WeaponEffects/Weapon0/",
-        "Effects/WeaponEffects/Weapon1/"
+        "Effects/WeaponEffects/Weapon1/",
     };
-    private static Texture effects;
-    public static void loadAssets(){
-        assetsManager.load(prePath[0]+0+".png", Texture.class);
-        assetsManager.finishLoading();
-        effects = assetsManager.get(prePath[0]+0+".png", Texture.class);
-        effects.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-    }
+
     public void create(int ID,int weaponID){
         if(ID==0){
             if(weaponID==0){
+                Texture effects = new Texture(prePath[0] + 0 + ".png");
                 animation = new AnimationTool[1];
                 animation[0] = new AnimationTool();
-                animation[0].create("Weapon0",effects,1,28, 0.05f);
+                animation[0].create("Weapon0", effects,1,28, 0.05f);
+            }
+            if(weaponID==1){
+                Texture effects = new Texture(prePath[0] + 1 + ".png");
+                animation = new AnimationTool[1];
+                animation[0] = new AnimationTool();
+                animation[0].create("Weapon1", effects,1,4, 0.1f);
             }
             if(weaponID==23){
                 Texture texture0 = new Texture(prePath[0]+23+"a.png");
@@ -46,8 +46,5 @@ public class WeaponEffectsTextureManager {
 
     public AnimationTool[] getAnimation() {
         return animation;
-    }
-    public void dispose(){
-        assetsManager.dispose();
     }
 }

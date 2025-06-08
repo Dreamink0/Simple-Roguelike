@@ -107,4 +107,10 @@ public class MagicHitbox {
         fixture.setUserData(this);  // 修复：先保存Fixture引用再设置userData
         shape.dispose();
     }
+    public void dispose() {
+        if (EffectsBody != null) {
+            world.destroyBody(EffectsBody);
+            EffectsBody = null;
+        }
+    }
 }

@@ -27,7 +27,7 @@ public class WeaponAttribute {
         WeaponAttribute Attribute = new WeaponAttribute();
         if (ID == 0) {
             if (WeaponID == 0) Attribute= new WeaponAttribute(3, 1, 0f);
-            if (WeaponID == 1) Attribute= new WeaponAttribute(3, 1, 0f);
+            if (WeaponID == 1) Attribute= new WeaponAttribute(2, 1.5f, 0f);
             if (WeaponID == 2) Attribute= new WeaponAttribute(3, 1, 0f);
             if (WeaponID == 23) Attribute= new WeaponAttribute(5, 2, 0f);
         }

@@ -38,7 +38,7 @@ public class Thunder extends Magic {
         Animations.loadAssets("LightningMagic");
         Hitboxes = new MagicHitbox(world, player, Animations);
         Hitboxes.createIconBody(x, y);
-        Attributes = new MagicAttribute(3, 2, 10, 5.5f, 30);
+        Attributes = new MagicAttribute(3, 2, 10, 5.5f, 10);
         magicState = new MagicState(Attributes, Animations, Hitboxes);
         label = "Lightning";
     }
@@ -64,9 +64,25 @@ public class Thunder extends Magic {
             index = equippedMagic.indexOf(this);
             Animations.render(UIbatch, x, y, flag, index);
         }
-
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P) && isObtain) {
+            float dropX = player.getX();
+            float dropY = player.getY();
+            flag = false;
+            this.x = dropX;
+            this.y = dropY;
+            isObtain = false;
+            equippedMagic.remove(this);
+            Active = false;
+            isActivating = false;
+            Body effectsBody = Hitboxes.getEffectsBody();
+            if (effectsBody != null) {
+                effectBodyPool.release(effectsBody); // 使用对象池安全释放资源
+                Hitboxes.clearEffectBody(); // 清除引用
+            }
+            Hitboxes.createIconBody(dropX, dropY);
+        }
         // 获得后释放魔法的判定
-        if (isObtain && Gdx.input.isKeyJustPressed(Input.Keys.F) && (player.getAttributeHandler().getMaxMP() - Attributes.getMPcost() >= 0)) {
+        if (isObtain && isKey(index) && (player.getAttributeHandler().getMaxMP() - Attributes.getMPcost() >= 0)) {
             if (!Active && cooldownTimer <= 0) {
                 Active = true;
                 isActivating = true;

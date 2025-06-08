@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import io.github.SimpleGame.Config;
 import io.github.SimpleGame.Tool.AnimationTool;
@@ -17,23 +16,24 @@ import static io.github.SimpleGame.Magic.Magic.index;
 import static java.lang.Math.cos;
 
 public class MagicAnimation {
-    protected AssetManager assetManager=new AssetManager();
+    protected AssetManager assetManager = new AssetManager();
     private Texture[] iconTexture;
-    private Texture[] effcetTeture;
+    private Texture[] effectTexture;
     private AnimationTool[] animations;
     public Boolean isActive = false;
     private Texture currentICON;
     private float stateTime = 0f;
+
     public void loadAssets(String className){
         if(className.equals("LightningMagic")){
             animations = ThunderTexture.getAnimation();
             iconTexture = ThunderTexture.getICONTexture();
-            effcetTeture = ThunderTexture.getEffectTexture();
+            effectTexture = ThunderTexture.getEffectTexture();
         }
         if(className.equals("DarkMagic")){
             animations = DarkTexture.getAnimation();
             iconTexture = DarkTexture.getICONTexture();
-            effcetTeture = DarkTexture.getEffectTexture();
+            effectTexture = DarkTexture.getEffectTexture();
         }
     }
 
@@ -41,64 +41,80 @@ public class MagicAnimation {
         return iconTexture;
     }
 
-    public Texture[] getEffcetTeture() {
-        return effcetTeture;
-    }
-
     public AnimationTool[] getAnimations() {
         return animations;
     }
-    public void render(SpriteBatch batch,float x,float y,Boolean flag, int renderIndex){
+
+    public void render(SpriteBatch batch, float x, float y, Boolean flag, int renderIndex){
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
-        stateTime+=deltaTime;
-        if(!isActive){currentICON = iconTexture[0];}
-        else{currentICON = iconTexture[1];}
+        stateTime += deltaTime;
+
+        if(!isActive) {
+            currentICON = iconTexture[0];
+        } else {
+            currentICON = iconTexture[1];
+        }
+
         float width = iconTexture[0].getWidth() / PIXELS_PER_METER;
         float height = iconTexture[0].getHeight() / PIXELS_PER_METER;
-        if(!flag){
-            batch.begin();
-            batch.draw(iconTexture[0], x - width / 2, y - height / 2, width*4, height*4);
-            batch.end();
-        }else{
-            if(renderIndex >= 0){
-                float spacing = 1.15f; // 图标之间的水平间距
-                float startX = Config.WORLD_WIDTH / 2 + 7f; // 起始X位置
-                float startY = Config.WORLD_HEIGHT / 2 - 6.7f; // 固定Y位置
 
-                float uiX = startX + renderIndex * spacing*0.003f;
-                float uiY = startY-0.2f;
+        if(!flag) {
+            batch.begin();
+            batch.draw(iconTexture[0], x - width / 2, y - height / 2, width * 4, height * 4);
+            batch.end();
+        } else {
+            if(renderIndex >= 0) {
+                float spacing = 0.0015f;
+                float startX = Config.WORLD_WIDTH / 2 + 8f;
+                float startY = Config.WORLD_HEIGHT / 2 - 9.1f;
+
+                float uiX = startX + renderIndex * spacing;
+
                 batch.begin();
-                batch.draw(currentICON, uiX-width/2, uiY-height/2, width*2, height*2);
+                batch.setColor(1,1,1,0.75f);
+                batch.draw(currentICON, uiX, startY, width * 2.7f, height * 2.7f);
                 batch.end();
             }
         }
     }
+
     public void Effectrender(SpriteBatch batch, float x, float y, Boolean flip){
         float deltaTime = Gdx.graphics.getDeltaTime();
         stateTime += Math.min(deltaTime, 0.25f);
         batch.begin();
-        animations[0].render(batch,x,y, 0.1f, false,flip);
-        if(animations.length>1){
+        animations[0].render(batch, x, y, 0.1f, false, flip);
+
+        if(animations.length > 1){
             if(animations[0].isAnimationFinished()){
-                int flag=1;
+                int flag = 1;
                 if(flip){
-                    flag=-1;
+                    flag = -1;
                 }
-                animations[1].render(batch,x+2*flag,y, 0.1f, true,flip);
+                animations[1].render(batch, x + 2 * flag, y, 0.1f, true, flip);
             }
         }
         batch.end();
     }
+
     public void dispose(){
-         for(AnimationTool animation:animations){
-            animation.dispose();
+        if (animations != null) {
+            for(AnimationTool animation : animations){
+                animation.dispose();
+            }
         }
-         for(Texture texture:iconTexture){
-            texture.dispose();
+
+        if (iconTexture != null) {
+            for(Texture texture : iconTexture){
+                texture.dispose();
+            }
         }
-          for(Texture texture:effcetTeture){
-            texture.dispose();
+
+        if (effectTexture != null) {
+            for(Texture texture : effectTexture){
+                texture.dispose();
+            }
         }
-          assetManager.dispose();
+
+        assetManager.dispose();
     }
 }

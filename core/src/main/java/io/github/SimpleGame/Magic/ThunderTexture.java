@@ -16,11 +16,17 @@ public class ThunderTexture extends MagicAnimation{
     public static Texture[] getICONTexture(){
         Texture[] textures=new Texture[ICON.length];
         for (int i = 0; i < ICON.length; i++) {textures[i]=new Texture(ICON[i]);}
+        for(int i = 0; i < ICON.length; i++){
+            textures[i].setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        }
         return textures;
     }
     public static Texture[] getEffectTexture(){
         Texture[] textures=new Texture[getEffectCount()];
         for (int i = 0; i < getEffectCount(); i++) {textures[i]=new Texture(effectPaths[i]);}
+        for(int i = 0; i < getEffectCount(); i++){
+            textures[i].setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        }
         return textures;
     }
     public static AnimationTool[] getAnimation(){

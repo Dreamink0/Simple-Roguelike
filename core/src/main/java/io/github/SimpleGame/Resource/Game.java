@@ -12,7 +12,7 @@ import io.github.SimpleGame.Config;
 import static io.github.SimpleGame.Config.WORLD_HEIGHT;
 import static io.github.SimpleGame.Config.WORLD_WIDTH;
 
-public class Game{
+public class Game {
     //资源
     public static WorldManager worldManager;
     public static CameraManager cameraManager;
@@ -61,13 +61,13 @@ public class Game{
         player = new Player(world, WORLD_WIDTH, WORLD_HEIGHT);
    }
    //游戏主要内容的图像渲染
-    public void render(){
-        float deltaTime = Math.min(Gdx.graphics.getDeltaTime(),5);
-        //更新物理世界
-        physicHandler.update(world,deltaTime);
+    public void render() {
+        float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 5);
+        // 更新物理世界
+        physicHandler.update(world, deltaTime);
         PlayerController controller = player.getPlayerController();
 
-        player.setAction(controller,world).update();
+        player.setAction(controller, world).update();
         cameraManager.getCamera(controller);
         mapManager.setView(cameraManager.getCamera());
 
@@ -81,7 +81,7 @@ public class Game{
         batch.setProjectionMatrix(cameraManager.getCamera().combined);
         UIbatch.setProjectionMatrix(cameraManager.getUiCamera().combined);
 
-        gameRenderHandler.render(batch,UIbatch);
+        gameRenderHandler.render(batch, UIbatch);
 
         // 移除效果
         effectManager.removeEffect(batch);

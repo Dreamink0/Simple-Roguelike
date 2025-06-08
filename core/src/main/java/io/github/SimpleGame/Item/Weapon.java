@@ -26,7 +26,7 @@ public class Weapon {
         this.world = world;
         Random random = new Random();
         ID =0; //random.nextInt(2);
-        weaponID =23; //random.nextInt(29);
+        weaponID =2;//random.nextInt(29);
         assetManager.load("Items/Weapon" + ID + "/" + weaponID + ".png", Texture.class);
         assetManager.finishLoading();
         Texture texture = assetManager.get("Items/Weapon" + ID + "/" + weaponID + ".png", Texture.class);

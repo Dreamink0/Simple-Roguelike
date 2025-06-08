@@ -54,4 +54,12 @@ public abstract class Magic {
     public float getDamage(){
          return Attributes.getDamage();
     }
+    public boolean isKey(int index){
+        index = index % equippedMagic.size();
+        if(index == 0){
+            return Gdx.input.isKeyJustPressed(Input.Keys.U);
+        }else{
+            return Gdx.input.isKeyJustPressed(Input.Keys.I);
+        }
+    }
 }

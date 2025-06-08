@@ -19,14 +19,13 @@ public class MapManager {
     private final Pool<BodyDef> bodyDefPool;
     private final Pool<PolygonShape> shapePool;
     private final Pool<FixtureDef> fixtureDefPool;
-
     public MapManager(TiledMap tiledMap, float scale, World world) {
         this.tiledMap = tiledMap;
         this.scale = scale;
         this.world = world;
         this.mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, scale);
         this.wallBodies = new Array<>();
-        
+
         // 初始化对象池
         this.bodyDefPool = new Pool<BodyDef>(100) {
             @Override
@@ -46,7 +45,7 @@ public class MapManager {
                 return new FixtureDef();
             }
         };
-        
+
         createWalls();
     }
 
@@ -55,7 +54,7 @@ public class MapManager {
         if (wallsLayer != null && wallsLayer instanceof TiledMapTileLayer tileLayer) {
             int tileWidth = tiledMap.getProperties().get("tilewidth", Integer.class);
             int tileHeight = tiledMap.getProperties().get("tileheight", Integer.class);
-            
+
             // 批量处理瓦片
             for (int x = 0; x < tileLayer.getWidth(); x++) {
                 for (int y = 0; y < tileLayer.getHeight(); y++) {
@@ -125,7 +124,7 @@ public class MapManager {
             }
         }
         wallBodies.clear();
-        
+
         // 清理对象池
         bodyDefPool.clear();
         shapePool.clear();

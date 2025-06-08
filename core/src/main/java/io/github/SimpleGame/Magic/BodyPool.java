@@ -1,6 +1,7 @@
 package io.github.SimpleGame.Magic;
 
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 import io.github.SimpleGame.Resource.Game;
 
 public class BodyPool {
@@ -24,8 +25,10 @@ public class BodyPool {
      * @return Body对象
      */
     public Body acquire(float x, float y, float width, float height) {
+        Body body = null;
+
         if (count > 0) {
-            Body body = bodies[--count]; // 从池中取出一个刚体
+            body = bodies[--count]; // 从池中取出一个刚体
 
             // 重置刚体属性
             body.setTransform(x, y, 0);
@@ -33,12 +36,22 @@ public class BodyPool {
             body.setAngularVelocity(0);
             body.setActive(true);
 
-            // 重新设置形状和夹具
+            // 移除旧夹具并创建新夹具
             Fixture fixture = body.getFixtureList().first();
             if (fixture != null) {
-                PolygonShape shape = (PolygonShape) fixture.getShape();
-                shape.setAsBox(width, height);
+                body.destroyFixture(fixture); // 销毁旧夹具
             }
+
+            // 创建新的形状和夹具
+            PolygonShape shape = new PolygonShape();
+            shape.setAsBox(width, height);
+
+            FixtureDef fixtureDef = new FixtureDef();
+            fixtureDef.shape = shape;
+            fixtureDef.isSensor = true;
+
+            body.createFixture(fixtureDef).setUserData("Magic");
+            shape.dispose(); // 释放形状资源
 
             return body;
         }
@@ -48,7 +61,7 @@ public class BodyPool {
         bodyDef.type = BodyDef.BodyType.KinematicBody;
         bodyDef.position.set(x, y);
 
-        Body body = Game.world.createBody(bodyDef);
+        body = Game.world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(width, height);

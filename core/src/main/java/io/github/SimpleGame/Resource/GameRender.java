@@ -20,6 +20,7 @@ public class GameRender implements GameRenderHandler{
     private Weapon item;
     private Weapon item2;
     private Thunder thunder;
+    private Thunder thunder2;
     private Dark dark;
     private UI ui;
 //    private AnimationTool animationTool;
@@ -28,6 +29,7 @@ public class GameRender implements GameRenderHandler{
         thunder = new Thunder(Game.world, player, WORLD_WIDTH+10,WORLD_HEIGHT+2);
         item = new Weapon(Game.world, WORLD_WIDTH+10, WORLD_HEIGHT, 1f);
         item2 = new Weapon(Game.world, WORLD_WIDTH-2, WORLD_HEIGHT, 1f);
+        thunder2 = new Thunder(Game.world, player, WORLD_WIDTH+5,WORLD_HEIGHT+2);
         ui=new UI();
         ui.create();
     }
@@ -41,6 +43,7 @@ public class GameRender implements GameRenderHandler{
         effectManager.applyEffect(batch);
         dark.render(batch, UIbatch, player);
         thunder.render(batch, UIbatch, player);
+        thunder2.render(batch, UIbatch, player);
         batch.begin();
         player.filpCheck(player.getPlayerSprite(), player.getPlayerController(), batch).draw(batch);
         batch.end();
