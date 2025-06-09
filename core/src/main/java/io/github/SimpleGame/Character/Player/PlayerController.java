@@ -79,6 +79,11 @@ public class PlayerController {
         }
         return isAttacking;
     }
+
+    public void setAttacking(boolean attacking) {
+        isAttacking = attacking;
+    }
+
     public void startAttack() {
         if (!isAttacking) {
             isAttacking = true;

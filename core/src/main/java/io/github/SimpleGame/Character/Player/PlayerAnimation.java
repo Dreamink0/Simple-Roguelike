@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -25,6 +26,7 @@ public class PlayerAnimation extends Player implements PlayerAnimationHandler {
     private Animation<TextureRegion> playerRunAnimation;
     private Animation<TextureRegion> playerAttackAnimation;
     private Animation<TextureRegion> playerDeadAnimation;
+    private Animation<TextureRegion> playerRushAnimation;
     private Animation<TextureRegion> currentAnimation;
     public static EffectManager effectManager;
     Boolean flag=false;//检查是否读取了动画
@@ -34,12 +36,20 @@ public class PlayerAnimation extends Player implements PlayerAnimationHandler {
 
     @Override
     public PlayerController handleAction(PlayerController playerController, Player player, World world) {
+        Vector2 vector2 = player.getPlayerController().getBody().getLinearVelocity();
         if(flag==false)load();
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
         stateTime += deltaTime;
         boolean isAttacking = playerController.isAttacking();
         boolean isMoving = playerController.isMoving();
         Animation<TextureRegion> newAnimation;
+        if (vector2.len2() > 45 * 45) {
+            newAnimation = playerRushAnimation;
+            if (newAnimation != currentAnimation) {
+                stateTime = 0;
+                currentAnimation = newAnimation;
+            }
+        }
         //检查玩家是否死亡
         boolean isDead = player.getAttributeHandler().getHP() <= 0;
         effectManager = EffectManager.getInstance();
@@ -133,6 +143,7 @@ public class PlayerAnimation extends Player implements PlayerAnimationHandler {
         this.playerRunAnimation = ResourceManager.getInstance().getPlayerRunAnimation();
         this.playerAttackAnimation = ResourceManager.getInstance().getPlayerAttackAnimation();
         this.playerDeadAnimation = ResourceManager.getInstance().getPlayerDeadAnimation();
+        this.playerRushAnimation = ResourceManager.getInstance().getPlayerRushAnimation();
     }
 
     private void setCollisionBoxSize(float width, float height,Player player) {

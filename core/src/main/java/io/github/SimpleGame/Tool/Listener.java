@@ -24,6 +24,7 @@ public class Listener{
     public static boolean equip;
     public static boolean LightningMagic_Flag;
     public static boolean attack_Flag;
+    public static boolean wall_Flag;
     public static float lightningTimer=0;
     public static float lightningCooldown=0.15f;
     public static float DarkTimer=0;
@@ -43,8 +44,13 @@ public class Listener{
 //                if (bodyA == null || bodyB == null) {
 //                    System.out.println("One of the bodies is null!"); // 调试信息
 //                    return;
-//                }
+//
 
+                // 检测玩家是否与墙壁接触
+                wall_Flag = (bodyA.getUserData() != null && bodyA.getUserData().equals("player") &&
+                    bodyB.getUserData() != null && bodyB.getUserData().equals("wall")) ||
+                    (bodyA.getUserData() != null && bodyA.getUserData().equals("wall") &&
+                        bodyB.getUserData() != null && bodyB.getUserData().equals("player"));
                 if ((bodyA.getUserData() != null && bodyA.getUserData().equals("player") &&
                     bodyB.getUserData() != null && bodyB.getUserData().equals("weapon")) ||
                     (bodyA.getUserData() != null && bodyA.getUserData().equals("weapon") &&
@@ -71,39 +77,39 @@ public class Listener{
                      bodyB.getUserData() != null && bodyB.getUserData() instanceof Magic)) {
                     Enemy enemy = null;
                     Magic magic = null;
-                    if(bodyA.getUserData() instanceof Enemy){
-                         enemy = (Enemy) bodyA.getUserData();
-                    }else if( bodyB.getUserData() instanceof Enemy){
-                         enemy = (Enemy) bodyB.getUserData();
+                    if (bodyA.getUserData() instanceof Enemy) {
+                        enemy = (Enemy) bodyA.getUserData();
+                    } else if (bodyB.getUserData() instanceof Enemy) {
+                        enemy = (Enemy) bodyB.getUserData();
                     }
-                    if(bodyA.getUserData() instanceof Magic){
+                    if (bodyA.getUserData() instanceof Magic) {
                         magic = (Magic) bodyA.getUserData();
-                    }else if(bodyB.getUserData() instanceof Magic){
-                         magic = (Magic) bodyB.getUserData();
+                    } else if (bodyB.getUserData() instanceof Magic) {
+                        magic = (Magic) bodyB.getUserData();
                     }
-                    if(magic instanceof Thunder){
+                    if (magic instanceof Thunder) {
                         if (enemy != null) {
                             enemy.getEnemyState().currentState = HURT;
                         }
-                        if(enemy.getEnemyState().currentState==HURT){
+                        if (enemy.getEnemyState().currentState == HURT) {
                             SoundManager.playSound("enemyHit");
                         }
-                        if(lightningTimer<0){
+                        if (lightningTimer < 0) {
                             if (enemy != null) {
                                 enemy.setHP(magic);
                             }
-                            lightningTimer =  lightningCooldown;
+                            lightningTimer = lightningCooldown;
                         }
                         lightningTimer -= Time;
                     }
-                    if(magic instanceof Dark){
+                    if (magic instanceof Dark) {
                         if (enemy != null) {
                             enemy.getEnemyState().currentState = HURT;
                         }
-                        if(enemy.getEnemyState().currentState==HURT){
+                        if (enemy.getEnemyState().currentState == HURT) {
                             SoundManager.playSound("enemyHit");
                         }
-                        if(DarkTimer<0){
+                        if (DarkTimer < 0) {
                             if (enemy != null) {
                                 enemy.setHP(magic);
                             }

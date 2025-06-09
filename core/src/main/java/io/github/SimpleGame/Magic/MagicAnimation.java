@@ -35,6 +35,10 @@ public class MagicAnimation {
             iconTexture = DarkTexture.getICONTexture();
             effectTexture = DarkTexture.getEffectTexture();
         }
+        if(className.equals("IceMagic")){
+//            animations = IceTexture.getAnimation();
+//            effectTexture  = IceTexture.getEffectTexture();
+        }
     }
 
     public Texture[] getIconTexture() {
@@ -76,24 +80,6 @@ public class MagicAnimation {
                 batch.end();
             }
         }
-    }
-
-    public void Effectrender(SpriteBatch batch, float x, float y, Boolean flip){
-        float deltaTime = Gdx.graphics.getDeltaTime();
-        stateTime += Math.min(deltaTime, 0.25f);
-        batch.begin();
-        animations[0].render(batch, x, y, 0.1f, false, flip);
-
-        if(animations.length > 1){
-            if(animations[0].isAnimationFinished()){
-                int flag = 1;
-                if(flip){
-                    flag = -1;
-                }
-                animations[1].render(batch, x + 2 * flag, y, 0.1f, true, flip);
-            }
-        }
-        batch.end();
     }
 
     public void dispose(){

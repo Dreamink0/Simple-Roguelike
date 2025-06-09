@@ -7,6 +7,7 @@ import io.github.SimpleGame.Config;
 import io.github.SimpleGame.GUI.UI;
 import io.github.SimpleGame.Item.Weapon;
 import io.github.SimpleGame.Magic.Dark;
+//import io.github.SimpleGame.Magic.Ice;
 import io.github.SimpleGame.Magic.Thunder;
 import io.github.SimpleGame.Tool.AnimationTool;
 
@@ -23,6 +24,7 @@ public class GameRender implements GameRenderHandler{
     private Thunder thunder2;
     private Dark dark;
     private UI ui;
+//    private Ice ice;
 //    private AnimationTool animationTool;
     public GameRender() {
         dark = new Dark(Game.world, player, WORLD_WIDTH+15,WORLD_HEIGHT+5);

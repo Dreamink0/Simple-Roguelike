@@ -121,6 +121,17 @@ public class AnimationTool {
         float height=textureRegion.getRegionHeight()*scaleY;
         batch.draw(textureRegion, x - width / 2, y - height / 2, width, height);
     }
+    public void render(SpriteBatch batch,float x,float y,float scaleX,float scaleY,Boolean loop, boolean flip) {
+        update();
+        getKeyFrame(loop);
+        float width=textureRegion.getRegionWidth()*scaleX;
+        float height=textureRegion.getRegionHeight()*scaleY;
+        if(flip){
+            batch.draw(textureRegion, x + width / 2, y - height / 2, -width, height);
+        }else{
+            batch.draw(textureRegion, x - width / 2, y - height / 2, width, height);
+        }
+    }
     public void dispose(){
         for(String name:animations.keySet()){
             animations.get(name).getKeyFrames()[0].getTexture().dispose();

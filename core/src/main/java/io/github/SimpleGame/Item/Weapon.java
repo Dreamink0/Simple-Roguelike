@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import io.github.SimpleGame.Character.Player.Player;
+import io.github.SimpleGame.Tool.AnimationTool;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -22,17 +23,18 @@ public class Weapon {
     private final int weaponID;
     public static final ArrayList<Weapon> WEAPONS = new ArrayList<>();
     public static final ArrayList<WeaponRender> globalEquippedWeapons = new ArrayList<>();
+    public static boolean FLAG=false;
     public Weapon(World world, float x, float y, float scale) {
         this.world = world;
         Random random = new Random();
         ID =0; //random.nextInt(2);
-        weaponID =2;//random.nextInt(29);
+        weaponID =12;//random.nextInt(29);
         assetManager.load("Items/Weapon" + ID + "/" + weaponID + ".png", Texture.class);
         assetManager.finishLoading();
         Texture texture = assetManager.get("Items/Weapon" + ID + "/" + weaponID + ".png", Texture.class);
         WeaponHitBox weaponHitBox = new WeaponHitBox(texture, world);
         weaponHitBox.create(x, y, scale);
-        weaponRender = new WeaponRender(weaponHitBox, globalEquippedWeapons);
+        weaponRender = new WeaponRender(weaponHitBox, globalEquippedWeapons,weaponID);
         weaponAttribute = new WeaponAttribute();
         WEAPONS.add(this);
     }
@@ -65,8 +67,13 @@ public class Weapon {
             weaponAttribute.resetData(player);
         }
         //只有当前装备的武器才渲染特效
-        if (isEquip && weaponEffects != null && Gdx.input.isKeyPressed(Input.Keys.J)) {
-            weaponEffects.render(batch);
+        if (isEquip && weaponEffects != null&&Gdx.input.isKeyPressed(Input.Keys.J)) {
+           FLAG = true;
+        }
+        if (FLAG) {
+            if (weaponEffects != null) {
+                weaponEffects.render(batch);
+            }
         }
     }
 
@@ -81,5 +88,8 @@ public class Weapon {
 
     public World getWorld() {
         return world;
+    }
+    public int getWeaponID() {
+        return weaponID;
     }
 }

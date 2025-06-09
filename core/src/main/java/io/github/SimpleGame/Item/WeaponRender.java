@@ -23,13 +23,15 @@ public class WeaponRender {
     private boolean isAttacking = false;
     private float attackProgress = 0f;
     private static final float ATTACK_DURATION = 0.3f; // 攻击动画持续时间
+    private int weaponID;
 
     // 使用构造参数传入列表，实现统一管理
-    public WeaponRender(WeaponHitBox weaponHitBox, ArrayList<WeaponRender> globalEquippedWeapons){
+    public WeaponRender(WeaponHitBox weaponHitBox, ArrayList<WeaponRender> globalEquippedWeapons,int weaponID){
         this.weaponHitBox = weaponHitBox;
         this.texture = weaponHitBox.getTexture();
         this.scale = weaponHitBox.getScale();
         this.equippedWeapons = globalEquippedWeapons;
+        this.weaponID = weaponID;
     }
 
     public void addEquippedWeapon() {
@@ -51,8 +53,7 @@ public class WeaponRender {
             player.setIsequipped(true);
             addEquippedWeapon();
         }
-
-        if(player.isIsequipped() && isNotAttack(player)&& isEquip){
+        if(player.isIsequipped() && isNotAttack(player)&&isEquip&&weaponID!=12){
             drawtoPlayer(batch, player);
         }
 
@@ -88,8 +89,13 @@ public class WeaponRender {
         for (WeaponRender weapon : equippedWeapons) {
             if (weapon.isEquip()) {
                 if (weapon.isAttacking) {
-                    weapon.animateAttack(batch, player);
+                    if(weapon.weaponID!=12) {
+                        weapon.animateAttack(batch, player);
+                    }
                 } else {
+                    weapon.drawtoPlayer(batch, player);
+                }
+                if(weapon.weaponID==12&&!isAttacking){
                     weapon.drawtoPlayer(batch, player);
                 }
             } else {
@@ -253,6 +259,10 @@ public class WeaponRender {
 
     public boolean isEquip() {
         return isEquip;
+    }
+
+    public void setEquip(boolean equip) {
+        isEquip = equip;
     }
 
     public void dispose(){

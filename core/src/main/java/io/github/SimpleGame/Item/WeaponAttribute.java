@@ -28,8 +28,10 @@ public class WeaponAttribute {
         if (ID == 0) {
             if (WeaponID == 0) Attribute= new WeaponAttribute(3, 1, 0f);
             if (WeaponID == 1) Attribute= new WeaponAttribute(2, 1.5f, 0f);
-            if (WeaponID == 2) Attribute= new WeaponAttribute(3, 1, 0f);
-            if (WeaponID == 23) Attribute= new WeaponAttribute(5, 2, 0f);
+            if (WeaponID == 2) Attribute= new WeaponAttribute(-3, 1, -0.15f);
+            if (WeaponID == 4) Attribute= new WeaponAttribute(5,1,-0.05f);
+            if (WeaponID == 12) Attribute= new WeaponAttribute(-2f, 1, -0.2f);
+            if (WeaponID == 23) Attribute= new WeaponAttribute(7, 2.5f, -0.05f);
         }
         this.damage = Attribute.getDamage();
         this.range = Attribute.getRange();

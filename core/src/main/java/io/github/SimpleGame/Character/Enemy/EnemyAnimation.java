@@ -11,7 +11,6 @@ public class EnemyAnimation implements EnemyAnimationHandler{
     protected static AssetManager assetManager=new AssetManager();
     protected AnimationTool[] animationTools;
     protected AnimationTool effectsAnimations;
-    protected Texture[] effectTexture;
     protected String className;
     protected int ID;
     protected float x;

@@ -26,20 +26,46 @@ public class WeaponEffectsTextureManager {
                 animation[0] = new AnimationTool();
                 animation[0].create("Weapon1", effects,1,4, 0.1f);
             }
+            if(weaponID==2){
+                Texture texture0 = new Texture(prePath[0]+2+"b.png");
+                texture0.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                animation = new AnimationTool[1];
+                animation[0] = new AnimationTool();
+                animation[0].create("Weapon23",texture0,3,4,0.05f);
+            }
+            if(weaponID==4){
+
+            }
+            if(weaponID==12){
+                Texture texture0 = new Texture(prePath[0]+12+"a.png");
+                texture0.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                animation = new AnimationTool[2];
+                animation[0] = new AnimationTool();
+                animation[1] = new AnimationTool();
+                animation[0].create("Weapon12",texture0,3,3,0.03f);
+            }
             if(weaponID==23){
                 Texture texture0 = new Texture(prePath[0]+23+"a.png");
                 Texture texture1 = new Texture(prePath[0]+23+"b.png");
                 Texture texture2 = new Texture(prePath[0]+23+"c.png");
+                Texture texture3 = new Texture(prePath[0]+23+"d.png");
+                Texture texture4 = new Texture(prePath[0]+23+"e.png");
                 texture0.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
                 texture1.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
                 texture2.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-                animation = new AnimationTool[3];
+                texture3.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                texture4.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                animation = new AnimationTool[5];
                 animation[0] = new AnimationTool();
                 animation[1] = new AnimationTool();
                 animation[2] = new AnimationTool();
+                animation[3] = new AnimationTool();
+                animation[4] = new AnimationTool();
                 animation[0].create("Weapon23",texture0,5,2,0.05f);
-                animation[1].create("Weapon23",texture1,5,2,0.03f);
-                animation[2].create("Weapon23",texture2,4,2,0.1f);
+                animation[1].create("Weapon23",texture1,5,2,0.06f);
+                animation[2].create("Weapon23",texture2,4,2,0.077f);
+                animation[3].create("Weapon23",texture3,5,2,0.05f);
+                animation[4].create("Weapon23",texture4,4,2,0.081f);
             }
         }
     }

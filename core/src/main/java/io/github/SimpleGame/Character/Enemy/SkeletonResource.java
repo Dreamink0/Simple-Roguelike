@@ -1,6 +1,7 @@
 package io.github.SimpleGame.Character.Enemy;
 
 import com.badlogic.gdx.graphics.Texture;
+import io.github.SimpleGame.Resource.Game;
 import io.github.SimpleGame.Tool.AnimationTool;
 
 public class SkeletonResource extends EnemyAnimation{

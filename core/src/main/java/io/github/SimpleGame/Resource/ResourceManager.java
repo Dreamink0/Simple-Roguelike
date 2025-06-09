@@ -21,6 +21,8 @@ public class ResourceManager {
     private TextureAtlas playerTextureAtlas;
     private TextureAtlas playerAttackTextureAtlas;
     private TextureAtlas playerDeadTextureAtlas;
+    private TextureAtlas playerRunTextureAtlas;
+    private TextureAtlas playerRushTextureAtlas;
     //Map
     private TiledMap tiledMap;
     private ObjectMap<String, TiledMap> baseMaps;
@@ -35,10 +37,10 @@ public class ResourceManager {
     public Animation<TextureRegion> playerRunAnimation;
     public Animation<TextureRegion> playerAttackAnimation;
     public Animation<TextureRegion> playerDeadAnimation;
+    public Animation<TextureRegion> playerRushAnimation;
     //Weapon
     private Texture WeaponTexture;
     private Weapon weapon;
-    private TextureAtlas playerTextureAtlas2;
     //Shader
     private ShaderManager shaderManager;
     //Effect
@@ -87,6 +89,14 @@ public class ResourceManager {
 
     public Animation<TextureRegion> getPlayerAttackAnimation() {return playerAttackAnimation;}
 
+    public Animation<TextureRegion> getPlayerRushAnimation() {
+        return playerRushAnimation;
+    }
+
+    public TextureAtlas getPlayerRushTextureAtlas() {
+        return playerRushTextureAtlas;
+    }
+
     public Sprite getPlayerSprite() {
         return playerSprite;
     }
@@ -134,6 +144,7 @@ public class ResourceManager {
         assetManager.load("Sprites/BasePlayer/Player-attack.atlas",TextureAtlas.class);
         assetManager.load("Sprites/BasePlayer/Player-run.atlas", TextureAtlas.class);
         assetManager.load("Sprites/BasePlayer/Player-dead.atlas",TextureAtlas.class);
+        assetManager.load("Sprites/BasePlayer/Player-rush.atlas",TextureAtlas.class);
         // 加载所有基础地图
         String[] baseMapNames = {
             "0000", "0001", "0010", "0011",
@@ -150,10 +161,11 @@ public class ResourceManager {
     public void Get(){
         //获取加载的资源
         playerTextureAtlas = assetManager.get("Sprites/BasePlayer/Player-Idle.atlas", TextureAtlas.class);
-        playerTextureAtlas2=assetManager.get("Sprites/BasePlayer/Player-run.atlas",TextureAtlas.class);
+        playerRunTextureAtlas=assetManager.get("Sprites/BasePlayer/Player-run.atlas",TextureAtlas.class);
         tiledMap = assetManager.get(Config.MAP_PATH, TiledMap.class);
         playerAttackTextureAtlas = assetManager.get("Sprites/BasePlayer/Player-attack.atlas", TextureAtlas.class);
         playerDeadTextureAtlas = assetManager.get("Sprites/BasePlayer/Player-dead.atlas", TextureAtlas.class);
+        playerRushTextureAtlas = assetManager.get("Sprites/BasePlayer/Player-run.atlas", TextureAtlas.class);
         // 获取所有基础地图
         baseMaps = new ObjectMap<>();
         String[] baseMapNames = {
@@ -172,7 +184,7 @@ public class ResourceManager {
     }
     public void Set(){
         //设置所有纹理过滤模式为Nearest
-        for (Texture texture : playerTextureAtlas2.getTextures()) {
+        for (Texture texture : playerRunTextureAtlas.getTextures()) {
             texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         }
         for (Texture texture : playerTextureAtlas.getTextures()) {
@@ -184,11 +196,15 @@ public class ResourceManager {
         for(Texture texture : playerDeadTextureAtlas.getTextures()){
             texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         }
+        for(Texture texture : playerRushTextureAtlas.getTextures()){
+            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        }
         playerIdleAnimation = new Animation<>(0.15f, playerTextureAtlas.findRegions("idle"), Animation.PlayMode.LOOP);
-        playerRunAnimation = new Animation<>(0.08f, playerTextureAtlas2.findRegions("run"), Animation.PlayMode.LOOP);
+        playerRunAnimation = new Animation<>(0.08f, playerRunTextureAtlas.findRegions("run"), Animation.PlayMode.LOOP);
         playerSprite = new Sprite(playerTextureAtlas.findRegion("idle"));
         playerAttackAnimation = new Animation<>(0.09f, playerAttackTextureAtlas.findRegions("attack"), Animation.PlayMode.LOOP);
         playerDeadAnimation = new Animation<>(0.1f, playerDeadTextureAtlas.findRegions("dead"), Animation.PlayMode.NORMAL);
+        playerRushAnimation = new Animation<>(0.08f, playerRushTextureAtlas.findRegions("run"), Animation.PlayMode.LOOP);
         playerSprite.setSize(
             (2 * playerSprite.getWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
             (2 * playerSprite.getHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE
