@@ -66,7 +66,7 @@ public class PlayerAttribute implements PlayerAttributeHandler{
     @Override
     public void update(PlayerTextureHandler textureHandler) {
         boolean wasTextureRequested = false;
-        if (getHP() < 1.0f) {
+        if (getHP() < 1.0f && HP > 0) {
             HP += 0.01f * Gdx.graphics.getDeltaTime()*100; // 按一定速率恢复HP
             if (HP > maxHP) HP = maxHP;
             setHP(HP);

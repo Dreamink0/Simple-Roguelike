@@ -32,7 +32,7 @@ public class PlayerAnimation extends Player implements PlayerAnimationHandler {
     Boolean flag=false;//检查是否读取了动画
     private float soundTimer=0f;
     private int deadcount = 1;
-    private boolean wasDead = false;
+    public boolean wasDead = false;
 
     @Override
     public PlayerController handleAction(PlayerController playerController, Player player, World world) {

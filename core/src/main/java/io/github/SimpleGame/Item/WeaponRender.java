@@ -53,7 +53,7 @@ public class WeaponRender {
             player.setIsequipped(true);
             addEquippedWeapon();
         }
-        if(player.isIsequipped() && isNotAttack(player)&&isEquip&&weaponID!=12){
+        if(player.isIsequipped() && isNotAttack(player)&&isEquip){
             drawtoPlayer(batch, player);
         }
 

@@ -29,10 +29,8 @@ public class WeaponEffects {
     private final AnimationTool[] animationTool;
     private float duration=0f;
     private float timer = 0f;
-    private float cooldownTimer=0f;
     private float cooldown;
-    public boolean iscooldown;
-    public boolean isfirst=true;
+    public  boolean isfirst=true;
     private float currentPlayerX;
     private float currentPlayerY;
     public WeaponEffects(int ID,int WeaponID,Player player){
@@ -52,7 +50,7 @@ public class WeaponEffects {
                 batch.end();
                 duration = 1f;
             }
-            if(WeaponID == 1) {}
+            if(WeaponID==1) {}
             if(WeaponID==2){
                 batch.begin();
                 float forceMultiplier = 10f;
@@ -111,8 +109,7 @@ public class WeaponEffects {
                 player.getBody().setTransform(newX, newY, player.getBody().getAngle());
                 batch.setColor(1,1,1,1f);
                 batch.end();
-                cooldown=30f;
-                duration=0.5f;
+                duration=1;
             }
             if(WeaponID==23){
                 batch.begin();
@@ -137,7 +134,6 @@ public class WeaponEffects {
         }
         if(timer <= 0){
             timer = duration;
-            cooldownTimer = cooldown;
             Weapon.FLAG = false;
         }
         timer -= Math.min(Gdx.graphics.getDeltaTime(),0.25f);
@@ -146,12 +142,14 @@ public class WeaponEffects {
     private boolean isPlayerCollidingWithWall() {
         return Listener.wall_Flag;
     }
-    public boolean getCooldownTimer() {
-        return cooldownTimer == cooldown;
-    }
     public AnimationTool[] getAnimationTool() {
         return animationTool;
     }
+
+    public float getCooldown() {
+        return cooldown;
+    }
+
     public float getDuration() {
         return duration;
     }

@@ -24,6 +24,13 @@ public class Weapon {
     public static final ArrayList<Weapon> WEAPONS = new ArrayList<>();
     public static final ArrayList<WeaponRender> globalEquippedWeapons = new ArrayList<>();
     public static boolean FLAG=false;
+    public boolean iscooldown=false;
+    public boolean isActive=false;
+    public float cooldownTimer=0f;
+    public float timer = 0f;
+    public float cooldown;
+    public float duration;
+    private long time;
     public Weapon(World world, float x, float y, float scale) {
         this.world = world;
         Random random = new Random();
@@ -66,11 +73,10 @@ public class Weapon {
         if(Gdx.input.isKeyJustPressed(Input.Keys.Q)){
             weaponAttribute.resetData(player);
         }
-        //只有当前装备的武器才渲染特效
-        if (isEquip && weaponEffects != null&&Gdx.input.isKeyPressed(Input.Keys.J)) {
-           FLAG = true;
+        if(isEquip&&weaponEffects!=null&&Gdx.input.isKeyPressed(Input.Keys.J)){
+            FLAG = true;
         }
-        if (FLAG) {
+        if(FLAG){
             if (weaponEffects != null) {
                 weaponEffects.render(batch);
             }
