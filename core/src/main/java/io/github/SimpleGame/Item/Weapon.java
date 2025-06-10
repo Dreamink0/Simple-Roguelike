@@ -70,7 +70,7 @@ public class Weapon {
                 weaponEffects = null;
             }
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.Q)){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.Q)||player.getAttributeHandler().getHP()<=0){
             weaponAttribute.resetData(player);
         }
         if(isEquip&&weaponEffects!=null&&Gdx.input.isKeyPressed(Input.Keys.J)){

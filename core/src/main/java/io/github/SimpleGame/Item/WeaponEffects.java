@@ -32,7 +32,6 @@ public class WeaponEffects {
         animationTool= manager.getAnimation();//获得基础特效，而渲染方式可以重写，然后组合更多特效,记得用get获得动画
     }
     public void render(SpriteBatch batch){
-        Listener.Bound(player.getWorld(),player);
         if(!isCreated) {
             attribute = new WeaponAttribute();
             hitbox = new HitboxManager();
@@ -43,7 +42,17 @@ public class WeaponEffects {
                 batch.begin();
                 animationTools[0].render(batch,player.getX(),player.getY(),0.1f,true);
                 batch.end();
-                duration = 1f;
+                Cooldown = 0.3f;
+                duration = 1.4f;
+                if(!isCreated){
+                    effects=hitbox.create(player.getWorld(),animationTool[0],0,0,0.3f,0.3f);
+                    effects.setUserData(this);
+                    isCreated = true;
+                }else{
+                    effects.setActive(true);
+                    hitbox.update(player.getX(),player.getY(),effects);
+                    effects.setUserData(this);
+                }
             }
             if(WeaponID==1) {}
             if(WeaponID==2){
@@ -83,6 +92,17 @@ public class WeaponEffects {
                 );
                 animationTools[0].render(batch,player.getX(),player.getY(),0.5f,true,player.getPlayerController().isFlipped);
                 batch.end();
+                Cooldown = 0.3f;
+                duration = 0.8f;
+                if(!isCreated){
+                    effects=hitbox.create(player.getWorld(),animationTool[0],0,0,0.7f,0.6f);
+                    effects.setUserData(this);
+                    isCreated = true;
+                }else{
+                    effects.setActive(true);
+                    hitbox.update(player.getX(),player.getY(),effects);
+                    effects.setUserData(this);
+                }
             }
             if(WeaponID==4){
 
@@ -133,6 +153,7 @@ public class WeaponEffects {
                 }else{
                     effects.setActive(true);
                     hitbox.update(player.getX(),player.getY(),effects);
+                    effects.setUserData(this);
                 }
             }
         }
@@ -159,6 +180,9 @@ public class WeaponEffects {
     }
     public float getCooldown(){
         return Cooldown;
+    }
+    public float getID(){
+        return WeaponID;
     }
     public void dispose(){
         if(animationTool!=null){

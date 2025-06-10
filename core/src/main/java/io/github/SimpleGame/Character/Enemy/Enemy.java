@@ -39,7 +39,6 @@ public abstract class Enemy {
     public float getHP(){return attribute.getHP();}
 
     public EnemyState getEnemyState() {return enemyState;}
-
     public float getX() {return enemyPhysic.getX();}
     public float getY() {return enemyPhysic.getY();}
 }

@@ -138,20 +138,19 @@ public class Listener{
                         weaponEffects = (WeaponEffects) bodyB.getUserData();
                     }
                     if(weaponEffects != null){
-                        if (enemy != null) {
-                            enemy.getEnemyState().currentState = HURT;
-                        }
-                        if (enemy != null && enemy.getEnemyState().currentState == HURT) {
-                            SoundManager.playSound("enemyHit");
-                        }
                         weaponCooldown = weaponEffects.getCooldown();
-                        if (weaponTimer < 0) {
-                            if (enemy != null) {
-                                enemy.setHP(enemy.getHP()-weaponEffects.getDamage());
-                            }
+                        if (weaponTimer <= 0) {
                             weaponTimer = weaponCooldown;
+                            if (enemy != null) {
+                                enemy.getEnemyState().currentState = HURT;
+                                enemy.setHP(player.getAttributeHandler().getDamage());
+                                System.out.println(enemy.getHP());
+                            }
+                            if (enemy != null && enemy.getEnemyState().currentState == HURT) {
+                                SoundManager.playSound("enemyHit");
+                            }
                         }
-                        weaponTimer -= weaponCooldown;
+                        weaponTimer -= Math.min(Gdx.graphics.getDeltaTime(),0.25f);
                     }
                 }
             }

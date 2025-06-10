@@ -53,6 +53,11 @@ public class WeaponRender {
             player.setIsequipped(true);
             addEquippedWeapon();
         }
+        if(player.getAttributeHandler().getHP()<=0){
+            player.setIsequipped(false);
+            isEquip = false;
+            removeEquippedWeapon();
+        }
         if(player.isIsequipped() && isNotAttack(player)&&isEquip){
             drawtoPlayer(batch, player);
         }

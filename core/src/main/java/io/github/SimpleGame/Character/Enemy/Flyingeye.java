@@ -12,7 +12,7 @@ public class Flyingeye extends Enemy{
         enemyPhysic = new EnemyPhysic(x, y, 0.8f, 1f);
         Body enemyBody = enemyPhysic.createBody(enemyPhysic.getEnemyBody());
         enemyBody.setUserData(this);
-        attribute = new EnemyAttribute(20, 3, 4, 15, 5);
+        attribute = new EnemyAttribute(30, 3, 4, 15, 5);
         enemyState = new EnemyState(enemyBody, currentState, player, enemyPhysic, attribute);
         enemyState.hurtAnimationDuration = 1;
     }
