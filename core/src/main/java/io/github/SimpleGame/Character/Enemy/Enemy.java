@@ -37,7 +37,19 @@ public abstract class Enemy {
     }
 
     public float getHP(){return attribute.getHP();}
-
+    public void setState(State newState) {
+        if (this.enemyState == null) {
+            this.enemyState = new EnemyState(
+                this.enemyPhysic != null ? this.enemyPhysic.getEnemyBody() : null,
+                newState,
+                player,
+                this.enemyPhysic,
+                this.attribute
+            );
+        } else {
+            this.enemyState.currentState = newState;
+        }
+    }
     public EnemyState getEnemyState() {return enemyState;}
     public float getX() {return enemyPhysic.getX();}
     public float getY() {return enemyPhysic.getY();}

@@ -55,7 +55,7 @@ public class WeaponEffects {
                     hitbox.update(player.getX(),player.getY(),effects);
                     effects.setUserData(this);
                 }
-            }
+            }//火焰光环!
             if(WeaponID==1) {
                 float Startx= player.getX();
                 float Starty=player.getY();
@@ -83,7 +83,7 @@ public class WeaponEffects {
                     effects.setUserData(this);
                 }
                 batch.end();
-            }
+            }//寒冰射手!
             if(WeaponID==2){
                 batch.begin();
                 float forceMultiplier = 10f;
@@ -132,11 +132,11 @@ public class WeaponEffects {
                     hitbox.update(player.getX(),player.getY(),effects);
                     effects.setUserData(this);
                 }
-            }
+            }//只有暴风才能击倒大树!
             if(WeaponID==4){
 
                 duration=10f;
-            }
+            }//赞美太阳！
             if(WeaponID==12){
                 batch.begin();
                 batch.setColor(1,1,1,0.75f);
@@ -154,7 +154,17 @@ public class WeaponEffects {
                 batch.setColor(1,1,1,1f);
                 batch.end();
                 duration=1;
-            }
+                Cooldown=0.15f;
+                if(!isCreated){
+                    effects=hitbox.create(player.getWorld(),animationTool[0],0,0,0.3f,0.2f);
+                    effects.setUserData(this);
+                    isCreated = true;
+                }else{
+                    effects.setActive(true);
+                    hitbox.update(player.getX(),player.getY(),effects);
+                    effects.setUserData(this);
+                }
+            }//博尔特!
             if(WeaponID==23){
                 batch.begin();
                 batch.setColor(155,255,255,0.85f);
@@ -184,7 +194,7 @@ public class WeaponEffects {
                     hitbox.update(player.getX(),player.getY(),effects);
                     effects.setUserData(this);
                 }
-            }
+            }//我去，好帅的特效!
         }
         if(timer <= 0){
             effects.setActive(false);

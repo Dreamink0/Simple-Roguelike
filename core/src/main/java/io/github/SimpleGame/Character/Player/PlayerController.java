@@ -84,6 +84,22 @@ public class PlayerController {
         isAttacking = attacking;
     }
 
+    public void setFlipped(boolean flipped) {
+        isFlipped = flipped;
+    }
+
+    public static float getMaxSpeed() {
+        return MAX_SPEED;
+    }
+
+    public void setAttackTimer(float attackTimer) {
+        this.attackTimer = attackTimer;
+    }
+
+    public static void setMaxSpeed(float maxSpeed) {
+        MAX_SPEED = maxSpeed;
+    }
+
     public void startAttack() {
         if (!isAttacking) {
             isAttacking = true;

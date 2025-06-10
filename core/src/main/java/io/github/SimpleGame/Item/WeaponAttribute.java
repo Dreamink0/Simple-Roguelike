@@ -30,7 +30,7 @@ public class WeaponAttribute {
             if (WeaponID == 1) Attribute= new WeaponAttribute(2, 1.5f, 0f);
             if (WeaponID == 2) Attribute= new WeaponAttribute(-3, 1, 0);
             if (WeaponID == 4) Attribute= new WeaponAttribute(5,0,0);
-            if (WeaponID == 12) Attribute= new WeaponAttribute(-3.5f, 1, 0);
+            if (WeaponID == 12) Attribute= new WeaponAttribute(-2f, 1, 0);
             if (WeaponID == 23) Attribute= new WeaponAttribute(7, 0f, 0);
         }
         this.damage = Attribute.getDamage();

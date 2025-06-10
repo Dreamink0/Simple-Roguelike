@@ -17,9 +17,10 @@ public class EnemyAnimation implements EnemyAnimationHandler{
     protected float y;
     protected boolean flip;
     protected EnemyEffects effects;
-    public boolean hasPlayedDeathAnimation = false;
-    public float deathAnimationTimer = 0f;
-    public float DEATH_ANIMATION_DURATION =1f; // 根据死亡动画总时长调整
+    protected boolean hasPlayedDeathAnimation = false;
+    protected float deathAnimationTimer = 0f;
+    protected float DEATH_ANIMATION_DURATION =1f; // 根据死亡动画总时长调整
+    protected float scale = 0.1f;
 
     @Override
     public void load(String className) {
@@ -45,6 +46,22 @@ public class EnemyAnimation implements EnemyAnimationHandler{
              SkeletonResource resource = new SkeletonResource();
              animationTools = resource.getAnimationTool();
              DEATH_ANIMATION_DURATION = 1f;
+             scale=0.15f;
+         }
+         if(className.equals("Frog")){
+             ID=4;
+             animationTools = new AnimationTool[5];
+             FrogResource resource = new FrogResource();
+             animationTools = resource.getAnimationTool();
+             DEATH_ANIMATION_DURATION = 0.25f;
+         }
+         if(className.equals("NightBorne")){
+             ID=5;
+             animationTools = new AnimationTool[5];
+             NightBorneResource resource = new NightBorneResource();
+             animationTools = resource.getAnimationTool();
+             DEATH_ANIMATION_DURATION = 1f;
+             scale=0.12f;
          }
         effects.load(ID);
     }
@@ -61,7 +78,7 @@ public class EnemyAnimation implements EnemyAnimationHandler{
             // 如果是第一次进入死亡状态，重置计时器
             if (!hasPlayedDeathAnimation) {
                 deathAnimationTimer = 0f;
-                if (animationTools != null && animationTools[4] != null) {
+                if (animationTools[4].isAnimationFinished()) {
                     animationTools[4].resetStateTime(); // 重置死亡动画时间
                 }
             }
@@ -82,19 +99,19 @@ public class EnemyAnimation implements EnemyAnimationHandler{
                     effects.render(batch, enemyState, player);
                     // 只有在死亡动画未完成时才渲染
                     if (deathAnimationTimer < DEATH_ANIMATION_DURATION) {
-                        animationTools[4].render(batch, x, y, 0.1f, false, flip);
+                        animationTools[4].render(batch, x, y, scale, false, flip);
                     }
                 } else if (currentState == Enemy.State.ATTACK) {
                     animationTools[2].resetStateTime();
-                    animationTools[2].render(batch, x, y, 0.1f, true, flip);
+                    animationTools[2].render(batch, x, y, scale, true, flip);
                 } else if (currentState == Enemy.State.CHASE) {
                     animationTools[1].resetStateTime();
-                    animationTools[1].render(batch, x, y, 0.1f, true, flip);
+                    animationTools[1].render(batch, x, y, scale, true, flip);
                 } else if (currentState == Enemy.State.HURT) {
                     effects.render(batch, enemyState, player);
-                    animationTools[3].render(batch, x, y, 0.1f, true, flip);
+                    animationTools[3].render(batch, x, y, scale, true, flip);
                 } else {
-                    currentAnimation.render(batch, x, y, 0.1f, true, flip);
+                    currentAnimation.render(batch, x, y, scale, true, flip);
                 }
             }
         }

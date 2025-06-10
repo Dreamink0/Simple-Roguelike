@@ -3,6 +3,8 @@ package io.github.SimpleGame;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import io.github.SimpleGame.Character.Enemy.EnemyGenerate;
+import io.github.SimpleGame.Character.Enemy.Frog;
+import io.github.SimpleGame.Character.Enemy.NightBorne;
 import io.github.SimpleGame.Resource.Game;
 import io.github.SimpleGame.Resource.SoundManager;
 import io.github.SimpleGame.Tool.Listener;
@@ -15,6 +17,7 @@ import static io.github.SimpleGame.Resource.Game.*;
 public class Main extends ApplicationAdapter {
     private Game Game;
     private EnemyGenerate[] enemyGenerate;
+    private NightBorne nightBorne;
     @Override
     public void create() {
         try {
@@ -24,6 +27,7 @@ public class Main extends ApplicationAdapter {
             Game.initialize();
             Game.Generation();
             Game.readPlayerData();
+            nightBorne = new NightBorne(world, player, WORLD_WIDTH/2+10, WORLD_HEIGHT+5);
             enemyGenerate = new EnemyGenerate[1];
             for(int i = 0; i < enemyGenerate.length; i++){
                 enemyGenerate[i] = new EnemyGenerate();
@@ -38,6 +42,7 @@ public class Main extends ApplicationAdapter {
     public void render() {
         Game.render();
         batch.begin();
+        nightBorne.render(batch,player);
         for (EnemyGenerate generate : enemyGenerate) {
             generate.render(batch, player);
         }
@@ -51,9 +56,6 @@ public class Main extends ApplicationAdapter {
     @Override
     public void dispose() {
         SoundManager.dispose();
-        for (EnemyGenerate generate : enemyGenerate) {
-            generate.dispose();
-        }
         Game.dispose();
     }
 }

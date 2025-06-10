@@ -47,6 +47,7 @@ public class Listener{
 //                if (bodyA == null || bodyB == null) {
 //                    System.out.println("One of the bodies is null!"); // 调试信息
 //                    return;
+//                }
 //
 
                 // 检测玩家是否与墙壁接触
@@ -142,7 +143,11 @@ public class Listener{
                         if (weaponTimer <= 0) {
                             weaponTimer = weaponCooldown;
                             if (enemy != null) {
-                                enemy.getEnemyState().currentState = HURT;
+                                if(enemy.getEnemyState()!=null){
+                                    enemy.getEnemyState().currentState = HURT;
+                                }else{
+                                    enemy.setState(HURT);
+                                }
                                 enemy.setHP(player.getAttributeHandler().getDamage());
                                 System.out.println(enemy.getHP());
                             }

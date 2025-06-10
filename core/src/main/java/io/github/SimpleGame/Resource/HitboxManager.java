@@ -12,8 +12,7 @@ public class HitboxManager {
         float H = animationTool.getTextureRegion().getRegionHeight()*scaleY;
         effectsPool = new EffectsPool(150);
         effectsPool.init(world,W,H,scaleX,scaleY);
-        Body body= effectsPool.obtain();
-        return body;
+        return effectsPool.obtain();
     }
     public void free(Body body){
         effectsPool.free(body);

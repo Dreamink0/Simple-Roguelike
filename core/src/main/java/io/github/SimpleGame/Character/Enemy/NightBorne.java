@@ -1,17 +1,50 @@
 package io.github.SimpleGame.Character.Enemy;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.TimeUtils;
 import io.github.SimpleGame.Character.Player.Player;
+import io.github.SimpleGame.Resource.HitboxManager;
 import io.github.SimpleGame.Resource.SoundManager;
 import io.github.SimpleGame.Tool.AnimationTool;
 
 import static io.github.SimpleGame.Resource.Game.world;
 
-public class EnemyState implements EnemyStateHandler{
+public class NightBorne extends Enemy{
+    private final NightBorneState nightBorneState;
+    private final NightBorneAnimation nightBorneAnimation;
+    public  NightBorne (World world, Player player, float x, float y) {
+        super(world, player, x, y);
+        nightBorneAnimation = new NightBorneAnimation();
+        nightBorneAnimation.load("NightBorne");
+        nightBorneAnimation.load();
+        enemyPhysic = new EnemyPhysic(x, y, 1.1f, 1.2f);
+        Body enemyBody = enemyPhysic.createBody(enemyPhysic.getEnemyBody());
+        enemyBody.setUserData(this);
+        attribute = new EnemyAttribute(200, 5, 4, 15, 3);
+        nightBorneState = new NightBorneState(enemyBody, State.IDLE, player, enemyPhysic, attribute);
+    }
+
+    @Override
+    public void render(SpriteBatch batch, Player player) {
+        nightBorneAnimation.render(batch,nightBorneState,player);
+        nightBorneState.update(batch);
+    }
+
+    @Override
+    public void dispose() {
+        if( nightBorneAnimation != null){
+            nightBorneAnimation.dispose();
+        }
+    }
+}
+class NightBorneState extends EnemyState{
     private Body enemyBody;
     public Enemy.State currentState;
     private Player player;
@@ -25,13 +58,16 @@ public class EnemyState implements EnemyStateHandler{
     public float hurtAnimationDuration = 0.25f;
     public boolean hurtflag=false;
     public long startTime = 0;
-    public EnemyState(Body enemyBody, Enemy.State currentState,Player player,EnemyPhysic enemyPhysic,EnemyAttribute enemyAttribute) {
+
+    public NightBorneState(Body enemyBody, Enemy.State currentState, Player player, EnemyPhysic enemyPhysic, EnemyAttribute enemyAttribute) {
+        super(enemyBody, currentState, player, enemyPhysic, enemyAttribute);
         this.enemyBody = enemyBody;
-        this.currentState = currentState;
         this.player = player;
         this.enemyPhysic = enemyPhysic;
         this.enemyAttribute = enemyAttribute;
+        this.currentState = Enemy.State.IDLE;
     }
+
     @Override
     public void update(SpriteBatch batch) {
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(),5);;
@@ -156,8 +192,8 @@ public class EnemyState implements EnemyStateHandler{
         if(enemyBody!=null){
             x=enemyBody.getPosition().x;
             y=enemyBody.getPosition().y;
-             world.destroyBody(enemyBody);
-             enemyPhysic.dispose();
+            world.destroyBody(enemyBody);
+            enemyPhysic.dispose();
         }
     }
 
@@ -194,5 +230,106 @@ public class EnemyState implements EnemyStateHandler{
 
     public float getX() {
         return x;
+    }
+}
+class NightBorneAnimation extends EnemyAnimation{
+    private HitboxManager hitbox;
+    private AnimationTool animation;
+    private Texture texture;
+    private Body body;
+    private float attackTimer=0;
+    private float attackCooldown=0.15f;
+    public void load() {
+        hitbox=new HitboxManager();
+        texture = new Texture("Magic/Gravity/Gravity-Sheet.png");
+        animation = new AnimationTool();
+        animation.create("Gravity", texture, 5, 4, 0.1f);
+    }
+
+    public void render(SpriteBatch batch, NightBorneState enemyState, Player player){
+        float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 5);
+        Enemy.State currentState = enemyState.currentState;
+        AnimationTool currentAnimation;
+        if (enemyState.getEnemyBody() != null) {
+            x = enemyState.getEnemyBody().getPosition().x;
+            y = enemyState.getEnemyBody().getPosition().y;
+            flip = player.getX() < x;
+        }
+        if (currentState == Enemy.State.DIE) {
+            // 如果是第一次进入死亡状态，重置计时器
+            if (!hasPlayedDeathAnimation) {
+                deathAnimationTimer = 0f;
+                if (animationTools[4].isAnimationFinished()) {
+                    animationTools[4].resetStateTime(); // 重置死亡动画时间
+                }
+            }
+            hasPlayedDeathAnimation = true;
+        }
+
+        if (!(currentState == Enemy.State.DIE && deathAnimationTimer >= DEATH_ANIMATION_DURATION)) {
+            currentAnimation = switch (currentState) {
+                case CHASE -> animationTools[1];
+                case ATTACK -> animationTools[2];
+                case HURT -> animationTools[3];
+                case DIE -> animationTools[4];
+                default -> animationTools[0];
+            };
+            if (currentAnimation != null) {
+                // 死亡动画单独处理
+                if (currentState == Enemy.State.DIE) {
+                    effects.render(batch, enemyState, player);
+                    // 只有在死亡动画未完成时才渲染
+                    if (deathAnimationTimer < DEATH_ANIMATION_DURATION) {
+                        animationTools[4].render(batch, x, y, scale, false, flip);
+                    }
+                } else if (currentState == Enemy.State.ATTACK) {
+                    animationTools[2].resetStateTime();
+                    animationTools[2].render(batch, x, y, scale, true, flip);
+                } else if (currentState == Enemy.State.CHASE) {
+                    animationTools[1].resetStateTime();
+                    animationTools[1].render(batch, x, y, scale, true, flip);
+                } else if (currentState == Enemy.State.HURT) {
+                    effects.render(batch, enemyState, player);
+                    animationTools[3].render(batch, x, y, scale, true, flip);
+                } else {
+                    currentAnimation.render(batch, x, y, scale, true, flip);
+                }
+            }
+        }
+        if (currentState == Enemy.State.DIE && hasPlayedDeathAnimation) {
+            animation.render(batch, x, y, scale, true);
+            body = hitbox.create(world, animation, player.getX(), player.getY(), 0.3f, 0.3f);
+            body.setUserData(this);
+            hitbox.update(x, y, body);
+
+            // 检测玩家是否与当前碰撞箱接触
+            boolean isPlayerColliding = false;
+            if (body != null && player != null && player.getBody() != null) {
+                for (Fixture fixture : body.getFixtureList()) {
+                    for (Contact contact : world.getContactList()) {
+                        if (contact.isTouching()) {
+                            Fixture otherFixture = contact.getFixtureA() == fixture ? contact.getFixtureB() : contact.getFixtureA();
+                            if (otherFixture.getBody() == player.getBody()) {
+                                isPlayerColliding = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (isPlayerColliding) break;
+                }
+            }
+            if(isPlayerColliding){
+                // 添加伤害冷却，防止一帧内多次造成伤害
+                if (attackTimer <= 0) {
+                    player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP()-5);
+                    attackTimer = attackCooldown; // 重置攻击冷却
+                }
+                attackTimer -= deltaTime;
+            }
+            deathAnimationTimer += deltaTime;
+            if (enemyState.getEnemyBody() != null) {
+                enemyState.freeBody();
+            }
+        }
     }
 }
