@@ -25,7 +25,7 @@ public class WeaponEffectsTextureManager {
                 Texture effects = new Texture(prePath[0] + 1 + ".png");
                 animation = new AnimationTool[1];
                 animation[0] = new AnimationTool();
-                animation[0].create("Weapon1", effects,1,4, 0.1f);
+                animation[0].create("Weapon1", effects,3,4, 0.08f);
             }
             if(weaponID==2){
                 Texture texture0 = new Texture(prePath[0]+2+"b.png");

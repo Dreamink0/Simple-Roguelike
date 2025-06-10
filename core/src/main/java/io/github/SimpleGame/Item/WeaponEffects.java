@@ -23,6 +23,8 @@ public class WeaponEffects {
     private boolean isCreated = false;
     private Body effects;
     private WeaponAttribute attribute;
+    private float BulletTime=0f;
+    private boolean isFlipped;
     public WeaponEffects(int ID,int WeaponID,Player player){
         this.ID=ID;
         this.WeaponID=WeaponID;
@@ -54,7 +56,34 @@ public class WeaponEffects {
                     effects.setUserData(this);
                 }
             }
-            if(WeaponID==1) {}
+            if(WeaponID==1) {
+                float Startx= player.getX();
+                float Starty=player.getY();
+                if(Gdx.input.isKeyPressed(Input.Keys.J)){
+                    Startx=player.getX();
+                    Starty=player.getY();
+                    isFlipped = player.getPlayerController().isFlipped;
+                }
+                batch.begin();
+                BulletTime +=Math.min(Gdx.graphics.getDeltaTime(),0.25f);
+                float speed = 35;
+                float currentx;
+                final float direction = isFlipped ? -1 : 1; // 记录初始方向
+                currentx = Startx + BulletTime * speed * direction;
+                animationTools[0].render(batch, currentx, Starty, 0.01f, true, !isFlipped);
+                Cooldown=0.1f;
+                duration=0.4f;
+                if(!isCreated){
+                    effects=hitbox.create(player.getWorld(),animationTool[0],0,0,0.1f,0.1f);
+                    effects.setUserData(this);
+                    isCreated = true;
+                }else{
+                    effects.setActive(true);
+                    hitbox.update(currentx,Starty,effects);
+                    effects.setUserData(this);
+                }
+                batch.end();
+            }
             if(WeaponID==2){
                 batch.begin();
                 float forceMultiplier = 10f;
@@ -160,6 +189,7 @@ public class WeaponEffects {
         if(timer <= 0){
             effects.setActive(false);
             timer = duration;
+            BulletTime = 0;
             Weapon.FLAG = false;
         }
         timer -= Math.min(Gdx.graphics.getDeltaTime(),0.25f);
