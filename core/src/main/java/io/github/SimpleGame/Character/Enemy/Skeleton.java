@@ -16,7 +16,7 @@ public class Skeleton extends Enemy{
         enemyPhysic = new EnemyPhysic(x, y, 0.5f, 2f);
         Body enemyBody = enemyPhysic.createBody(enemyPhysic.getEnemyBody());
         enemyBody.setUserData(this);
-        attribute = new EnemyAttribute(25, 8, 8, 15, 1.5f);
+        attribute = new EnemyAttribute(25, 8, 4, 15, 1.5f);
         enemyState = new EnemyState(enemyBody, currentState, player, enemyPhysic, attribute);
         enemyState.hurtAnimationDuration=0.1f;
     }

@@ -8,6 +8,7 @@ import io.github.SimpleGame.Character.Enemy.Enemy;
 import io.github.SimpleGame.Character.Enemy.EnemyState;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Item.Weapon;
+import io.github.SimpleGame.Item.WeaponEffects;
 import io.github.SimpleGame.Magic.Dark;
 import io.github.SimpleGame.Magic.Magic;
 import io.github.SimpleGame.Magic.Thunder;
@@ -29,6 +30,8 @@ public class Listener{
     public static float lightningCooldown=0.15f;
     public static float DarkTimer=0;
     public static float DarkCooldown=0.5f;
+    public static float weaponCooldown=0.2f;
+    public static float weaponTimer=0f;
     public static void Bound(World world, Player player){
         world.setContactListener(new ContactListener() {
             final float Time = (float) Math.min(Gdx.graphics.getDeltaTime(),0.25);
@@ -116,6 +119,39 @@ public class Listener{
                             DarkTimer = DarkCooldown;
                         }
                         DarkTimer -= Time;
+                    }
+                }
+                if ((bodyA.getUserData() != null && bodyA.getUserData() instanceof WeaponEffects &&
+                    bodyB.getUserData() != null && bodyB.getUserData() instanceof Enemy) ||
+                    (bodyA.getUserData() != null && bodyA.getUserData() instanceof Enemy &&
+                        bodyB.getUserData() != null && bodyB.getUserData() instanceof WeaponEffects)) {
+                    Enemy enemy = null;
+                    WeaponEffects weaponEffects=null;
+                    if (bodyA.getUserData() instanceof Enemy) {
+                        enemy = (Enemy) bodyA.getUserData();
+                    } else if (bodyB.getUserData() instanceof Enemy) {
+                        enemy = (Enemy) bodyB.getUserData();
+                    }
+                    if (bodyA.getUserData() instanceof WeaponEffects) {
+                        weaponEffects = (WeaponEffects) bodyA.getUserData();
+                    } else if (bodyB.getUserData() instanceof WeaponEffects) {
+                        weaponEffects = (WeaponEffects) bodyB.getUserData();
+                    }
+                    if(weaponEffects != null){
+                        if (enemy != null) {
+                            enemy.getEnemyState().currentState = HURT;
+                        }
+                        if (enemy != null && enemy.getEnemyState().currentState == HURT) {
+                            SoundManager.playSound("enemyHit");
+                        }
+                        weaponCooldown = weaponEffects.getCooldown();
+                        if (weaponTimer < 0) {
+                            if (enemy != null) {
+                                enemy.setHP(enemy.getHP()-weaponEffects.getDamage());
+                            }
+                            weaponTimer = weaponCooldown;
+                        }
+                        weaponTimer -= weaponCooldown;
                     }
                 }
             }

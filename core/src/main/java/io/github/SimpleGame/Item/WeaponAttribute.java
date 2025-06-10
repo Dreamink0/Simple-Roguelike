@@ -23,7 +23,7 @@ public class WeaponAttribute {
         this.attackSpeed = attackSpeed;
     }
 
-    public WeaponAttribute readData(int ID, int WeaponID, Player player){
+    public WeaponAttribute readData(int ID, int WeaponID){
         WeaponAttribute Attribute = new WeaponAttribute();
         if (ID == 0) {
             if (WeaponID == 0) Attribute= new WeaponAttribute(3, 1, 0f);
@@ -31,7 +31,7 @@ public class WeaponAttribute {
             if (WeaponID == 2) Attribute= new WeaponAttribute(-3, 1, -0.15f);
             if (WeaponID == 4) Attribute= new WeaponAttribute(5,1,-0.05f);
             if (WeaponID == 12) Attribute= new WeaponAttribute(-3.5f, 1, -0.2f);
-            if (WeaponID == 23) Attribute= new WeaponAttribute(7, 2.5f, -0.05f);
+            if (WeaponID == 23) Attribute= new WeaponAttribute(7, 0f, -0.05f);
         }
         this.damage = Attribute.getDamage();
         this.range = Attribute.getRange();

@@ -3,36 +3,26 @@ package io.github.SimpleGame.Item;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import io.github.SimpleGame.Character.Player.Player;
 //import io.github.SimpleGame.Magic.Ice;
-import io.github.SimpleGame.Character.Player.PlayerController;
-import io.github.SimpleGame.Resource.Game;
+import io.github.SimpleGame.Resource.HitboxManager;
 import io.github.SimpleGame.Tool.AnimationTool;
 import io.github.SimpleGame.Tool.Listener;
-
-import java.util.Random;
-
-import static io.github.SimpleGame.Config.WORLD_HEIGHT;
-import static io.github.SimpleGame.Config.WORLD_WIDTH;
 
 public class WeaponEffects {
     public int ID;
     public int WeaponID;
     private static Player player;
     private final AnimationTool[] animationTool;
+    private HitboxManager hitbox;
     private float duration=0f;
+    private float Cooldown;
     private float timer = 0f;
-    private float cooldown;
-    public  boolean isfirst=true;
-    private float currentPlayerX;
-    private float currentPlayerY;
+    private boolean isCreated = false;
+    private Body effects;
+    private WeaponAttribute attribute;
     public WeaponEffects(int ID,int WeaponID,Player player){
         this.ID=ID;
         this.WeaponID=WeaponID;
@@ -42,6 +32,11 @@ public class WeaponEffects {
         animationTool= manager.getAnimation();//获得基础特效，而渲染方式可以重写，然后组合更多特效,记得用get获得动画
     }
     public void render(SpriteBatch batch){
+        Listener.Bound(player.getWorld(),player);
+        if(!isCreated) {
+            attribute = new WeaponAttribute();
+            hitbox = new HitboxManager();
+        }
         AnimationTool[] animationTools = animationTool;
         if(ID==0){
             if(WeaponID==0){
@@ -129,10 +124,20 @@ public class WeaponEffects {
                 }
                 batch.setColor(1,1,1,1);
                 batch.end();
+                Cooldown = 0.05f;
                 duration = 0.75f;
+                if(!isCreated){
+                    effects=hitbox.create(player.getWorld(),animationTool[0],0,0,0.3f,0.3f);
+                    effects.setUserData(this);
+                    isCreated = true;
+                }else{
+                    effects.setActive(true);
+                    hitbox.update(player.getX(),player.getY(),effects);
+                }
             }
         }
         if(timer <= 0){
+            effects.setActive(false);
             timer = duration;
             Weapon.FLAG = false;
         }
@@ -145,13 +150,15 @@ public class WeaponEffects {
     public AnimationTool[] getAnimationTool() {
         return animationTool;
     }
-
-    public float getCooldown() {
-        return cooldown;
-    }
-
     public float getDuration() {
         return duration;
+    }
+    public float getDamage(){
+        attribute=attribute.readData(ID,WeaponID);
+        return attribute.getDamage();
+    }
+    public float getCooldown(){
+        return Cooldown;
     }
     public void dispose(){
         if(animationTool!=null){

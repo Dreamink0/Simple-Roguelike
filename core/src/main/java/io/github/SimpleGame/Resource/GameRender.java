@@ -20,18 +20,16 @@ import static io.github.SimpleGame.Resource.Game.player;
 public class GameRender implements GameRenderHandler{
     private Weapon item;
     private Weapon item2;
-    private Thunder thunder;
-    private Thunder thunder2;
-    private Dark dark;
+//    private Thunder thunder;
+//    private Thunder thunder2;
+//    private Dark dark;
     private UI ui;
-//    private Ice ice;
-//    private AnimationTool animationTool;
     public GameRender() {
-        dark = new Dark(Game.world, player, WORLD_WIDTH+15,WORLD_HEIGHT+5);
-        thunder = new Thunder(Game.world, player, WORLD_WIDTH+10,WORLD_HEIGHT+2);
+//        dark = new Dark(Game.world, player, WORLD_WIDTH+15,WORLD_HEIGHT+5);
+//        thunder = new Thunder(Game.world, player, WORLD_WIDTH+10,WORLD_HEIGHT+2);
         item = new Weapon(Game.world, WORLD_WIDTH+10, WORLD_HEIGHT, 1f);
         item2 = new Weapon(Game.world, WORLD_WIDTH-2, WORLD_HEIGHT, 1f);
-        thunder2 = new Thunder(Game.world, player, WORLD_WIDTH+5,WORLD_HEIGHT+2);
+//        thunder2 = new Thunder(Game.world, player, WORLD_WIDTH+5,WORLD_HEIGHT+2);
         ui=new UI();
         ui.create();
     }
@@ -43,9 +41,9 @@ public class GameRender implements GameRenderHandler{
 
         //在这里渲染各种东东
         effectManager.applyEffect(batch);
-        dark.render(batch, UIbatch, player);
-        thunder.render(batch, UIbatch, player);
-        thunder2.render(batch, UIbatch, player);
+//        dark.render(batch, UIbatch, player);
+//        thunder.render(batch, UIbatch, player);
+//        thunder2.render(batch, UIbatch, player);
         batch.begin();
         player.filpCheck(player.getPlayerSprite(), player.getPlayerController(), batch).draw(batch);
         batch.end();

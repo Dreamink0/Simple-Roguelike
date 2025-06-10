@@ -35,7 +35,7 @@ public class Weapon {
         this.world = world;
         Random random = new Random();
         ID =0; //random.nextInt(2);
-        weaponID =12;//random.nextInt(29);
+        weaponID =23;//random.nextInt(29);
         assetManager.load("Items/Weapon" + ID + "/" + weaponID + ".png", Texture.class);
         assetManager.finishLoading();
         Texture texture = assetManager.get("Items/Weapon" + ID + "/" + weaponID + ".png", Texture.class);
@@ -59,7 +59,7 @@ public class Weapon {
 
         if (!wasEquipped && isEquip) {
             //武器刚被装备时初始化属性
-            weaponAttribute = weaponAttribute.readData(ID, weaponID, player);
+            weaponAttribute = weaponAttribute.readData(ID, weaponID);
             weaponAttribute.setData(player);
             weaponEffects = new WeaponEffects(ID, weaponID, player);
         } else if (isEquip && Gdx.input.isKeyJustPressed(Input.Keys.Q)) {

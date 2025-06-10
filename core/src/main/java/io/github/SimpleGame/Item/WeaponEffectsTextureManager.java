@@ -7,6 +7,7 @@ import io.github.SimpleGame.Tool.AnimationTool;
 
 public class WeaponEffectsTextureManager {
     protected AnimationTool[] animation;
+    protected Texture textures;
     private static final String[] prePath={
         "Effects/WeaponEffects/Weapon0/",
         "Effects/WeaponEffects/Weapon1/",
