@@ -16,8 +16,6 @@ import static io.github.SimpleGame.Resource.Game.*;
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
     private Game Game;
-    private EnemyGenerate[] enemyGenerate;
-    private NightBorne nightBorne;
     @Override
     public void create() {
         try {
@@ -27,12 +25,6 @@ public class Main extends ApplicationAdapter {
             Game.initialize();
             Game.Generation();
             Game.readPlayerData();
-//            nightBorne = new NightBorne(world, player, WORLD_WIDTH/2+10, WORLD_HEIGHT+5);
-            enemyGenerate = new EnemyGenerate[1];
-            for(int i = 0; i < enemyGenerate.length; i++){
-                enemyGenerate[i] = new EnemyGenerate();
-                enemyGenerate[i].addEnemy(world, player, WORLD_WIDTH/2+i*2, WORLD_HEIGHT+i);
-            }
         } catch (Exception e) {
             Gdx.app.error("SimpleGame", "Error during initialization: " + e.getMessage());
             throw new RuntimeException("Failed to initialize game", e);
@@ -41,12 +33,6 @@ public class Main extends ApplicationAdapter {
     @Override
     public void render() {
         Game.render();
-        batch.begin();
-//        nightBorne.render(batch,player);
-        for (EnemyGenerate generate : enemyGenerate) {
-            generate.render(batch, player);
-        }
-        batch.end();
         Listener.Bound(world, player);
     }
     @Override

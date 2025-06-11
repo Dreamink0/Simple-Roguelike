@@ -29,7 +29,7 @@ public class NightBorne extends Enemy{
         enemyPhysic = new EnemyPhysic(x, y, 1.1f, 1.2f);
         Body enemyBody = enemyPhysic.createBody(enemyPhysic.getEnemyBody());
         enemyBody.setUserData(this);
-        attribute = new EnemyAttribute(200, 5, 4, 30, 5);
+        attribute = new EnemyAttribute(100, 5, 5, 10, 3);
         nightBorneState = new NightBorneState(enemyBody, State.IDLE, player, enemyPhysic, attribute);
     }
 
@@ -313,7 +313,6 @@ class NightBorneAnimation extends EnemyAnimation{
                 body = hitbox.create(world, animation, player.getX(), player.getY(), 0.3f, 0.3f);
                 body.setUserData(this);
                 hitbox.update(x, y, body);
-                // 检测玩家是否与当前碰撞箱接触
                 boolean isPlayerColliding = false;
                 if (body != null && player.getBody() != null) {
                     for (Fixture fixture : body.getFixtureList()) {
@@ -332,8 +331,8 @@ class NightBorneAnimation extends EnemyAnimation{
                 if (isPlayerColliding) {
                     // 添加伤害冷却，防止一帧内多次造成伤害
                     if (attackTimer <= 0) {
-                        player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - 5);
-                        attackTimer = attackCooldown; // 重置攻击冷却
+                        player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - 0.1f);
+                        attackTimer = attackCooldown; //重置攻击冷却
                     }
                     attackTimer -= deltaTime;
                 }
@@ -341,6 +340,7 @@ class NightBorneAnimation extends EnemyAnimation{
                 if(body!=null){
                     body.setActive(false);
                     hitbox.free(body);
+                    body=null;
                 }
             }
             deathAnimationTimer += deltaTime;

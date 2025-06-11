@@ -16,7 +16,7 @@ import io.github.SimpleGame.Item.Weapon;
 
 public class ResourceManager {
     private static ResourceManager instance;
-    private final AssetManager assetManager;
+    private AssetManager assetManager;
     //Atlas
     private TextureAtlas playerTextureAtlas;
     private TextureAtlas playerAttackTextureAtlas;
@@ -58,6 +58,11 @@ public class ResourceManager {
     }
     public void loadResources() {
         try {
+            if (assetManager == null) {
+                assetManager = new AssetManager();
+                // 注册TiledMap加载器
+                assetManager.setLoader(TiledMap.class, new TmxMapLoader());
+            }
             Load();
             Get();
             Set();
@@ -66,7 +71,7 @@ public class ResourceManager {
             effectManager = EffectManager.getInstance();
             effectManager.initialize(shaderManager);
         } catch (Exception e) {
-            Gdx.app.error("ResourceManager", "Error loading resources: " + e.getMessage());
+            Gdx.app.error("ResourceManager", "Error loading resources: " + e.getMessage(),e);
             throw new RuntimeException("Failed to load game resources", e);
         }
     }
@@ -112,28 +117,88 @@ public class ResourceManager {
     }
 
     public void dispose() {
-        if (mapManager != null) {
+        if(mapManager != null){
             mapManager.dispose();
             mapManager = null;
         }
-        if (shaderManager != null) {
+        if(playerSprite != null){
+            playerSprite.getTexture().dispose();
+            playerSprite = null;
+        }
+        if(playerTextureAtlas != null){
+            playerTextureAtlas.dispose();
+            playerTextureAtlas = null;
+        }
+        if(playerAttackTextureAtlas != null){
+            playerAttackTextureAtlas.dispose();
+            playerAttackTextureAtlas = null;
+        }
+        if(playerDeadTextureAtlas != null){
+            playerDeadTextureAtlas.dispose();
+            playerDeadTextureAtlas = null;
+        }
+        if(playerRunTextureAtlas != null){
+            playerRunTextureAtlas.dispose();
+            playerRunTextureAtlas = null;
+        }
+        if(playerRushTextureAtlas != null){
+            playerRushTextureAtlas.dispose();
+            playerRushTextureAtlas = null;
+        }
+        if(tiledMap != null){
+            tiledMap.dispose();
+            tiledMap = null;
+        }
+        if(baseMaps != null){
+            baseMaps.clear();
+            baseMaps = null;
+        }
+        if(playerHP != null){
+            playerHP.dispose();
+            playerHP = null;
+        }
+        if(playerMP != null){
+            playerMP.dispose();
+            playerMP = null;
+        }
+        if(playerDEF != null){
+            playerDEF.dispose();
+            playerDEF = null;
+        }
+        if(playerIdleAnimation != null){
+            playerIdleAnimation = null;
+        }
+        if(playerRunAnimation != null){
+            playerRunAnimation = null;
+        }
+        if(playerAttackAnimation != null){
+            playerAttackAnimation = null;
+        }
+        if(playerDeadAnimation != null){
+            playerDeadAnimation = null;
+        }
+        if(playerRushAnimation != null){
+            playerRushAnimation = null;
+        }
+        if(WeaponTexture != null){
+            WeaponTexture.dispose();
+            WeaponTexture = null;
+        }
+        if(weapon != null){
+            weapon.dispose();
+            weapon = null;
+        }
+        if(shaderManager != null){
             shaderManager.dispose();
             shaderManager = null;
         }
-        if (assetManager != null) {
+        if(effectManager != null){
+            effectManager.dispose();
+            effectManager = null;
+        }
+        if(assetManager !=  null){
             assetManager.dispose();
-        }
-        if (tiledMap != null) {
-            tiledMap.dispose();
-        }
-        if (playerTextureAtlas != null) {
-            playerTextureAtlas.dispose();
-        }
-        if (baseMaps != null) {
-            for (TiledMap map : baseMaps.values()) {
-                map.dispose();
-            }
-            baseMaps.clear();
+            assetManager = null;
         }
     }
 

@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import io.github.SimpleGame.Item.WeaponEffects;
+
 public class WorldManager{
     private World world;
     private Box2DDebugRenderer debugRenderer;

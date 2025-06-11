@@ -3,6 +3,7 @@ package io.github.SimpleGame.Character.Player;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.*;
+import io.github.SimpleGame.Resource.Game;
 
 public class Player {
     //身体//
@@ -83,6 +84,18 @@ public class Player {
         attributeHandler.update(playerTextureHandler);
         playerTextureHandler.render(batch, deltaTime);
     }
+    public boolean checkDeath() {
+        if (attributeHandler.getHP() <= 0) {
+            return true;
+        }
+        return false;
+    }
+    public void update() {
+        if (checkDeath()) {
+            // 触发游戏重启
+            Game.getInstance().restartGame();  // 需要实现Game单例
+        }
+    }
     public PlayerAnimation getActionHandler() {
         return (PlayerAnimation) actionHandler;
     }
@@ -91,11 +104,19 @@ public class Player {
             playerBody.getWorld().destroyBody(playerBody);
             playerBody = null;
         }
-        playerTextureHandler.dispose();
-        playerTextureHandler = null;
-        playerController = null;
-        playerSprite = null;
-        actionHandler = null;
+        if(playerTextureHandler != null){
+            playerTextureHandler.dispose();
+            playerTextureHandler = null;
+        }
+        if(playerController != null){
+            playerController = null;
+        }
+        if(playerSprite!=  null){
+            playerSprite.getTexture().dispose();
+        }
+        if(attributeHandler != null){
+            attributeHandler = null;
+        }
     }
 
 }

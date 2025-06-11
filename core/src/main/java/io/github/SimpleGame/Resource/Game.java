@@ -23,6 +23,7 @@ public class Game {
     public static Player player;
     public static SpriteBatch batch;
     public static SpriteBatch UIbatch;
+    private static Game instance;
     //效果管理
     public static EffectManager effectManager;
     //接口
@@ -37,6 +38,7 @@ public class Game {
     };
     //加载资源初始化
     public void initialize() {
+        instance = this;
         worldManager = new WorldManager();
         cameraManager = new CameraManager();
         resourceManager = ResourceManager.getInstance();
@@ -58,7 +60,13 @@ public class Game {
    }
    //生成地图完读取玩家信息
    public void readPlayerData(){
+        if(player != null){
+            player.dispose();
+        }
         player = new Player(world, WORLD_WIDTH, WORLD_HEIGHT);
+   }
+   public static Game getInstance(){
+        return instance;
    }
    //游戏主要内容的图像渲染
     public void render() {
@@ -111,6 +119,12 @@ public class Game {
             UIbatch.dispose();
             batchPool.free(UIbatch);
         }
+        if(cameraManager!=  null){
+            cameraManager = null;
+        }
+        if(worldManager != null){
+            worldManager = null;
+        }
         batchPool.clear();
     }
     public void TestKey(){
@@ -151,7 +165,16 @@ public class Game {
                 Gdx.app.log("Game", "Y: Death effect OFF - Screen returned to color");
             }
         }
-
+        // 重新开始
+        if(Gdx.input.isKeyJustPressed(Input.Keys.T)){
+            effectManager.toggleEffect(EffectManager.EffectType.DEATH);
+            if (effectManager.isEffectActive(EffectManager.EffectType.DEATH)) {
+                Gdx.app.log("Game", "YES!");
+                restartGame();
+            } else {
+                Gdx.app.log("Game", "NO!");
+            }
+        }
 //        // 受伤效果
 //        if (Gdx.input.isKeyJustPressed(Input.Keys.U)) {
 //            effectManager.toggleEffect(EffectManager.EffectType.HURT);
@@ -183,6 +206,18 @@ public class Game {
             Gdx.app.debug("SimpleGame", "New map generated successfully");
         } catch (Exception e) {
             Gdx.app.error("SimpleGame", "Error generating new map: " + e.getMessage());
+        }
+    }
+    public void restartGame(){
+        dispose();
+        initialize();
+        Generation();
+        readPlayerData();
+        int currentWidth = Gdx.graphics.getBackBufferWidth();
+        int currentHeight = Gdx.graphics.getBackBufferHeight();
+        resize(currentWidth, currentHeight);
+        if (gameRenderHandler instanceof GameRender) {
+            ((GameRender) gameRenderHandler).restart();
         }
     }
 }

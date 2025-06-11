@@ -11,7 +11,7 @@ public class Goblin extends Enemy {
         enemyPhysic = new EnemyPhysic(x, y, 0.5f, 1);
         Body enemyBody = enemyPhysic.createBody(enemyPhysic.getEnemyBody());
         enemyBody.setUserData(this);
-        attribute = new EnemyAttribute(25, 3, 4, 15, 2);
+        attribute = new EnemyAttribute(25, 3, 4, 15, 3);
         enemyState = new EnemyState(enemyBody, currentState, player, enemyPhysic, attribute);
     }
 

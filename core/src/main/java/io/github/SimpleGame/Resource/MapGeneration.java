@@ -10,10 +10,10 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class MapGeneration {
-    private static final int ROOM_WIDTH = 20;  // 每个房间的宽度
-    private static final int ROOM_HEIGHT = 12; // 每个房间的高度
-    private static final int DUNGEON_SIZE = 3; // 地牢大小（3x3的房间）
-    private static final int TILE_SIZE = 24;   // 瓦片大小
+    public static final int ROOM_WIDTH = 20;  // 每个房间的宽度
+    public static final int ROOM_HEIGHT = 12; // 每个房间的高度
+    public static final int DUNGEON_SIZE = 3; // 地牢大小（3x3的房间）
+    public static final int TILE_SIZE = 24;   // 瓦片大小
 
     private final Random random;
     private final ResourceManager resourceManager;

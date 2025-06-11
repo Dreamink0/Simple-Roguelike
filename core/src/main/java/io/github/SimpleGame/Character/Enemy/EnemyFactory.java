@@ -20,6 +20,7 @@ public class EnemyFactory {
         ENEMY_CREATORS.add((Flyingeye::new));
         ENEMY_CREATORS.add((Skeleton::new));
         ENEMY_CREATORS.add((Frog::new));
+        ENEMY_CREATORS.add((NightBorne::new));
     }
     public static Enemy createRandomEnemy(World world, Player player, float x, float y) {
         if (ENEMY_CREATORS.isEmpty()) {

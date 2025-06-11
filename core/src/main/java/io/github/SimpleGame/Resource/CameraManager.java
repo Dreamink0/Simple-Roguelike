@@ -12,8 +12,6 @@ import static io.github.SimpleGame.Config.WORLD_WIDTH;
 public class CameraManager {
     public OrthographicCamera camera;
     public OrthographicCamera uiCamera;
-    private float shakeIntensity=0f;
-    private float shakeTimer=0f;
 
     public CameraManager() {
         this.camera = new OrthographicCamera();

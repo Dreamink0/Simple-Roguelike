@@ -30,6 +30,7 @@ public class WeaponEffects {
     private WeaponAttribute attribute;
     private float BulletTime=0f;
     private boolean isFlipped;
+    private int time=1;
     public WeaponEffects(int ID,int WeaponID,Player player){
         this.ID=ID;
         this.WeaponID=WeaponID;
@@ -42,6 +43,7 @@ public class WeaponEffects {
         if(!isCreated) {
             attribute = new WeaponAttribute();
             hitbox = new HitboxManager();
+            time = 1;
         }
         AnimationTool[] animationTools = animationTool;
         if(ID==0) {
@@ -60,6 +62,7 @@ public class WeaponEffects {
                     hitbox.update(player.getX(), player.getY(), effects);
                     effects.setUserData(this);
                 }
+                isQ();
             }//火焰光环!
             if (WeaponID == 1) {
                 float Startx = player.getX();
@@ -88,6 +91,7 @@ public class WeaponEffects {
                     effects.setUserData(this);
                 }
                 batch.end();
+                isQ();
             }//寒冰射手!
             if (WeaponID == 2) {
                 batch.begin();
@@ -137,6 +141,7 @@ public class WeaponEffects {
                     hitbox.update(player.getX(), player.getY(), effects);
                     effects.setUserData(this);
                 }
+                isQ();
             }//只有暴风才能击倒大树!
             if (WeaponID == 3) {
                 batch.begin();
@@ -169,6 +174,7 @@ public class WeaponEffects {
                 }
                 batch.end();
                 batch.setColor(1, 1, 1, 1);
+                isQ();
             }//七彩彗星鸭子乐!
             if (WeaponID == 4) {
                 batch.begin();
@@ -185,7 +191,7 @@ public class WeaponEffects {
                     animationTools[1].render(batch, player.getX(), player.getY() + 3, 0.1f, true, player.getPlayerController().isFlipped);
                 }
                 Cooldown = 0.25f;
-                duration = 0.25f;
+                duration = 5f;
                 if (!isCreated) {
                     effects = hitbox.create(player.getWorld(), animationTool[0], 0, 0, 0.2f, 0.2f);
                     effects.setUserData(this);
@@ -214,6 +220,7 @@ public class WeaponEffects {
                     hitbox.update(player.getX(), player.getY(), effects);
                     effects.setUserData(this);
                 }
+                isQ();
             }//小刀！
             if (WeaponID == 6) {
                 boolean flip = player.getPlayerController().isFlipped;
@@ -250,8 +257,6 @@ public class WeaponEffects {
                 }
                 batch.setColor(1, 1, 1, 1);
                 batch.end();
-                Cooldown=0.08f;
-                duration=600f;
                 if (!isCreated) {
                     effects=hitbox.create(player.getWorld(),animationTools[0],player.getX(),player.getY(),0.4f,0.4f);
                     effects.setUserData(this);
@@ -262,8 +267,42 @@ public class WeaponEffects {
                     effects.setUserData(this);
                 }
                 Cooldown=0.15f;
-                duration=1f;
+                duration=5f;
+                isQ();
             }//光的力量!
+            if (WeaponID == 7) {
+                if(time == 1&&player.getAttributeHandler().getHP()<=0){
+                    time -= 1;
+                    player.getAttributeHandler().setHP(20);
+                    WeaponID = -1;
+                }
+                batch.begin();
+                for(int i=0;i<=12;i++){
+                    batch.setColor(1,i*0.01f,i*0.01f,i*0.08f);
+                    animationTools[3].render(batch, (float) (player.getX()+4*Math.cos(i)), (float) (player.getY()-1.2f+3*Math.sin(i)), 0.02f*i, true, player.getPlayerController().isFlipped);
+                    animationTools[2].render(batch, (float) (player.getX()+4*Math.cos(i)), (float) (player.getY()+2f+2*Math.sin(i)), 0.01f*i, true, player.getPlayerController().isFlipped);
+                    animationTools[1].render(batch,  (float) (player.getX()+i/2*Math.cos(i)), (float) (player.getY()+2.5f+i/4*Math.sin(i)), 0.005f*i, true, player.getPlayerController().isFlipped);
+                    animationTools[1].render(batch,  (float) (player.getX()+i/3*Math.cos(i)), (float) (player.getY()-2-i/3*Math.sin(i)), 0.005f*i, true, !player.getPlayerController().isFlipped);
+                }
+                Cooldown=0.05f;
+                duration=5.35f;
+                batch.setColor(1,1,1,1);
+                batch.end();
+                if (!isCreated) {
+                    effects=hitbox.create(player.getWorld(),animationTools[0],player.getX(),player.getY(),0.4f,0.7f);
+                    effects.setUserData(this);
+                    isCreated = true;
+                } else {
+                    effects.setActive(true);
+                    hitbox.update(player.getX(), player.getY(), effects);
+                    effects.setUserData(this);
+                }
+                isQ();
+            }//血！
+            if (WeaponID == 8){}//冰！
+            if (WeaponID == 9){}//蛇妖！
+            if (WeaponID == 10) {}//!!!
+            if (WeaponID == 11) {}//!!!
             if (WeaponID == 12) {
                 batch.begin();
                 batch.setColor(1, 1, 1, 0.75f);
@@ -291,6 +330,7 @@ public class WeaponEffects {
                     hitbox.update(player.getX(), player.getY(), effects);
                     effects.setUserData(this);
                 }
+                isQ();
             }//博尔特!
             if (WeaponID == 23) {
                 batch.begin();
@@ -321,11 +361,14 @@ public class WeaponEffects {
                     hitbox.update(player.getX(), player.getY(), effects);
                     effects.setUserData(this);
                 }
+                isQ();
             }//我去，好帅的特效!
+            isQ();
         }
         if(timer <= 0){
             if(effects!=null){
                 effects.setActive(false);
+                hitbox.free(effects);
             }
             timer = duration;
             BulletTime = 0;
@@ -337,6 +380,19 @@ public class WeaponEffects {
             }
         }
         timer -= Math.min(Gdx.graphics.getDeltaTime(),0.25f);
+    }
+
+    public void isQ() {
+        if(Gdx.input.isKeyPressed(Input.Keys.Q)&&player.isIsequipped()){
+            isCreated = false;
+            player.setIsequipped(false);
+            WeaponID = -1;
+            if(effects!=null){
+                effects.setActive(false);
+                hitbox.destroy(effects);
+                effects = null;
+            }
+        }
     }
 
     private boolean isPlayerCollidingWithWall() {

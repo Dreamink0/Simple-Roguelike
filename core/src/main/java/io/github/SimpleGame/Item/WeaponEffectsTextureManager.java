@@ -70,7 +70,25 @@ public class WeaponEffectsTextureManager {
                     animation[i].create("Weapon6_"+i,texture0,1,8,0.7f*0.01f);
                 }
             }
-            if(weaponID==7){}
+            if(weaponID==7){
+                Texture texture0 = new Texture(prePath[0]+7+"a.png");
+                Texture texture1 = new Texture(prePath[0]+7+"b.png");
+                Texture texture2 = new Texture(prePath[0]+7+"c.png");
+                Texture texture3 = new Texture(prePath[0]+7+"d.png");
+                texture1.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                texture0.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                texture2.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                texture3.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                animation = new AnimationTool[4];
+                animation[0] = new AnimationTool();
+                animation[1] = new AnimationTool();
+                animation[2] = new AnimationTool();
+                animation[3] = new AnimationTool();
+                animation[0].create("Weapon7_"+0,texture0,11,1,1f);
+                animation[1].create("Weapon7_"+1,texture1,4,5,1f);
+                animation[2].create("Weapon7_"+2,texture2,4,5,1f);
+                animation[3].create("Weapon7_"+3,texture3,20,1,1f);
+            }
             if(weaponID==8){}
             if(weaponID==9){}
             if(weaponID==10){}

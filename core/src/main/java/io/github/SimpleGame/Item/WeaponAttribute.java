@@ -29,6 +29,7 @@ public class WeaponAttribute {
             if (WeaponID == 4) Attribute = new WeaponAttribute(6,0,0);
             if(WeaponID == 5) Attribute  = new WeaponAttribute(1.5f,0,0);
             if(WeaponID == 6) Attribute = new WeaponAttribute(2f,-1,0);
+            if(WeaponID == 7) Attribute = new WeaponAttribute(1.5f,0,0);
             if (WeaponID == 11) Attribute = new WeaponAttribute(4, 0, 0);
             if (WeaponID == 12) Attribute= new WeaponAttribute(-2f, 1, 0);
             if(WeaponID == 17) Attribute = new WeaponAttribute(2, 0, 0);

@@ -31,6 +31,7 @@ public class HitboxManager {
     }
     public void update(float x, float y,Body body) {
         if(body!=null){
+            body = effectsPool.obtain();
             body.setTransform(x,y,0);
         }
     }

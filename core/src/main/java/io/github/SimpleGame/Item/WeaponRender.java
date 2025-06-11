@@ -23,7 +23,7 @@ public class WeaponRender {
     private boolean isAttacking = false;
     private float attackProgress = 0f;
     private static final float ATTACK_DURATION = 0.3f; // 攻击动画持续时间
-    private int weaponID;
+    private final int weaponID;
 
     // 使用构造参数传入列表，实现统一管理
     public WeaponRender(WeaponHitBox weaponHitBox, ArrayList<WeaponRender> globalEquippedWeapons,int weaponID){
@@ -53,10 +53,13 @@ public class WeaponRender {
             player.setIsequipped(true);
             addEquippedWeapon();
         }
-        if(player.getAttributeHandler().getHP()<=0){
+        if(player.checkDeath()){
             player.setIsequipped(false);
             isEquip = false;
             removeEquippedWeapon();
+            if (!equippedWeapons.isEmpty()) {
+                equippedWeapons.clear();
+            }
         }
         if(player.isIsequipped() && isNotAttack(player)&&isEquip){
             drawtoPlayer(batch, player);
