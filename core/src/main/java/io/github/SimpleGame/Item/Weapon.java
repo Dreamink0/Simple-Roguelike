@@ -24,18 +24,11 @@ public class Weapon {
     public static final ArrayList<Weapon> WEAPONS = new ArrayList<>();
     public static final ArrayList<WeaponRender> globalEquippedWeapons = new ArrayList<>();
     public static boolean FLAG=false;
-    public boolean iscooldown=false;
-    public boolean isActive=false;
-    public float cooldownTimer=0f;
-    public float timer = 0f;
-    public float cooldown;
-    public float duration;
-    private long time;
     public Weapon(World world, float x, float y, float scale) {
         this.world = world;
         Random random = new Random();
         ID =0; //random.nextInt(2);
-        weaponID =23;//random.nextInt(29);
+        weaponID =4;//random.nextInt(29);
         assetManager.load("Items/Weapon" + ID + "/" + weaponID + ".png", Texture.class);
         assetManager.finishLoading();
         Texture texture = assetManager.get("Items/Weapon" + ID + "/" + weaponID + ".png", Texture.class);

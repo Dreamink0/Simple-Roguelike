@@ -7,10 +7,6 @@ public class WeaponAttribute {
     private float damage;
     private float attackSpeed;
     private float range;
-    private float speed;
-    private float hp;
-    private float mp;
-    private float def;
     private static float playerDamage;
     private static float playerRange;
     private static float playerAttackSpeed;
@@ -29,8 +25,14 @@ public class WeaponAttribute {
             if (WeaponID == 0) Attribute= new WeaponAttribute(3, 1, 0f);
             if (WeaponID == 1) Attribute= new WeaponAttribute(2, 1.5f, 0f);
             if (WeaponID == 2) Attribute= new WeaponAttribute(-3, 1, 0);
-            if (WeaponID == 4) Attribute= new WeaponAttribute(5,0,0);
+            if (WeaponID == 3) Attribute = new WeaponAttribute(5, 1, 0);
+            if (WeaponID == 4) Attribute = new WeaponAttribute(6,0,0);
+            if(WeaponID == 5) Attribute  = new WeaponAttribute(1.5f,0,0);
+            if(WeaponID == 6) Attribute = new WeaponAttribute(2f,-1,0);
+            if (WeaponID == 11) Attribute = new WeaponAttribute(4, 0, 0);
             if (WeaponID == 12) Attribute= new WeaponAttribute(-2f, 1, 0);
+            if(WeaponID == 17) Attribute = new WeaponAttribute(2, 0, 0);
+            if(WeaponID == 18) Attribute = new WeaponAttribute(3, 0, 0);
             if (WeaponID == 23) Attribute= new WeaponAttribute(7, 0f, 0);
         }
         this.damage = Attribute.getDamage();

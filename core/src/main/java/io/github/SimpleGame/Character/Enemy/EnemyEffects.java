@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Tool.AnimationTool;
 
+import static io.github.SimpleGame.Resource.Game.player;
+
 public class EnemyEffects extends EnemyAnimation{
     private static final String[] effectPaths = {
         "Effects/hitEffects.png",

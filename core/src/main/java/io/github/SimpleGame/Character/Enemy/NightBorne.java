@@ -14,6 +14,8 @@ import io.github.SimpleGame.Resource.HitboxManager;
 import io.github.SimpleGame.Resource.SoundManager;
 import io.github.SimpleGame.Tool.AnimationTool;
 
+import java.util.Random;
+
 import static io.github.SimpleGame.Resource.Game.world;
 
 public class NightBorne extends Enemy{
@@ -27,7 +29,7 @@ public class NightBorne extends Enemy{
         enemyPhysic = new EnemyPhysic(x, y, 1.1f, 1.2f);
         Body enemyBody = enemyPhysic.createBody(enemyPhysic.getEnemyBody());
         enemyBody.setUserData(this);
-        attribute = new EnemyAttribute(200, 5, 4, 15, 3);
+        attribute = new EnemyAttribute(200, 5, 4, 30, 5);
         nightBorneState = new NightBorneState(enemyBody, State.IDLE, player, enemyPhysic, attribute);
     }
 
@@ -147,6 +149,13 @@ class NightBorneState extends EnemyState{
                 direction.y * Speed * 2f
             );
         }
+        if(distance>=20f){
+            Random random = new Random();
+            int flagRandom =  random.nextInt(1)-random.nextInt(2);
+            int randomInt = random.nextInt(5);
+            Vector2 vector = new Vector2(player.getX()+randomInt*flagRandom,player.getY()+randomInt*flagRandom);
+            enemyBody.setTransform(vector,0);
+        }
     }
 
     @Override
@@ -239,11 +248,12 @@ class NightBorneAnimation extends EnemyAnimation{
     private Body body;
     private float attackTimer=0;
     private float attackCooldown=0.15f;
+    private float duration=0;
     public void load() {
         hitbox=new HitboxManager();
         texture = new Texture("Magic/Gravity/Gravity-Sheet.png");
         animation = new AnimationTool();
-        animation.create("Gravity", texture, 5, 4, 0.1f);
+        animation.create("Gravity", texture, 5, 4, 0.08f);
     }
 
     public void render(SpriteBatch batch, NightBorneState enemyState, Player player){
@@ -297,34 +307,41 @@ class NightBorneAnimation extends EnemyAnimation{
             }
         }
         if (currentState == Enemy.State.DIE && hasPlayedDeathAnimation) {
-            animation.render(batch, x, y, scale, true);
-            body = hitbox.create(world, animation, player.getX(), player.getY(), 0.3f, 0.3f);
-            body.setUserData(this);
-            hitbox.update(x, y, body);
-
-            // 检测玩家是否与当前碰撞箱接触
-            boolean isPlayerColliding = false;
-            if (body != null && player != null && player.getBody() != null) {
-                for (Fixture fixture : body.getFixtureList()) {
-                    for (Contact contact : world.getContactList()) {
-                        if (contact.isTouching()) {
-                            Fixture otherFixture = contact.getFixtureA() == fixture ? contact.getFixtureB() : contact.getFixtureA();
-                            if (otherFixture.getBody() == player.getBody()) {
-                                isPlayerColliding = true;
-                                break;
+            duration+=deltaTime;
+            if(duration<=5) {
+                animation.render(batch, x, y, scale, true);
+                body = hitbox.create(world, animation, player.getX(), player.getY(), 0.3f, 0.3f);
+                body.setUserData(this);
+                hitbox.update(x, y, body);
+                // 检测玩家是否与当前碰撞箱接触
+                boolean isPlayerColliding = false;
+                if (body != null && player.getBody() != null) {
+                    for (Fixture fixture : body.getFixtureList()) {
+                        for (Contact contact : world.getContactList()) {
+                            if (contact.isTouching()) {
+                                Fixture otherFixture = contact.getFixtureA() == fixture ? contact.getFixtureB() : contact.getFixtureA();
+                                if (otherFixture.getBody() == player.getBody()) {
+                                    isPlayerColliding = true;
+                                    break;
+                                }
                             }
                         }
+                        if (isPlayerColliding) break;
                     }
-                    if (isPlayerColliding) break;
                 }
-            }
-            if(isPlayerColliding){
-                // 添加伤害冷却，防止一帧内多次造成伤害
-                if (attackTimer <= 0) {
-                    player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP()-5);
-                    attackTimer = attackCooldown; // 重置攻击冷却
+                if (isPlayerColliding) {
+                    // 添加伤害冷却，防止一帧内多次造成伤害
+                    if (attackTimer <= 0) {
+                        player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - 5);
+                        attackTimer = attackCooldown; // 重置攻击冷却
+                    }
+                    attackTimer -= deltaTime;
                 }
-                attackTimer -= deltaTime;
+            }else{
+                if(body!=null){
+                    body.setActive(false);
+                    hitbox.free(body);
+                }
             }
             deathAnimationTimer += deltaTime;
             if (enemyState.getEnemyBody() != null) {

@@ -86,7 +86,6 @@ public class Player {
     public PlayerAnimation getActionHandler() {
         return (PlayerAnimation) actionHandler;
     }
-
     public void dispose() {
         if (playerBody != null) {
             playerBody.getWorld().destroyBody(playerBody);

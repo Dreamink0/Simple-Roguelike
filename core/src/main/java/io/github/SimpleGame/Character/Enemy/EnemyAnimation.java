@@ -11,6 +11,8 @@ public class EnemyAnimation implements EnemyAnimationHandler{
     protected static AssetManager assetManager=new AssetManager();
     protected AnimationTool[] animationTools;
     protected AnimationTool effectsAnimations;
+    protected AnimationTool playereffectsAniamtions;
+    protected Texture texture;
     protected String className;
     protected int ID;
     protected float x;
@@ -21,6 +23,7 @@ public class EnemyAnimation implements EnemyAnimationHandler{
     protected float deathAnimationTimer = 0f;
     protected float DEATH_ANIMATION_DURATION =1f; // 根据死亡动画总时长调整
     protected float scale = 0.1f;
+    protected boolean iscreate=false;
 
     @Override
     public void load(String className) {

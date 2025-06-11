@@ -32,11 +32,49 @@ public class WeaponEffectsTextureManager {
                 texture0.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
                 animation = new AnimationTool[1];
                 animation[0] = new AnimationTool();
-                animation[0].create("Weapon23",texture0,3,4,0.05f);
+                animation[0].create("Weapon2",texture0,3,4,0.05f);
+            }
+            if(weaponID==3){
+                Texture texture0 = new Texture(prePath[0]+3+"a.png");
+                texture0.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                animation = new AnimationTool[1];
+                animation[0] = new AnimationTool();
+                animation[0].create("Weapon3",texture0,1,10,0.05f);
             }
             if(weaponID==4){
-
+                Texture texture0 = new Texture(prePath[0]+4+"a.png");
+                Texture texture1 = new Texture(prePath[0]+4+"b.png");
+                texture0.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                texture1.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                animation = new AnimationTool[2];
+                animation[0] = new AnimationTool();
+                animation[1] = new AnimationTool();
+                animation[0].create("Weapon4",texture0,1,37,0.05f);
+                animation[1].create("Weapon4",texture1,1,24,0.05f);
             }
+            if(weaponID==5){
+                Texture texture0 = new Texture(prePath[0]+5+".png");
+                texture0.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                animation = new AnimationTool[1];
+                animation[0] = new AnimationTool();
+                animation[0].create("Weapon5",texture0,1,4,0.1f);
+            }
+            if(weaponID==6){
+                Texture texture0 = new Texture(prePath[0]+6+".png");
+                texture0.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+                animation = new AnimationTool[10];
+                for(int i=0;i<10;i++){
+                    animation[i] = new AnimationTool();
+                }
+                for(int i=0;i<10;i++){
+                    animation[i].create("Weapon6_"+i,texture0,1,8,0.7f*0.01f);
+                }
+            }
+            if(weaponID==7){}
+            if(weaponID==8){}
+            if(weaponID==9){}
+            if(weaponID==10){}
+            if(weaponID==11){}
             if(weaponID==12){
                 Texture texture0 = new Texture(prePath[0]+12+"a.png");
                 texture0.unsafeSetFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
@@ -45,6 +83,16 @@ public class WeaponEffectsTextureManager {
                 animation[1] = new AnimationTool();
                 animation[0].create("Weapon12",texture0,3,3,0.03f);
             }
+            if(weaponID==13){}
+            if(weaponID==14){}
+            if(weaponID==15){}
+            if(weaponID==16){}
+            if(weaponID==17){}
+            if(weaponID==18){}
+            if(weaponID==19){}
+            if(weaponID==20){}
+            if(weaponID==21){}
+            if(weaponID==22){}
             if(weaponID==23){
                 Texture texture0 = new Texture(prePath[0]+23+"a.png");
                 Texture texture1 = new Texture(prePath[0]+23+"b.png");
@@ -68,6 +116,12 @@ public class WeaponEffectsTextureManager {
                 animation[3].create("Weapon23",texture3,5,2,0.05f);
                 animation[4].create("Weapon23",texture4,4,2,0.081f);
             }
+            if(weaponID==24){}
+            if(weaponID==25){}
+            if(weaponID==26){}
+            if(weaponID==27){}
+            if(weaponID==28){}
+            if(weaponID==29){}
         }
     }
 

@@ -2,6 +2,7 @@ package io.github.SimpleGame.Tool;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.TimeUtils;
 import io.github.SimpleGame.Character.Enemy.Enemy;
@@ -12,6 +13,7 @@ import io.github.SimpleGame.Item.WeaponEffects;
 import io.github.SimpleGame.Magic.Dark;
 import io.github.SimpleGame.Magic.Magic;
 import io.github.SimpleGame.Magic.Thunder;
+import io.github.SimpleGame.Resource.Game;
 import io.github.SimpleGame.Resource.SoundManager;
 import io.github.SimpleGame.Resource.WorldManager;
 
@@ -20,6 +22,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import static io.github.SimpleGame.Character.Enemy.Enemy.State.HURT;
+import static io.github.SimpleGame.Resource.Game.batch;
 
 public class Listener{
     public static boolean equip;

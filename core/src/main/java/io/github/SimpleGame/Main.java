@@ -27,7 +27,7 @@ public class Main extends ApplicationAdapter {
             Game.initialize();
             Game.Generation();
             Game.readPlayerData();
-            nightBorne = new NightBorne(world, player, WORLD_WIDTH/2+10, WORLD_HEIGHT+5);
+//            nightBorne = new NightBorne(world, player, WORLD_WIDTH/2+10, WORLD_HEIGHT+5);
             enemyGenerate = new EnemyGenerate[1];
             for(int i = 0; i < enemyGenerate.length; i++){
                 enemyGenerate[i] = new EnemyGenerate();
@@ -42,7 +42,7 @@ public class Main extends ApplicationAdapter {
     public void render() {
         Game.render();
         batch.begin();
-        nightBorne.render(batch,player);
+//        nightBorne.render(batch,player);
         for (EnemyGenerate generate : enemyGenerate) {
             generate.render(batch, player);
         }
