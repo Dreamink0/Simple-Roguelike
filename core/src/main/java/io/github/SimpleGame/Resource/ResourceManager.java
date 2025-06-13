@@ -23,6 +23,7 @@ public class ResourceManager {
     private TextureAtlas playerDeadTextureAtlas;
     private TextureAtlas playerRunTextureAtlas;
     private TextureAtlas playerRushTextureAtlas;
+    private TextureAtlas playerHurtTextureAtlas;
     //Map
     private TiledMap tiledMap;
     private ObjectMap<String, TiledMap> baseMaps;
@@ -38,6 +39,7 @@ public class ResourceManager {
     public Animation<TextureRegion> playerAttackAnimation;
     public Animation<TextureRegion> playerDeadAnimation;
     public Animation<TextureRegion> playerRushAnimation;
+    public Animation<TextureRegion> playerHurtAnimation;
     //Weapon
     private Texture WeaponTexture;
     private Weapon weapon;
@@ -116,6 +118,10 @@ public class ResourceManager {
         return playerDeadAnimation;
     }
 
+    public Animation<TextureRegion> getPlayerHurtAnimation() {
+        return playerHurtAnimation;
+    }
+
     public void dispose() {
         if(mapManager != null){
             mapManager.dispose();
@@ -144,6 +150,13 @@ public class ResourceManager {
         if(playerRushTextureAtlas != null){
             playerRushTextureAtlas.dispose();
             playerRushTextureAtlas = null;
+        }
+        if(playerHurtTextureAtlas != null){
+            playerHurtTextureAtlas.dispose();
+        }
+        if(playerTextureAtlas != null){
+            playerTextureAtlas.dispose();
+            playerTextureAtlas = null;
         }
         if(tiledMap != null){
             tiledMap.dispose();
@@ -208,6 +221,7 @@ public class ResourceManager {
         assetManager.load(Config.MAP_PATH, TiledMap.class);
         assetManager.load("Sprites/BasePlayer/Player-attack.atlas",TextureAtlas.class);
         assetManager.load("Sprites/BasePlayer/Player-run.atlas", TextureAtlas.class);
+        assetManager.load("Sprites/BasePlayer/Player-hurt-sheet.atlas", TextureAtlas.class);
         assetManager.load("Sprites/BasePlayer/Player-dead.atlas",TextureAtlas.class);
         assetManager.load("Sprites/BasePlayer/Player-rush.atlas",TextureAtlas.class);
         // 加载所有基础地图
@@ -231,6 +245,7 @@ public class ResourceManager {
         playerAttackTextureAtlas = assetManager.get("Sprites/BasePlayer/Player-attack.atlas", TextureAtlas.class);
         playerDeadTextureAtlas = assetManager.get("Sprites/BasePlayer/Player-dead.atlas", TextureAtlas.class);
         playerRushTextureAtlas = assetManager.get("Sprites/BasePlayer/Player-run.atlas", TextureAtlas.class);
+        playerHurtTextureAtlas = assetManager.get("Sprites/BasePlayer/Player-hurt-sheet.atlas", TextureAtlas.class);
         // 获取所有基础地图
         baseMaps = new ObjectMap<>();
         String[] baseMapNames = {
@@ -249,31 +264,31 @@ public class ResourceManager {
     }
     public void Set(){
         //设置所有纹理过滤模式为Nearest
-        for (Texture texture : playerRunTextureAtlas.getTextures()) {
-            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        }
-        for (Texture texture : playerTextureAtlas.getTextures()) {
-            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        }
-        for(Texture texture : playerAttackTextureAtlas.getTextures()) {
-            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        }
+        TextureNearest(playerRunTextureAtlas, playerTextureAtlas, playerAttackTextureAtlas);
+        TextureNearest(playerDeadTextureAtlas, playerRushTextureAtlas, playerHurtTextureAtlas);
+        playerIdleAnimation = new Animation<>(0.15f, playerTextureAtlas.findRegions("idle"), Animation.PlayMode.LOOP);
+        playerRunAnimation = new Animation<>(0.08f, playerRunTextureAtlas.findRegions("run"), Animation.PlayMode.LOOP);
+        playerHurtAnimation = new Animation<>(0.08f, playerHurtTextureAtlas.findRegions("hurt"), Animation.PlayMode.NORMAL);
+        playerAttackAnimation = new Animation<>(0.09f, playerAttackTextureAtlas.findRegions("attack"), Animation.PlayMode.LOOP);
+        playerDeadAnimation = new Animation<>(0.1f, playerDeadTextureAtlas.findRegions("dead"), Animation.PlayMode.NORMAL);
+        playerRushAnimation = new Animation<>(0.08f, playerRushTextureAtlas.findRegions("run"), Animation.PlayMode.LOOP);
+        playerSprite = new Sprite(playerTextureAtlas.findRegion("idle"));
+        playerSprite.setSize(
+            (2 * playerSprite.getWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
+            (2 * playerSprite.getHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE
+        );
+    }
+
+    public void TextureNearest(TextureAtlas playerDeadTextureAtlas, TextureAtlas playerRushTextureAtlas, TextureAtlas playerHurtTextureAtlas) {
         for(Texture texture : playerDeadTextureAtlas.getTextures()){
             texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         }
         for(Texture texture : playerRushTextureAtlas.getTextures()){
             texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         }
-        playerIdleAnimation = new Animation<>(0.15f, playerTextureAtlas.findRegions("idle"), Animation.PlayMode.LOOP);
-        playerRunAnimation = new Animation<>(0.08f, playerRunTextureAtlas.findRegions("run"), Animation.PlayMode.LOOP);
-        playerSprite = new Sprite(playerTextureAtlas.findRegion("idle"));
-        playerAttackAnimation = new Animation<>(0.09f, playerAttackTextureAtlas.findRegions("attack"), Animation.PlayMode.LOOP);
-        playerDeadAnimation = new Animation<>(0.1f, playerDeadTextureAtlas.findRegions("dead"), Animation.PlayMode.NORMAL);
-        playerRushAnimation = new Animation<>(0.08f, playerRushTextureAtlas.findRegions("run"), Animation.PlayMode.LOOP);
-        playerSprite.setSize(
-            (2 * playerSprite.getWidth() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE,
-            (2 * playerSprite.getHeight() / Config.PIXELS_PER_METER) * Config.PLAYER_SCALE
-        );
+        for(Texture texture : playerHurtTextureAtlas.getTextures()){
+            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        }
     }
 
     public TiledMap getBaseMap(String mapName) {

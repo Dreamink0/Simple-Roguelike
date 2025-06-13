@@ -6,9 +6,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.TimeUtils;
 import io.github.SimpleGame.Character.Player.Player;
+import io.github.SimpleGame.Resource.EffectManager;
 import io.github.SimpleGame.Resource.SoundManager;
 import io.github.SimpleGame.Tool.AnimationTool;
 
+import static io.github.SimpleGame.Resource.Game.batch;
 import static io.github.SimpleGame.Resource.Game.world;
 
 public class EnemyState implements EnemyStateHandler{

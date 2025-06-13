@@ -1,0 +1,26 @@
+Player-hurt-sheet.png
+size: 135, 54
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+hurt
+  rotate: false
+  xy: 0, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+hurt
+  rotate: false
+  xy: 45, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1
+hurt
+  rotate: false
+  xy: 90, 0
+  size: 45, 54
+  orig: 45, 54
+  offset: 0, 0
+  index: -1

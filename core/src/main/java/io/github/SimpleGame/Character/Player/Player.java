@@ -20,6 +20,7 @@ public class Player {
     private World world;
     public float attackCooldownTimer = 0f;
     public float attackCooldown = 0.05f;//影响帧伤，很强大
+    public int weaponID = -1;
 
 
     public Player() {}

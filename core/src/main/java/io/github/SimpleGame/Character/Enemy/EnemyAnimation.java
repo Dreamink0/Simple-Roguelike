@@ -5,13 +5,13 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.SimpleGame.Character.Player.Player;
+import io.github.SimpleGame.Resource.EffectManager;
 import io.github.SimpleGame.Tool.AnimationTool;
 
 public class EnemyAnimation implements EnemyAnimationHandler{
     protected static AssetManager assetManager=new AssetManager();
     protected AnimationTool[] animationTools;
     protected AnimationTool effectsAnimations;
-    protected AnimationTool playereffectsAniamtions;
     protected Texture texture;
     protected String className;
     protected int ID;
@@ -23,7 +23,6 @@ public class EnemyAnimation implements EnemyAnimationHandler{
     protected float deathAnimationTimer = 0f;
     protected float DEATH_ANIMATION_DURATION =1f; // 根据死亡动画总时长调整
     protected float scale = 0.1f;
-    protected boolean iscreate=false;
 
     @Override
     public void load(String className) {
@@ -65,6 +64,14 @@ public class EnemyAnimation implements EnemyAnimationHandler{
              animationTools = resource.getAnimationTool();
              DEATH_ANIMATION_DURATION = 1f;
              scale=0.12f;
+         }
+         if(className.equals("BadCat")){
+             ID=6;
+             animationTools = new AnimationTool[5];
+             BadCatResource resource = new BadCatResource();
+             animationTools = resource.getAnimationTool();
+             DEATH_ANIMATION_DURATION = 1f;
+             scale=0.05f;
          }
         effects.load(ID);
     }
@@ -112,7 +119,11 @@ public class EnemyAnimation implements EnemyAnimationHandler{
                     animationTools[1].render(batch, x, y, scale, true, flip);
                 } else if (currentState == Enemy.State.HURT) {
                     effects.render(batch, enemyState, player);
-                    animationTools[3].render(batch, x, y, scale, true, flip);
+                    EffectManager.getInstance().applyEffectToObject(
+                        batch,EffectManager.EffectType.DEATH,
+                        1f,
+                        () ->animationTools[3].render(batch, x, y, scale, true, flip)
+                    );
                 } else {
                     currentAnimation.render(batch, x, y, scale, true, flip);
                 }
@@ -132,6 +143,6 @@ public class EnemyAnimation implements EnemyAnimationHandler{
             assetManager.dispose();
         }
     }
-
+    public String getClassName() {return className;}
     public AnimationTool[] getAnimationTools() {return animationTools;}
 }

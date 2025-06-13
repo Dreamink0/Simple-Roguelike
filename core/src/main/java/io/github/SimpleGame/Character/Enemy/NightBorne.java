@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.TimeUtils;
 import io.github.SimpleGame.Character.Player.Player;
+import io.github.SimpleGame.Resource.EffectManager;
 import io.github.SimpleGame.Resource.HitboxManager;
 import io.github.SimpleGame.Resource.SoundManager;
 import io.github.SimpleGame.Tool.AnimationTool;
@@ -26,7 +27,7 @@ public class NightBorne extends Enemy{
         nightBorneAnimation = new NightBorneAnimation();
         nightBorneAnimation.load("NightBorne");
         nightBorneAnimation.load();
-        enemyPhysic = new EnemyPhysic(x, y, 1.1f, 1.2f);
+        enemyPhysic = new EnemyPhysic(x, y, 0.8f, 1.2f);
         Body enemyBody = enemyPhysic.createBody(enemyPhysic.getEnemyBody());
         enemyBody.setUserData(this);
         attribute = new EnemyAttribute(100, 5, 5, 10, 3);
@@ -300,7 +301,12 @@ class NightBorneAnimation extends EnemyAnimation{
                     animationTools[1].render(batch, x, y, scale, true, flip);
                 } else if (currentState == Enemy.State.HURT) {
                     effects.render(batch, enemyState, player);
-                    animationTools[3].render(batch, x, y, scale, true, flip);
+                    effects.render(batch, enemyState, player);
+                    EffectManager.getInstance().applyEffectToObject(
+                        batch,EffectManager.EffectType.HURT,
+                        1f,
+                        () ->animationTools[3].render(batch, x, y, scale, true, flip)
+                    );
                 } else {
                     currentAnimation.render(batch, x, y, scale, true, flip);
                 }

@@ -24,11 +24,11 @@ public class Weapon {
     public static final ArrayList<Weapon> WEAPONS = new ArrayList<>();
     public static final ArrayList<WeaponRender> globalEquippedWeapons = new ArrayList<>();
     public static boolean FLAG=false;
+    private final Random random=new Random();
     public Weapon(World world, float x, float y, float scale) {
         this.world = world;
-        Random random = new Random();
         ID =0; //random.nextInt(2);
-        weaponID =23;//random.nextInt(29);
+        weaponID =6;//random.nextInt(29);
         assetManager.load("Items/Weapon" + ID + "/" + weaponID + ".png", Texture.class);
         assetManager.finishLoading();
         Texture texture = assetManager.get("Items/Weapon" + ID + "/" + weaponID + ".png", Texture.class);
@@ -52,6 +52,7 @@ public class Weapon {
 
         if (!wasEquipped && isEquip) {
             //武器刚被装备时初始化属性
+            player.weaponID = weaponID;
             weaponAttribute = weaponAttribute.readData(ID, weaponID);
             weaponAttribute.setData(player);
             weaponEffects = new WeaponEffects(ID, weaponID, player);
@@ -87,8 +88,5 @@ public class Weapon {
 
     public World getWorld() {
         return world;
-    }
-    public int getWeaponID() {
-        return weaponID;
     }
 }

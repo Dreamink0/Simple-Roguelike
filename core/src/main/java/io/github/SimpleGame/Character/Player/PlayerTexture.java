@@ -1,16 +1,21 @@
 package io.github.SimpleGame.Character.Player;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.github.SimpleGame.Config;
 import io.github.SimpleGame.Tool.AnimationTool;
+
+import static io.github.SimpleGame.Resource.Game.player;
 
 public class PlayerTexture implements PlayerTextureHandler{
     private Texture HPtexture;
     private Texture MPtexture;
     private AssetManager assetManager;
     private PlayerAttributeHandler attributeHandler;
+    private final BitmapFont font = new BitmapFont(Gdx.files.internal("UI/Font/English3/Font.fnt"));
 
     public PlayerTexture(PlayerAttributeHandler attributeHandler) {
         this.attributeHandler = attributeHandler;
@@ -45,6 +50,11 @@ public class PlayerTexture implements PlayerTextureHandler{
         batch.setColor(1, 1, 1, 0.95f);
         batch.draw(HPtexture, Config.WORLD_WIDTH/2-12f, Config.WORLD_HEIGHT/2+7.5f, HPtexture.getWidth() * uiScale*1.5f, HPtexture.getHeight() * uiScale*1.5f);
         batch.draw(MPtexture, Config.WORLD_WIDTH/2-12f, Config.WORLD_HEIGHT/2+7f, MPtexture.getWidth() * uiScale*1f, MPtexture.getHeight() * uiScale*1f);
+        font.getData().setScale(0.01f);
+        float hp = player.getAttributeHandler().getMaxHP();
+        if(hp<=0){hp = 0;}
+        int roundedHP = Math.round(hp);
+        font.draw(batch, ""+roundedHP, Config.WORLD_WIDTH/2-12, Config.WORLD_HEIGHT/2+9f,0.01f,1,true);
     }
 
     @Override

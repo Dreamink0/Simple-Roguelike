@@ -15,7 +15,6 @@ import io.github.SimpleGame.Config;
 import io.github.SimpleGame.Resource.EffectManager;
 import io.github.SimpleGame.Resource.ResourceManager;
 import io.github.SimpleGame.Resource.SoundManager;
-import io.github.SimpleGame.Tool.AnimationTool;
 
 import static io.github.SimpleGame.Resource.Game.*;
 
@@ -24,6 +23,7 @@ public class PlayerAnimation extends Player implements PlayerAnimationHandler {
     private float accumulator = 0f;
     private Animation<TextureRegion> playerIdleAnimation;
     private Animation<TextureRegion> playerRunAnimation;
+    private Animation<TextureRegion> playerHurtAnimation;
     private Animation<TextureRegion> playerAttackAnimation;
     private Animation<TextureRegion> playerDeadAnimation;
     private Animation<TextureRegion> playerRushAnimation;
@@ -33,6 +33,9 @@ public class PlayerAnimation extends Player implements PlayerAnimationHandler {
     private float soundTimer=0f;
     private int deadcount = 1;
     public boolean wasDead = false;
+    private float hurtTimer=0f;
+    private float hurtCooldown = 0.01f; // 增加到0.5秒冷却时间
+    private float lastHP = 20;
 
     @Override
     public PlayerController handleAction(PlayerController playerController, Player player, World world) {
@@ -42,7 +45,7 @@ public class PlayerAnimation extends Player implements PlayerAnimationHandler {
         stateTime += deltaTime;
         boolean isAttacking = playerController.isAttacking();
         boolean isMoving = playerController.isMoving();
-        Animation<TextureRegion> newAnimation;
+        Animation<TextureRegion> newAnimation = null;
         if (vector2.len2() > 45 * 45) {
             newAnimation = playerRushAnimation;
             if (newAnimation != currentAnimation) {
@@ -65,7 +68,7 @@ public class PlayerAnimation extends Player implements PlayerAnimationHandler {
             playerController.getBody().setAngularVelocity(0);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.J) && player.attackCooldownTimer <= 0) {
-            if (!isAttacking && !isDead) {  // 只有在非死亡状态才能攻击
+            if (!isAttacking && !isDead) {  //只有在非死亡状态才能攻击
                 if (soundTimer <= 0) {
                     SoundManager.playSound("playerHit");
                     soundTimer = 0.5f;
@@ -78,13 +81,23 @@ public class PlayerAnimation extends Player implements PlayerAnimationHandler {
 
         player.attackCooldownTimer -= deltaTime;
         soundTimer -= deltaTime;
+        hurtTimer -= deltaTime;
+        float currentHP = player.getAttributeHandler().getHP();
+        //受伤逻辑 - 仅当HP下降且不在冷却时触发
+        if (currentHP < lastHP && hurtTimer <= 0 && !isDead && currentHP > 0) {
+//            SoundManager.playSound("playerHit");
+            effectManager.activateEffect(EffectManager.EffectType.HURT);
+            hurtTimer = hurtCooldown;
+            newAnimation = playerHurtAnimation;
+        }
+        lastHP = currentHP;
 
-        if (!isAttacking && !isDead) {  //死亡时不处理攻击和移动的碰撞
+        // 碰撞框大小设置
+        if (!isAttacking && !isDead) {
             setCollisionBoxSize(1.2f, 1.8f, player);
         } else if (!isDead) {
             setCollisionBoxSize(3.5f, 1.7f, player);
         }
-
         if (isDead && !wasDead) {
             SoundManager.playSound("dead");
             wasDead = true;
@@ -92,24 +105,29 @@ public class PlayerAnimation extends Player implements PlayerAnimationHandler {
             wasDead = false;
         }
 
+        //动画选择逻辑 - 优先级顺序：死亡 > 攻击 > 受伤 > 移动/冲刺 > 默认idle
         if (isDead) {
-            //设置死亡动画
             newAnimation = playerDeadAnimation;
         } else if (isAttacking) {
             newAnimation = playerAttackAnimation;
-        } else {
+        } else if (hurtTimer > 0 && hurtTimer < hurtCooldown) {
+            hurtTimer = hurtCooldown;
+            newAnimation = playerHurtAnimation;
+        } else if (newAnimation == null) {
             newAnimation = isMoving ? playerRunAnimation : playerIdleAnimation;
         }
 
+        // 动画切换处理
         if (newAnimation != currentAnimation) {
             stateTime = 0;
             currentAnimation = newAnimation;
         }
 
+        // 获取当前帧并设置到精灵
         TextureRegion currentFrame = currentAnimation.getKeyFrame(stateTime, !isDead); // 死亡动画只播放一次
         playerSprite.setRegion(currentFrame);
 
-        // 死亡时保持死亡帧大小，否则根据动画类型设置大小
+        // 根据不同动画类型设置精灵大小
         if (!isDead) {
             if (isAttacking) {
                 playerSprite.setSize(
@@ -130,29 +148,38 @@ public class PlayerAnimation extends Player implements PlayerAnimationHandler {
             );
         }
 
+        // 物理世界更新
         accumulator += deltaTime;
         while (accumulator >= Config.TIME_STEP) {
             world.step(Config.TIME_STEP, 6, 2);
             accumulator -= Config.TIME_STEP;
         }
+
         return playerController;
     }
-    public void load(){
+
+    public void load() {
         this.playerSprite = ResourceManager.getInstance().getPlayerSprite();
         this.playerIdleAnimation = ResourceManager.getInstance().getPlayerIdleAnimation();
         this.playerRunAnimation = ResourceManager.getInstance().getPlayerRunAnimation();
         this.playerAttackAnimation = ResourceManager.getInstance().getPlayerAttackAnimation();
         this.playerDeadAnimation = ResourceManager.getInstance().getPlayerDeadAnimation();
         this.playerRushAnimation = ResourceManager.getInstance().getPlayerRushAnimation();
+        this.playerHurtAnimation = ResourceManager.getInstance().getPlayerHurtAnimation();
+        currentAnimation = playerIdleAnimation;
+        stateTime = 0;
+        flag = true; // 标记已加载
     }
 
-    private void setCollisionBoxSize(float width, float height,Player player) {
+    private void setCollisionBoxSize(float width, float height, Player player) {
         if (player.playerBody == null) return;
 
+        // 清除现有碰撞体
         for (Fixture fixture : player.playerBody.getFixtureList()) {
             player.playerBody.destroyFixture(fixture);
         }
 
+        // 创建新碰撞体
         PolygonShape newShape = new PolygonShape();
         newShape.setAsBox(width, height);
 

@@ -35,7 +35,7 @@ public abstract class Enemy {
     public void setHP(float Damage) {
         attribute.setHP(attribute.getHP()-Damage);
     }
-
+    public String getClassName(){return animation.getClassName();}
     public float getHP(){return attribute.getHP();}
     public void setState(State newState) {
         if (this.enemyState == null) {
