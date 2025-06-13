@@ -337,7 +337,7 @@ class NightBorneAnimation extends EnemyAnimation{
                 if (isPlayerColliding) {
                     // 添加伤害冷却，防止一帧内多次造成伤害
                     if (attackTimer <= 0) {
-                        player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - 0.1f);
+                        player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - 2f);
                         attackTimer = attackCooldown; //重置攻击冷却
                     }
                     attackTimer -= deltaTime;

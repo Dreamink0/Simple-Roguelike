@@ -28,7 +28,7 @@ public class Weapon {
     public Weapon(World world, float x, float y, float scale) {
         this.world = world;
         ID =0; //random.nextInt(2);
-        weaponID =6;//random.nextInt(29);
+        weaponID =12;//random.nextInt(29);
         assetManager.load("Items/Weapon" + ID + "/" + weaponID + ".png", Texture.class);
         assetManager.finishLoading();
         Texture texture = assetManager.get("Items/Weapon" + ID + "/" + weaponID + ".png", Texture.class);
@@ -56,7 +56,7 @@ public class Weapon {
             weaponAttribute = weaponAttribute.readData(ID, weaponID);
             weaponAttribute.setData(player);
             weaponEffects = new WeaponEffects(ID, weaponID, player);
-        } else if (isEquip && Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+        } else if (isEquip && Gdx.input.isKeyJustPressed(Input.Keys.Q)||player.checkDeath()) {
             //当前武器被卸下时重置状态
             isEquip = false;
             if (weaponEffects != null) {
@@ -64,7 +64,7 @@ public class Weapon {
                 weaponEffects = null;
             }
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.Q)||player.getAttributeHandler().getHP()<=0){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.Q)){
             weaponAttribute.resetData(player);
         }
         if(isEquip&&weaponEffects!=null&&Gdx.input.isKeyPressed(Input.Keys.J)){
