@@ -364,22 +364,22 @@ public class WeaponEffects {
                 isQ();
             }//我去，好帅的特效!
             isQ();
-        }
-        if(timer <= 0){
-            if(effects!=null){
-                effects.setActive(false);
-                hitbox.free(effects);
-            }
-            timer = duration;
-            BulletTime = 0;
-            Weapon.FLAG = false;
-            if(animationTools!=null){
-                for (AnimationTool tool : animationTools) {
-                    tool.resetStateTime();
+            if(timer <= 0){
+                if(effects!=null){
+                    effects.setActive(false);
+                    hitbox.free(effects);
+                }
+                timer = duration;
+                BulletTime = 0;
+                Weapon.FLAG = false;
+                if(animationTools!=null){
+                    for (AnimationTool tool : animationTools) {
+                        tool.resetStateTime();
+                    }
                 }
             }
         }
-        timer -= Math.min(Gdx.graphics.getDeltaTime(),0.25f);
+        timer -= 15f;
     }
 
     public void isQ() {
