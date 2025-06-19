@@ -25,10 +25,11 @@ public class Weapon {
     public static final ArrayList<WeaponRender> globalEquippedWeapons = new ArrayList<>();
     public static boolean FLAG=false;
     private final Random random=new Random();
+    private final int[] num = {0,1,2,3,4,5,6,7,12,23};
     public Weapon(World world, float x, float y, float scale) {
         this.world = world;
         ID =0; //random.nextInt(2);
-        weaponID =12;//random.nextInt(29);
+        weaponID =num[random.nextInt(num.length)];
         assetManager.load("Items/Weapon" + ID + "/" + weaponID + ".png", Texture.class);
         assetManager.finishLoading();
         Texture texture = assetManager.get("Items/Weapon" + ID + "/" + weaponID + ".png", Texture.class);

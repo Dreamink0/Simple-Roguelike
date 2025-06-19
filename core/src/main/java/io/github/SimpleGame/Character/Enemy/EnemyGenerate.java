@@ -15,16 +15,15 @@ import static io.github.SimpleGame.Resource.Game.UIbatch;
 
 public class EnemyGenerate {
     private final List<Enemy> enemies = new ArrayList<>();
-    private final Map<String, Integer> enemyCounts = new HashMap<>();
     private final Random random = new Random();
     public int currentRoomx = -1;
     public int currentRoomy = -1;
     private static int count=0;
+    private final Map<String, Integer> enemyDeathCounts = new HashMap<>();
     public void addEnemy(World world, Player player,float x,float y) {
         Enemy enemy = EnemyFactory.createRandomEnemy(world, player, x, y);
         enemies.add(enemy);
         String type = enemy.getClassName();
-        enemyCounts.put(type, enemyCounts.getOrDefault(type, 0) + 1);
     }
     public void render(SpriteBatch batch, Player player){
          for (Enemy enemy : enemies) {
@@ -40,6 +39,20 @@ public class EnemyGenerate {
             currentRoomy = newRoomY;
             generateEnemiesInRoom(world,player,newRoomX,newRoomY);
         }
+        // 检测敌人是否死亡
+        Iterator<Enemy> iterator = enemies.iterator();
+        while (iterator.hasNext()) {
+            Enemy enemy = iterator.next();
+            if (enemy.getHP() <= 0) {
+                String type = enemy.getClassName();
+                // 更新死亡计数
+                enemyDeathCounts.put(type, enemyDeathCounts.getOrDefault(type, 0) + 1);
+                // 从敌人列表中移除已死亡的敌人
+                enemy.getAnimation().dead(iterator);
+            }
+        }
+        // 打印当前敌人数
+        Gdx.app.log("EnemyCount", "Current Enemies: " + enemies.size());
         batch.begin();
         render(batch,player);
         batch.end();
@@ -49,30 +62,23 @@ public class EnemyGenerate {
 
     public void generateEnemiesInRoom(World world,Player player,int roomX,int roomY){
         int enemyCount = random.nextInt(5);
-        if(enemies.size()<=700){
+        if(enemies.size()<=10){
             for (int i = 0; i < enemyCount; i++) {
-                float x = random.nextFloat() * roomX * MapGeneration.ROOM_WIDTH;
-                float y = random.nextFloat() * roomY * MapGeneration.ROOM_HEIGHT;
-                addEnemy(world, player, x, y);
+                float newRoomX = (player.getX() / MapGeneration.ROOM_WIDTH *  MapGeneration.TILE_SIZE);
+                float newRoomY = (player.getY() / MapGeneration.ROOM_HEIGHT * MapGeneration.TILE_SIZE+enemyCount);
+                addEnemy(world, player, newRoomX, newRoomY);
                 count++;
             }
         }
     }
     public void dispose() {
         for (Enemy enemy : enemies) {
-            String type = enemy.getClassName();
-            int count = enemyCounts.getOrDefault(type, 0);
-            if(count>0){
-                enemyCounts.put(type, count - 1);
-            }else{
-                enemyCounts.remove(type);
-            }
             enemy.dispose();
         }
         enemies.clear();
-        enemyCounts.clear();
+        enemyDeathCounts.clear();
     }
-    public Map<String, Integer> getEnemyCounts() {
-        return new HashMap<>(enemyCounts);
+    public Map<String, Integer> getEnemyDeathCounts() {
+        return new HashMap<>(enemyDeathCounts);
     }
 }

@@ -75,7 +75,7 @@ public class WeaponRender {
             addEquippedWeapon();
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.Q) && !equippedWeapons.isEmpty()){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.Q) && !equippedWeapons.isEmpty()&&!player.getPlayerController().isAttacking()){
             WeaponRender weaponToDrop = equippedWeapons.getFirst(); // 丢弃第一个武器
             weaponToDrop.removeEquippedWeapon();
             weaponToDrop.weaponHitBox.detachFromPlayer(player);

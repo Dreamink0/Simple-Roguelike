@@ -50,6 +50,7 @@ public abstract class Enemy {
             this.enemyState.currentState = newState;
         }
     }
+    public EnemyAnimation getAnimation() {return animation;}
     public EnemyState getEnemyState() {return enemyState;}
     public float getX() {return enemyPhysic.getX();}
     public float getY() {return enemyPhysic.getY();}

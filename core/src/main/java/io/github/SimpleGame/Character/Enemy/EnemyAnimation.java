@@ -8,6 +8,8 @@ import io.github.SimpleGame.Character.Player.Player;
 import io.github.SimpleGame.Resource.EffectManager;
 import io.github.SimpleGame.Tool.AnimationTool;
 
+import java.util.Iterator;
+
 public class EnemyAnimation implements EnemyAnimationHandler{
     protected static AssetManager assetManager=new AssetManager();
     protected AnimationTool[] animationTools;
@@ -134,6 +136,11 @@ public class EnemyAnimation implements EnemyAnimationHandler{
             if (enemyState.getEnemyBody() != null) {
                 enemyState.freeBody();
             }
+        }
+    }
+    public void dead(Iterator<Enemy> iterator){
+        if(animationTools!=null&&animationTools[4].isAnimationFinished()){
+            iterator.remove();
         }
     }
     @Override

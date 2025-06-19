@@ -27,7 +27,7 @@ public class NightBorne extends Enemy{
         nightBorneAnimation = new NightBorneAnimation();
         nightBorneAnimation.load("NightBorne");
         nightBorneAnimation.load();
-        enemyPhysic = new EnemyPhysic(x, y, 0.8f, 1.2f);
+        enemyPhysic = new EnemyPhysic(x, y, 0.8f, 2f);
         Body enemyBody = enemyPhysic.createBody(enemyPhysic.getEnemyBody());
         enemyBody.setUserData(this);
         attribute = new EnemyAttribute(100, 5, 5, 10, 3);
@@ -36,6 +36,7 @@ public class NightBorne extends Enemy{
 
     @Override
     public void render(SpriteBatch batch, Player player) {
+        animation = nightBorneAnimation;
         nightBorneAnimation.render(batch,nightBorneState,player);
         nightBorneState.update(batch);
     }
@@ -337,7 +338,7 @@ class NightBorneAnimation extends EnemyAnimation{
                 if (isPlayerColliding) {
                     // 添加伤害冷却，防止一帧内多次造成伤害
                     if (attackTimer <= 0) {
-                        player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - 2f);
+                        player.getAttributeHandler().setHP(player.getAttributeHandler().getMaxHP() - 0.25f);
                         attackTimer = attackCooldown; //重置攻击冷却
                     }
                     attackTimer -= deltaTime;

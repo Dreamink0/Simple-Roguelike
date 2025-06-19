@@ -31,6 +31,7 @@ public class WeaponEffects {
     private float BulletTime=0f;
     private boolean isFlipped;
     private int time=1;
+    private float scaleX=0f,scaleY=0f;
     public WeaponEffects(int ID,int WeaponID,Player player){
         this.ID=ID;
         this.WeaponID=WeaponID;
@@ -53,16 +54,8 @@ public class WeaponEffects {
                 batch.end();
                 Cooldown = 0.3f;
                 duration = 1.4f;
-                if (!isCreated) {
-                    effects = hitbox.create(player.getWorld(), animationTool[0], 0, 0, 0.3f, 0.3f);
-                    effects.setUserData(this);
-                    isCreated = true;
-                } else {
-                    effects.setActive(true);
-                    hitbox.update(player.getX(), player.getY(), effects);
-                    effects.setUserData(this);
-                }
-                isQ();
+                scaleX = 0.3f;
+                scaleY = 0.3f;
             }//火焰光环!
             if (WeaponID == 1) {
                 float Startx = player.getX();
@@ -74,28 +67,20 @@ public class WeaponEffects {
                 }
                 batch.begin();
                 BulletTime += Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
-                float speed = 35;
+                float speed = 20;
                 float currentx;
                 final float direction = isFlipped ? -1 : 1; // 记录初始方向
                 currentx = Startx + BulletTime * speed * direction;
                 animationTools[0].render(batch, currentx, Starty, 0.01f, true, !isFlipped);
-                Cooldown = 0.1f;
-                duration = 0.4f;
-                if (!isCreated) {
-                    effects = hitbox.create(player.getWorld(), animationTool[0], 0, 0, 0.1f, 0.1f);
-                    effects.setUserData(this);
-                    isCreated = true;
-                } else {
-                    effects.setActive(true);
-                    hitbox.update(currentx, Starty, effects);
-                    effects.setUserData(this);
-                }
                 batch.end();
-                isQ();
+                Cooldown = 0.1f;
+                duration = 0.6f;
+                scaleX=0.1f;
+                scaleY=0.1f;
             }//寒冰射手!
             if (WeaponID == 2) {
                 batch.begin();
-                float forceMultiplier = 10f;
+                float forceMultiplier = 15f;
                 boolean isCollidingWithWall = isPlayerCollidingWithWall();
                 boolean isMovingLeft = Gdx.input.isKeyPressed(Input.Keys.A);
                 boolean isMovingRight = Gdx.input.isKeyPressed(Input.Keys.D);
@@ -132,16 +117,8 @@ public class WeaponEffects {
                 batch.end();
                 Cooldown = 0.3f;
                 duration = 0.8f;
-                if (!isCreated) {
-                    effects = hitbox.create(player.getWorld(), animationTool[0], 0, 0, 0.7f, 0.6f);
-                    effects.setUserData(this);
-                    isCreated = true;
-                } else {
-                    effects.setActive(true);
-                    hitbox.update(player.getX(), player.getY(), effects);
-                    effects.setUserData(this);
-                }
-                isQ();
+                scaleX = 0.7f;
+                scaleY = 0.6f;
             }//只有暴风才能击倒大树!
             if (WeaponID == 3) {
                 batch.begin();
@@ -161,48 +138,28 @@ public class WeaponEffects {
                 }
                 int flip = player.getPlayerController().isFlipped ? -12 : 12;
                 animationTools[0].render(batch, player.getX() + flip, player.getY(), 0.3f,0.2f, true, player.getPlayerController().isFlipped);
-                Cooldown = 0.1f;
-                duration = 0.4f;
-                if (!isCreated) {
-                    effects = hitbox.create(player.getWorld(), animationTool[0], 0, 0, 0.4f, 0.2f);
-                    effects.setUserData(this);
-                    isCreated = true;
-                } else {
-                    effects.setActive(true);
-                    hitbox.update(player.getX() + flip*0.9f, player.getY(), effects);
-                    effects.setUserData(this);
-                }
                 batch.end();
                 batch.setColor(1, 1, 1, 1);
-                isQ();
+                Cooldown = 0.1f;
+                duration = 0.4f;
+                scaleX = 0.5f;
+                scaleY = 0.3f;
+
             }//七彩彗星鸭子乐!
             if (WeaponID == 4) {
                 batch.begin();
                 batch.setColor(1, 1, 1, 0.75f);
-                int flag = 0;
-                if (player.getPlayerController().isFlipped) {
-                    flag = -1;
-                } else {
-                    flag = 1;
-                }
                 if (player.getPlayerController().isAttacking()) {
                     animationTools[0].render(batch, player.getX(), player.getY() + 3, 0.1f, true, player.getPlayerController().isFlipped);
                 } else {
                     animationTools[1].render(batch, player.getX(), player.getY() + 3, 0.1f, true, player.getPlayerController().isFlipped);
                 }
-                Cooldown = 0.25f;
-                duration = 5f;
-                if (!isCreated) {
-                    effects = hitbox.create(player.getWorld(), animationTool[0], 0, 0, 0.2f, 0.2f);
-                    effects.setUserData(this);
-                    isCreated = true;
-                } else {
-                    effects.setActive(true);
-                    hitbox.update(player.getX() + 4 * flag, player.getY(), effects);
-                    effects.setUserData(this);
-                }
                 batch.end();
                 batch.setColor(1, 1, 1, 1f);
+                Cooldown = 0.25f;
+                duration = 5f;
+                scaleX = 0.2f;
+                scaleY = 0.2f;
             }//赞美星辰！
             if (WeaponID == 5) {
                 isFlipped = player.getPlayerController().isFlipped;
@@ -211,16 +168,8 @@ public class WeaponEffects {
                 batch.end();
                 Cooldown=0.15f;
                 duration = 0.275f;
-                if (!isCreated) {
-                    effects = hitbox.create(player.getWorld(), animationTool[0], 0, 0, 0.13f, 0.1f);
-                    effects.setUserData(this);
-                    isCreated = true;
-                } else {
-                    effects.setActive(true);
-                    hitbox.update(player.getX(), player.getY(), effects);
-                    effects.setUserData(this);
-                }
-                isQ();
+                scaleX = 0.13f;
+                scaleY = 0.1f;
             }//小刀！
             if (WeaponID == 6) {
                 boolean flip = player.getPlayerController().isFlipped;
@@ -257,18 +206,10 @@ public class WeaponEffects {
                 }
                 batch.setColor(1, 1, 1, 1);
                 batch.end();
-                if (!isCreated) {
-                    effects=hitbox.create(player.getWorld(),animationTools[0],player.getX(),player.getY(),0.4f,0.4f);
-                    effects.setUserData(this);
-                    isCreated = true;
-                } else {
-                    effects.setActive(true);
-                    hitbox.update(player.getX(), player.getY(), effects);
-                    effects.setUserData(this);
-                }
                 Cooldown=0.15f;
                 duration=5f;
-                isQ();
+                scaleX = 0.4f;
+                scaleY = 0.4f;
             }//光的力量!
             if (WeaponID == 7) {
                 if(time == 1&&player.getAttributeHandler().getHP()<=0){
@@ -284,25 +225,13 @@ public class WeaponEffects {
                     animationTools[1].render(batch,  (float) (player.getX()+i/2*Math.cos(i)), (float) (player.getY()+2.5f+i/4*Math.sin(i)), 0.005f*i, true, player.getPlayerController().isFlipped);
                     animationTools[1].render(batch,  (float) (player.getX()+i/3*Math.cos(i)), (float) (player.getY()-2-i/3*Math.sin(i)), 0.005f*i, true, !player.getPlayerController().isFlipped);
                 }
-                Cooldown=0.05f;
-                duration=5.35f;
                 batch.setColor(1,1,1,1);
                 batch.end();
-                if (!isCreated) {
-                    effects=hitbox.create(player.getWorld(),animationTools[0],player.getX(),player.getY(),0.4f,0.7f);
-                    effects.setUserData(this);
-                    isCreated = true;
-                } else {
-                    effects.setActive(true);
-                    hitbox.update(player.getX(), player.getY(), effects);
-                    effects.setUserData(this);
-                }
-                isQ();
+                Cooldown=0.05f;
+                duration=5.35f;
+                scaleX = 0.4f;
+                scaleY = 0.7f;
             }//血！
-            if (WeaponID == 8){}//冰！
-            if (WeaponID == 9){}//蛇妖！
-            if (WeaponID == 10) {}//!!!
-            if (WeaponID == 11) {}//!!!
             if (WeaponID == 12) {
                 batch.begin();
                 batch.setColor(1, 1, 1, 0.75f);
@@ -321,16 +250,8 @@ public class WeaponEffects {
                 batch.end();
                 duration = 1;
                 Cooldown = 0.15f;
-                if (!isCreated) {
-                    effects = hitbox.create(player.getWorld(), animationTool[0], 0, 0, 0.3f, 0.2f);
-                    effects.setUserData(this);
-                    isCreated = true;
-                } else {
-                    effects.setActive(true);
-                    hitbox.update(player.getX(), player.getY(), effects);
-                    effects.setUserData(this);
-                }
-                isQ();
+                scaleX = 0.3f;
+                scaleY = 0.2f;
             }//博尔特!
             if (WeaponID == 23) {
                 batch.begin();
@@ -352,18 +273,16 @@ public class WeaponEffects {
                 batch.end();
                 Cooldown = 0.05f;
                 duration = 0.75f;
-                if (!isCreated) {
-                    effects = hitbox.create(player.getWorld(), animationTool[0], 0, 0, 0.3f, 0.3f);
-                    effects.setUserData(this);
-                    isCreated = true;
-                } else {
-                    effects.setActive(true);
-                    hitbox.update(player.getX(), player.getY(), effects);
-                    effects.setUserData(this);
-                }
-                isQ();
+                scaleX = 0.3f;
+                scaleY = 0.3f;
             }//我去，好帅的特效!
-            isQ();
+            if(Gdx.input.isKeyJustPressed(Input.Keys.Q)){
+                create(0,0);
+                effects.setActive(false);
+                hitbox.free(effects);
+                WeaponID = -1;
+            }
+            create(scaleX, scaleY);
             if(timer <= 0){
                 if(effects!=null){
                     effects.setActive(false);
@@ -379,21 +298,48 @@ public class WeaponEffects {
                 }
             }
         }
-        timer -= 15f;
+        timer -= Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
     }
 
-    public void isQ() {
-        if(Gdx.input.isKeyPressed(Input.Keys.Q)&&player.isIsequipped()){
-            isCreated = false;
-            player.setIsequipped(false);
-            WeaponID = -1;
-            if(effects!=null){
-                effects.setActive(false);
-                hitbox.destroy(effects);
-                effects = null;
+    public void create(float scaleX, float scaleY){
+        if (!isCreated) {
+            effects = hitbox.create(player.getWorld(), animationTool[0], 0, 0, scaleX, scaleY);
+            effects.setUserData(this);
+            isCreated = true;
+        }else if(WeaponID == 1){
+            effects.setActive(true);
+            float Startx = player.getX();
+            float Starty = player.getY();
+            if (Gdx.input.isKeyJustPressed(Input.Keys.J)) {
+                Startx = player.getX();
+                Starty = player.getY();
+                isFlipped = player.getPlayerController().isFlipped;
             }
+            BulletTime += Math.min(Gdx.graphics.getDeltaTime(), 0.25f);
+            float speed = 20;
+            float currentx;
+            final float direction = isFlipped ? -1 : 1; // 记录初始方向
+            currentx = Startx + BulletTime * speed * direction;
+            hitbox.update(currentx,Starty, effects);
+        }else if(WeaponID == 3) {
+            int flip = player.getPlayerController().isFlipped ? -12 : 12;
+            effects.setActive(true);
+            hitbox.update(player.getX() + flip, player.getY(), effects);
+        }else if (WeaponID == 4) {
+            int flag = 0;
+            if (player.getPlayerController().isFlipped) {
+                flag = -1;
+            } else {
+                flag = 1;
+            }
+            effects.setActive(true);
+            hitbox.update(player.getX() + flag * 4, player.getY(), effects);
+        }else {
+            effects.setActive(true);
+            hitbox.update(player.getX(), player.getY(), effects);
         }
     }
+
 
     private boolean isPlayerCollidingWithWall() {
         return Listener.wall_Flag;
