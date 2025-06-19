@@ -131,6 +131,7 @@ public class EnemyAnimation implements EnemyAnimationHandler{
                 }
             }
         }
+
         if (currentState == Enemy.State.DIE && hasPlayedDeathAnimation) {
             deathAnimationTimer += deltaTime;
             if (enemyState.getEnemyBody() != null) {
@@ -138,14 +139,14 @@ public class EnemyAnimation implements EnemyAnimationHandler{
             }
         }
     }
-    public void dead(Iterator<Enemy> iterator){
-        if(animationTools!=null&&animationTools[4].isAnimationFinished()){
-            iterator.remove();
-        }
+    public boolean isAnimationFinished(){
+        return hasPlayedDeathAnimation && deathAnimationTimer >= DEATH_ANIMATION_DURATION;
     }
     @Override
     public void dispose() {
-        if(animationTools!=null){for (int i = 0; i < animationTools.length; i++) animationTools[i].dispose();}
+        if(animationTools!=null){
+            for (AnimationTool animationTool : animationTools) animationTool.dispose();
+        }
         if (assetManager != null) {
             assetManager.dispose();
         }

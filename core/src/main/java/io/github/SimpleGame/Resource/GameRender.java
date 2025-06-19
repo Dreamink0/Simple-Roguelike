@@ -19,13 +19,9 @@ import static io.github.SimpleGame.Resource.Game.player;
 
 
 public class GameRender implements GameRenderHandler{
-    private Weapon item;
-    private Weapon item2;
-    private UI ui;
+    private final UI ui;
     private EnemyGenerate enemyGenerate;
     public GameRender() {
-        item = new Weapon(Game.world, WORLD_WIDTH+10, WORLD_HEIGHT, 1f);
-        item2 = new Weapon(Game.world, WORLD_WIDTH-2, WORLD_HEIGHT, 1f);
         ui=new UI();
         ui.create();
         enemyGenerate = new EnemyGenerate();
@@ -33,7 +29,6 @@ public class GameRender implements GameRenderHandler{
     @Override
     public void render(SpriteBatch batch,SpriteBatch UIbatch) {
         float deltaTime = Math.min(Gdx.graphics.getDeltaTime(),5);
-        enemyGenerate.update(Game.world,player,batch);
         ui.render(UIbatch,player);
         EffectManager effectManager = EffectManager.getInstance();
 
@@ -42,8 +37,6 @@ public class GameRender implements GameRenderHandler{
         batch.begin();
         player.filpCheck(player.getPlayerSprite(), player.getPlayerController(), batch).draw(batch);
         batch.end();
-        item2.render(batch, UIbatch, player);
-        item.render(batch, UIbatch, player);
         effectManager.removeEffect(batch);
 
         // UI渲染也应用效果
@@ -52,13 +45,12 @@ public class GameRender implements GameRenderHandler{
         player.render(UIbatch,deltaTime);
         UIbatch.end();
         effectManager.removeEffect(UIbatch);
+        enemyGenerate.update(Game.world,player,batch);
     }
     public void restart(){
         enemyGenerate.dispose();
         enemyGenerate = new EnemyGenerate();
     }
     public void dispose() {
-        item.dispose();
-        item2.dispose();
     }
 }

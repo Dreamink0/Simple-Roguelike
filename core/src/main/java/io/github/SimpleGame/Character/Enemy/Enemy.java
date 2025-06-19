@@ -15,6 +15,8 @@ public abstract class Enemy {
     protected State currentState;
     protected Player player;
     protected World world;
+    protected boolean isDead = false;
+    protected boolean hasDied = false;
     //接口
     protected EnemyAttribute attribute;
     protected EnemyState enemyState;
@@ -33,7 +35,23 @@ public abstract class Enemy {
     public abstract void dispose();
     public void setHP(Magic magic){attribute.setHP(attribute.getHP()-magic.getDamage());}
     public void setHP(float Damage) {
-        attribute.setHP(attribute.getHP()-Damage);
+        if (isDead) return;
+        attribute.setHP(attribute.getHP() - Damage);
+        if (attribute.getHP() <= 0) {
+            isDead = true;
+            if (!hasDied) {
+                hasDied = true; // 仅首次死亡时触发计数
+            }
+        }
+    }
+    public boolean isDead() {
+        return isDead;
+    }
+    public boolean shouldRemove() {
+        return isDead && getAnimation().getAnimationTools()[4].isAnimationFinished();
+    }
+    public boolean hasDied() {
+        return hasDied;
     }
     public String getClassName(){return animation.getClassName();}
     public float getHP(){return attribute.getHP();}
