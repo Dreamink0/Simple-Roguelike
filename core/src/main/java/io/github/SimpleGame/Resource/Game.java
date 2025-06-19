@@ -148,11 +148,12 @@ public class Game {
             System.out.println("MP:"+player.getAttributeHandler().getMaxMP());
             System.out.println("Damage:"+player.getAttributeHandler().getDamage());
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.TAB)) {
             worldManager.getDebugRenderer().render(world, cameraManager.getCamera().combined);
         }
         // 重新生成地图
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            mapGeneration.generateRandomMap();
             regenerateMap();
         }
 

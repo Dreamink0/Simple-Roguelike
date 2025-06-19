@@ -1,5 +1,7 @@
 package io.github.SimpleGame.Resource;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.physics.box2d.*;
 import io.github.SimpleGame.Tool.AnimationTool;
 
@@ -30,9 +32,15 @@ public class HitboxManager {
         }
     }
     public void update(float x, float y,Body body) {
-        if(body!=null){
+        if(body==null){
             body = effectsPool.obtain();
+            body.setTransform(0,0,0);
+        }else{
             body.setTransform(x,y,0);
+        }
+        body.setActive(Game.player.getPlayerController().isAttacking()&&!Gdx.input.isKeyJustPressed(Input.Keys.Q));
+        if(Gdx.input.isKeyJustPressed(Input.Keys.Q)){
+            world.destroyBody(body);
         }
     }
 }

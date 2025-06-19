@@ -16,7 +16,7 @@ public class Player {
     private PlayerAttributeHandler attributeHandler;
     protected PlayerTextureHandler playerTextureHandler;
     //状态//
-    protected boolean isequipped = false;
+    protected static boolean isequipped = false;
     private World world;
     public float attackCooldownTimer = 0f;
     public float attackCooldown = 0.05f;//影响帧伤，很强大
