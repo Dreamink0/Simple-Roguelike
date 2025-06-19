@@ -13,7 +13,7 @@ public class Skeleton extends Enemy{
         super(world, player, x, y);
         animation=new EnemyAnimation();
         animation.load("Skeleton");
-        enemyPhysic = new EnemyPhysic(x, y, 0.5f, 2f);
+        enemyPhysic = new EnemyPhysic(x, y, 0.4f, 1.5f);
         Body enemyBody = enemyPhysic.createBody(enemyPhysic.getEnemyBody());
         enemyBody.setUserData(this);
         attribute = new EnemyAttribute(55, 8, 4, 15, 1.5f);

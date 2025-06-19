@@ -75,13 +75,12 @@ public class WeaponRender {
             addEquippedWeapon();
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.Q) && !equippedWeapons.isEmpty()){
-            WeaponRender weaponToDrop = equippedWeapons.getFirst(); // 丢弃第一个武器
+        if(Gdx.input.isKeyJustPressed(Input.Keys.Q) && !equippedWeapons.isEmpty() && !player.getPlayerController().isAttacking()){
+            WeaponRender weaponToDrop = equippedWeapons.get(0); // 丢弃第一个武器
             weaponToDrop.removeEquippedWeapon();
             weaponToDrop.weaponHitBox.detachFromPlayer(player);
             --count;
             weaponToDrop.isEquip = false;
-
             if(equippedWeapons.isEmpty()) {
                 player.setIsequipped(false);
             }
